@@ -1,0 +1,64 @@
+name: Imagenes
+
+# Construye las dos imagenes de Docker tal como se desplegarian.
+#
+# No es redundante con los otros dos flujos. Aquellos compilan con Maven y npm
+# directamente; este ejercita los Dockerfile, que es como la aplicacion llega de
+# verdad a un servidor. Un Dockerfile puede romperse sin que el codigo cambie:
+# una etiqueta de imagen base que desaparece, una ruta que se movio, una etapa
+# de compilacion que dejo de encontrar sus fuentes.
+#
+# Solo corre en main y a mano, no en cada pull request: construir la imagen del
+# backend recompila el proyecto entero y no vale ese tiempo en cada revision.
+#
+# No publica en ningun registro. Cuando exista un ambiente de despliegue, el
+# login y el push entran aqui usando GitHub Secrets — nunca credenciales en el
+# repositorio.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: images-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Construir las imagenes
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Descargar el codigo
+        uses: actions/checkout@v4
+
+      - name: Construir las imagenes y levantar la pila
+        # Un solo paso construye Y arranca. Construir las imagenes por separado
+        # con `docker build` seria trabajo tirado: `compose up --build` las
+        # construye otra vez desde los mismos Dockerfile.
+        #
+        # `--wait` se apoya en el HEALTHCHECK que declara el Dockerfile del
+        # backend, que consulta /actuator/health. Sin eso, compose daria por
+        # bueno un contenedor arrancado aunque la aplicacion hubiera fallado al
+        # conectarse a la base.
+        run: |
+          cp .env.example .env
+          docker compose up --build --detach --wait --wait-timeout 300
+          docker compose ps
+
+      - name: Revisar que la API responde
+        run: |
+          curl --fail --silent --show-error http://localhost:8080/actuator/health | tee /dev/stderr | grep -q '"status":"UP"'
+
+      - name: Mostrar los registros si algo fallo
+        if: failure()
+        run: docker compose logs --tail 200
+
+      - name: Apagar la pila
+        if: always()
+        run: docker compose down --volumes

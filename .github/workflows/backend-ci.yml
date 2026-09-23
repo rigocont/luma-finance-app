@@ -1,0 +1,74 @@
+name: Backend CI
+
+# Compila y corre la suite completa del backend en cada cambio.
+#
+# Incluye LumaApplicationTests e IncomeIntegrationTest, que levantan un MySQL
+# 8.4 real con Testcontainers. Los runners de ubuntu-latest traen Docker
+# instalado y corriendo, asi que no hay nada que configurar: a diferencia del
+# script local, aqui Maven NO corre dentro de un contenedor y habla con el
+# demonio directamente.
+#
+# NO hay automatizacion E2E en este flujo y no debe agregarse. Playwright,
+# Cypress y Selenium los desarrolla el propietario del proyecto por separado.
+# Ver la seccion 3 del prompt maestro.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-ci.yml'
+  pull_request:
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-ci.yml'
+  workflow_dispatch:
+
+# Solo lectura: este flujo no publica nada.
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Compilar y probar
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Compilar y probar
+        # `clean` no es opcional: sin el, Maven puede responder "Nothing to
+        # compile" y correr las pruebas contra clases de una compilacion
+        # anterior. Un pipeline que no recompila no verifica el codigo actual.
+        run: mvn -B --no-transfer-progress clean verify
+
+      # NOTA: aqui habia un paso que levantaba MySQL con docker compose para
+      # comprobar que el esquema se reconstruye desde cero (riesgo R7 del
+      # analisis). Se quito porque LumaApplicationTests ya lo hace mejor: aplica
+      # V1 y V2 sobre un MySQL limpio y AFIRMA sobre flyway_schema_history, en
+      # lugar de esperar 45 segundos y confiar en que no hubo error.
+      # Que la pila completa levante lo verifica images.yml.
+
+      - name: Publicar resultados
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-results
+          path: backend/target/surefire-reports/
+          if-no-files-found: ignore
+          retention-days: 7

@@ -1,0 +1,83 @@
+name: Security
+
+# Tres capas distintas:
+#   - dependency-review: bloquea un pull request que introduce una dependencia
+#     con vulnerabilidad conocida.
+#   - filesystem-scan: revisa TODO el arbol, no solo lo que cambio.
+#   - secret-scan: busca credenciales en el historial completo.
+#
+# El cron semanal existe porque una dependencia que no cambio puede volverse
+# vulnerable de un dia para otro: sin el, solo se entera quien toque ese archivo.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Lunes 9:00 UTC.
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  dependency-review:
+    name: Revision de dependencias
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+
+  filesystem-scan:
+    name: Analisis de vulnerabilidades
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Trivy
+        # PENDIENTE DE FIJAR: `@master` significa que cada corrida ejecuta lo
+        # que haya hoy en esa rama. Para una accion de terceros con permiso de
+        # escritura sobre security-events, eso es una via de suministro abierta.
+        # Cuando veas una corrida verde, sustituye `master` por el SHA completo
+        # del commit que uso (aparece en el registro del paso) o por una
+        # etiqueta de version publicada. No se fijo aqui una version concreta
+        # porque no se pudo verificar cual existe, y un numero inventado rompe
+        # el flujo entero.
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: sarif
+          output: trivy-results.sarif
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+
+      - name: Subir resultados
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-results.sarif
+
+  secret-scan:
+    name: Busqueda de secretos
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # El historial completo: un secreto borrado en un commit posterior
+          # sigue estando en el historial, y ahi sigue sirviendo.
+          fetch-depth: 0
+
+      - name: Gitleaks
+        # Mismo caso que Trivy: conviene fijar la version por SHA.
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,80 @@
+name: Frontend CI
+
+# Formato, estilo, tipos, pruebas y compilacion del frontend.
+#
+# NO hay automatizacion E2E en este flujo y no debe agregarse. La
+# automatizacion (Playwright + TypeScript) la desarrolla el propietario del
+# proyecto por separado. Ver la seccion 3 del prompt maestro.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-ci.yml'
+  pull_request:
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: frontend-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Verificar y construir
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          # Sin `cache: npm` a proposito. Esa opcion exige un archivo de
+          # bloqueo y falla si no lo encuentra, y el proyecto todavia no tiene
+          # package-lock.json. En cuanto exista, agregar aqui:
+          #   cache: npm
+          #   cache-dependency-path: frontend/package-lock.json
+
+      - name: Instalar dependencias
+        # Sin package-lock.json, `npm ci` falla y `npm install` puede traer
+        # versiones distintas en cada corrida: lo que pasa en CI deja de ser lo
+        # que pasa en tu maquina. Se avisa en la interfaz de Actions en lugar de
+        # fallar, para no bloquear el pipeline por algo que se arregla en un
+        # minuto: `npm install` en local y versionar el archivo que genera.
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci --no-audit --no-fund
+          else
+            echo "::warning file=frontend/package.json::No hay package-lock.json: la compilacion no es reproducible. Genera uno con 'npm install' y versionalo."
+            npm install --no-audit --no-fund
+          fi
+
+      - name: Formato
+        run: npm run format:check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Tipos
+        run: npm run typecheck
+
+      - name: Tests unitarios
+        run: npm test
+
+      - name: Build
+        # `npm run build` es `tsc --noEmit && vite build`. El paso de tipos de
+        # arriba es redundante a proposito: separarlo hace evidente si lo que
+        # fallo fueron los tipos o el empaquetado.
+        run: npm run build
