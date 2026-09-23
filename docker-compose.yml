@@ -1,0 +1,78 @@
+name: luma
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: luma-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-luma}
+      MYSQL_USER: ${MYSQL_USER:-luma}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-luma}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - luma-mysql-data:/var/lib/mysql
+      - ./infrastructure/docker/mysql/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      # El backend espera a que MySQL acepte conexiones, no solo a que el
+      # contenedor exista: sin esto Flyway falla en el primer arranque.
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p${MYSQL_ROOT_PASSWORD:-root}"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  # Servidor de correo de desarrollo. Captura todo lo que la aplicacion envia
+  # y lo muestra en una bandeja web: nunca entrega nada a un destinatario real.
+  # Solo para local; no forma parte del despliegue.
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: luma-mailpit
+    restart: unless-stopped
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    ports:
+      - "${MAILPIT_UI_PORT:-8025}:8025"
+      - "${MAILPIT_SMTP_PORT:-1025}:1025"
+
+  backend:
+    build:
+      context: ./backend
+    container_name: luma-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+      LUMA_MAIL_HOST: mailpit
+      LUMA_MAIL_PORT: 1025
+      LUMA_APP_BASE_URL: ${LUMA_APP_BASE_URL:-http://localhost:8081}
+      LUMA_DB_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE:-luma}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      LUMA_DB_USERNAME: ${MYSQL_USER:-luma}
+      LUMA_DB_PASSWORD: ${MYSQL_PASSWORD:-luma}
+      LUMA_CORS_ALLOWED_ORIGINS: ${LUMA_CORS_ALLOWED_ORIGINS:-http://localhost:5173,http://localhost:8081}
+      LUMA_JWT_SECRET: ${LUMA_JWT_SECRET:-desarrollo-local-luma-clave-de-al-menos-32-caracteres}
+      LUMA_COOKIE_SECURE: ${LUMA_COOKIE_SECURE:-false}
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8080/api/v1}
+    container_name: luma-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${FRONTEND_PORT:-8081}:80"
+
+volumes:
+  luma-mysql-data:

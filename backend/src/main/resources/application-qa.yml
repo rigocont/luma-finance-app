@@ -1,0 +1,11 @@
+# Ambiente de pruebas. Swagger sigue activo a proposito:
+# es el contrato contra el que se valida manualmente y se automatiza despues.
+logging:
+  level:
+    com.luma: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics

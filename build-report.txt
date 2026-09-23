@@ -1,0 +1,9 @@
+﻿LUMA - reporte de verificacion
+Fecha    : 2026-09-22 22:44:24
+Objetivo : backend
+Resultado: OK
+Log completo: build-full.log
+
+===== BACKEND (test) =====
+[INFO] Tests run: 173, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS

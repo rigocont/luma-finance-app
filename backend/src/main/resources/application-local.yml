@@ -1,0 +1,26 @@
+# Desarrollo en la maquina del desarrollador.
+spring:
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+
+luma:
+  mail:
+    # En local el enlace de recuperacion tambien sale por el log, para no
+    # depender de abrir Mailpit.
+    log-links: true
+
+logging:
+  level:
+    com.luma: DEBUG
+    org.hibernate.SQL: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,env,loggers
+  endpoint:
+    health:
+      show-details: always

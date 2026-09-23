@@ -1,0 +1,36 @@
+# ---- Java / Maven ----
+target/
+*.jar
+*.war
+*.class
+.mvn/
+!.mvn/wrapper/maven-wrapper.properties
+
+# ---- Node ----
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+.vite/
+
+# ---- Entorno (NUNCA se versionan secretos) ----
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# ---- IDE ----
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
+# ---- Sistema operativo ----
+.DS_Store
+Thumbs.db
+
+# ---- Logs ----
+*.log
+npm-debug.log*

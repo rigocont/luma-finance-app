@@ -1,0 +1,57 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-ci.yml'
+  pull_request:
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-ci.yml'
+
+concurrency:
+  group: backend-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Compilar y probar
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Compilar
+        run: mvn -B --no-transfer-progress clean compile
+
+      - name: Tests
+        run: mvn -B --no-transfer-progress verify
+
+      - name: Verificar que el esquema se reconstruye desde cero
+        # Riesgo R7: la base debe poder recrearse solo con las migraciones.
+        run: |
+          docker compose up mysql -d --wait
+          docker compose run --rm --build backend --spring.flyway.enabled=true &
+          sleep 45
+          docker compose down -v
+        working-directory: .
+
+      - name: Publicar resultados
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-results
+          path: backend/target/surefire-reports/
+          if-no-files-found: ignore

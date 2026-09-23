@@ -1,0 +1,56 @@
+name: Frontend CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-ci.yml'
+  pull_request:
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-ci.yml'
+
+concurrency:
+  group: frontend-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Verificar y construir
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Instalar dependencias
+        run: npm ci --no-audit --no-fund
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Formato
+        run: npm run format:check
+
+      - name: Tipos
+        run: npm run typecheck
+
+      - name: Tests unitarios
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+# NOTA: aqui NO hay pruebas E2E a proposito.
+# La automatizacion (Playwright + TypeScript) la desarrolla el propietario del
+# proyecto por separado. Ver seccion 3 del prompt maestro.
