@@ -15,6 +15,8 @@ import { CycleActions } from '@/features/budget/CycleActions';
 import { DeficitAdviceCard } from '@/features/budget/DeficitAdviceCard';
 import { TrendCard } from '@/features/budget/TrendCard';
 import { UpcomingPayments } from '@/features/budget/UpcomingPayments';
+import { FinancialInsightsCard } from '@/features/insights/FinancialInsightsCard';
+import { useInsights } from '@/features/insights/useInsights';
 import {
   isNoCycleYet,
   useCloseCycle,
@@ -54,6 +56,7 @@ export function DashboardPage() {
   const renglones = useCycleItems(cycleId);
   const consejo = useDeficitAdvice(cycleId, enDeficit === true);
   const tendencias = useTrends();
+  const analisis = useInsights();
   const quitar = useSkipItem(cycleId);
 
   const [quitando, setQuitando] = useState<string | null>(null);
@@ -127,6 +130,8 @@ export function DashboardPage() {
               }}
             />
           )}
+
+          <FinancialInsightsCard insights={analisis.data} loading={analisis.isPending} />
 
           <CompositionCard
             totals={balance.planned}

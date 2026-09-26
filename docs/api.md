@@ -740,3 +740,64 @@ todas a la vez, con `POST /notifications/read-all`.
 reciente a la más vieja, y el menú desplegable distingue estilo por el campo
 `read`, no con una segunda petición.
 
+
+## Análisis financiero
+
+### Un solo endpoint, tres señales independientes
+
+`GET /insights` devuelve las tres señales del análisis sin IA, todas en la
+misma respuesta:
+
+```json
+{
+  "deficitCause": { "cycleId": "...", "missing": {...}, "categoryName": "Despensa", "previousAmount": {...}, "currentAmount": {...}, "increase": {...} },
+  "surplusAllocation": { "cycleId": "...", "surplus": {...}, "shares": [{ "goalId": "...", "goalName": "Vacaciones", "amount": {...} }] },
+  "categoryGrowth": [{ "categoryName": "Salud", "firstAmount": {...}, "lastAmount": {...}, "cycles": 3 }]
+}
+```
+
+Un solo endpoint, no tres, porque las tres preguntas comparten la misma
+lectura del ciclo actual y del historial de categorías: separarlas en tres
+peticiones multiplicaría las consultas sin que el cliente necesite pedirlas
+por separado.
+
+### Ninguna cifra se inventa
+
+`deficitCause` y `surplusAllocation` llegan `null` con mucha frecuencia, y no
+es un error: `deficitCause` solo existe si el ciclo activo está en déficit **y**
+hay un ciclo anterior con qué compararlo; `surplusAllocation` solo existe si el
+ciclo activo tiene remanente. Sin ciclo abierto, ambos son `null` y
+`categoryGrowth` viene vacío. `categoryGrowth` solo lista una categoría cuando
+subió en **cada uno** de los últimos 3 ciclos y el último monto es positivo —
+con menos de 3 ciclos de historia la lista viene vacía, nunca con una
+suposición a medias.
+
+`deficitCause` compara categorías, no ingreso contra gasto: es la causa más
+angosta que las cifras respaldan sin adivinar, no "la" causa en un sentido
+estricto. `increase` (`currentAmount - previousAmount`) viaja calculado porque
+es la razón exacta por la que se eligió esa categoría entre todas.
+
+### El reparto del remanente es una sugerencia, no un movimiento
+
+`surplusAllocation.shares` llega en cascada por prioridad — llena primero la
+meta de mayor prioridad, y sigue con la siguiente hasta agotar el remanente o
+las metas —, en el mismo orden en que ya se usa la prioridad en el consejo de
+déficit (`DeficitAdvisor`), pero en dirección contraria. `shares` viene vacío
+cuando no hay ninguna meta activa: el remanente sigue siendo real y se
+muestra, solo no hay a dónde proponer que vaya. Nada se registra en la meta
+por consultar este endpoint; la persona aporta desde Ahorros si decide
+seguir la sugerencia.
+
+### Umbrales fijos, no preferencias
+
+Tres ciclos seguidos al alza, y dos ciclos (el actual y el anterior) para
+explicar un déficit: son constantes del servicio, no algo que la persona
+configure. La misma decisión que ya se tomó con los 3 días de
+`PAYMENT_DUE_SOON`.
+
+### La capa de IA queda pendiente
+
+`architecture.md` (§8.4) ya recomendaba un motor de reglas primero y un LLM
+después —y quizá nunca para la mitad—. Este endpoint es esa primera capa,
+completa. La redacción y priorización con un modelo de lenguaje, cuando
+exista, solo interpretará estas mismas cifras: nunca las calculará.

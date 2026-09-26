@@ -334,6 +334,13 @@ export const testIds = {
     adviceShortfall: 'dashboard-advice-shortfall',
     adviceSkipAction: 'dashboard-advice-skip',
 
+    insights: 'dashboard-insights',
+    insightsDeficitCause: 'dashboard-insights-deficit-cause',
+    insightsSurplus: 'dashboard-insights-surplus',
+    insightsSurplusRow: 'dashboard-insights-surplus-row',
+    insightsGrowth: 'dashboard-insights-growth',
+    insightsGrowthRow: 'dashboard-insights-growth-row',
+
     trend: 'dashboard-trend',
     trendChart: 'dashboard-trend-chart',
     trendDelta: 'dashboard-trend-delta',

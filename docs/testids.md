@@ -238,11 +238,22 @@ alta guiada ni en las pantallas de sesion, que viven fuera de `AppShell`.
 | La grafica | `dashboard-trend-chart` |
 | La frase de la diferencia | `dashboard-trend-delta` |
 | Sin con que comparar | `dashboard-trend-empty` |
+| Tarjeta de analisis financiero | `dashboard-insights` |
+| Bloque de causa del deficit | `dashboard-insights-deficit-cause` |
+| Bloque del reparto del remanente | `dashboard-insights-surplus` |
+| Meta del reparto (por fila) | `dashboard-insights-surplus-row` |
+| Bloque de crecimiento sostenido | `dashboard-insights-growth` |
+| Categoria en racha (por fila) | `dashboard-insights-growth-row` |
 
-Tres cosas que evitan escenarios fragiles:
+Cuatro cosas que evitan escenarios fragiles:
 
 `dashboard-advice` **solo existe con deficit**. Con el ciclo en orden la tarjeta
 no se dibuja, y no es un fallo.
+
+`dashboard-insights` **solo existe si hay al menos una senal que mostrar**: una
+causa de deficit, un reparto de remanente, o alguna categoria con crecimiento
+sostenido. Un ciclo balanceado y sin historial suficiente no dibuja la
+tarjeta, y no es un fallo.
 
 `dashboard-hero-estimate-notice` solo aparece cuando hay gastos sin confirmar.
 

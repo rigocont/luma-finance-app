@@ -23,26 +23,7 @@ mismo formato que los anteriores.
 | 10 — Resumen financiero | [`12-resumen-financiero.md`](12-resumen-financiero.md) |
 | 11 — Alertas | [`13-alertas.md`](13-alertas.md) |
 | 12 — Anuncios | [`14-anuncios.md`](14-anuncios.md) |
-
----
-
-## Fase 13
-
-```gherkin
-# language: es
-
-@pendiente @fase-13 @analisis
-Característica: Análisis financiero
-
-  Escenario: Se detecta un déficit y se explica qué lo causó
-  Escenario: Se detecta un remanente y se sugiere repartirlo entre metas
-  Escenario: Se detecta un crecimiento sostenido en una categoría
-  Escenario: Nunca se sugiere retrasar un pago marcado como crítico
-  Escenario: Cada recomendación muestra las cifras que la respaldan
-```
-
-El último escenario es una propiedad de seguridad del producto, no un detalle:
-la IA nunca calcula cifras, solo interpreta las que ya calculó el motor.
+| 13 — Analisis financiero (parte determinista) | [`15-analisis-financiero.md`](15-analisis-financiero.md) |
 
 ---
 

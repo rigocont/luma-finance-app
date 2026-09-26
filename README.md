@@ -10,6 +10,7 @@ LUMA no es un registro de gastos. Organiza el dinero en **ciclos presupuestales*
 - Que pagos vienen y cuales ya se vencieron
 - Si te alcanza, si vas justo o si te falta
 - Cuanto necesitas apartar para llegar a una meta
+- Por que no alcanzo, a donde podria ir lo que sobra, y que categorias suben ciclo tras ciclo
 
 ---
 
@@ -35,6 +36,7 @@ LUMA no es un registro de gastos. Organiza el dinero en **ciclos presupuestales*
 | 10 | **Resumen financiero: balance, consejo de deficit y comparacion** | **Completada -> MVP** |
 | 11 | Alertas: pago proximo, pago vencido, deficit y campana de notificaciones | Completada |
 | 12 | Anuncios: espacio publicitario en el shell; monetizacion sin planes de pago | Completada |
+| 13 | Analisis financiero (sin IA): causa del deficit, reparto del remanente y crecimiento sostenido | Completada -- la capa de redaccion con IA queda pendiente |
 
 El plan completo esta en [`docs/00-arquitectura-fase-0.md`](docs/00-arquitectura-fase-0.md).
 
@@ -200,7 +202,8 @@ luma/
       config/       Seguridad, CORS, OpenAPI, reloj
       expenses/     Gastos fijos y variables
       income/       Ingresos
-      notifications/ Envio de correo
+      insights/     Analisis financiero sin IA (por ahora)
+      notifications/ Alertas internas y envio de correo
       savings/      Metas de ahorro
       system/       Endpoint de diagnostico
       users/        Usuario y preferencias

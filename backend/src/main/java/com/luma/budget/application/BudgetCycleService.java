@@ -23,9 +23,11 @@ import com.luma.savings.application.SavingsGoalService;
 import com.luma.savings.infrastructure.SavingsGoalRepository;
 import com.luma.users.application.UserPreferencesService;
 import com.luma.users.domain.UserPreferences;
+import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -317,6 +319,61 @@ public class BudgetCycleService {
 
         return deficits;
     }
+
+    /**
+     * El total planeado por categoria de gasto, en los N ciclos mas recientes
+     * del usuario, del mas viejo al mas nuevo.
+     *
+     * <p>Lectura publica para el modulo de insights (Fase 13), que detecta
+     * crecimiento sostenido por categoria y explica un deficit comparando
+     * contra el ciclo anterior -ninguna de las dos preguntas le interesa al
+     * motor de balance, asi que ninguna vive ahi.
+     *
+     * <p>Solo entran gastos fijos y variables: los ingresos y el ahorro no
+     * tienen categoria, y "que categoria crecio" no aplica a ellos.
+     */
+    @Transactional(readOnly = true)
+    public List<CycleCategoryTotals> categoryTotalsOfRecentCycles(Long userId, int howMany) {
+        List<BudgetCycle> ultimos = cycles
+                .findByUserIdOrderByStartDateDesc(userId, PageRequest.of(0, Math.max(howMany, 1)))
+                .getContent();
+
+        if (ultimos.isEmpty()) {
+            return List.of();
+        }
+
+        Map<Long, List<CycleItem>> porCiclo =
+                items.findByBudgetCycleIdIn(ultimos.stream().map(BudgetCycle::getId).toList())
+                        .stream()
+                        .collect(Collectors.groupingBy(CycleItem::getBudgetCycleId));
+
+        List<CycleCategoryTotals> resultado = new ArrayList<>(ultimos.size());
+
+        for (BudgetCycle cycle : ultimos.reversed()) {
+            Map<Long, BigDecimal> porCategoria = new HashMap<>();
+
+            for (CycleItem item : porCiclo.getOrDefault(cycle.getId(), List.of())) {
+                if (item.getCategoryId() == null) {
+                    continue;
+                }
+                if (item.getItemType() != CycleItemType.FIXED_EXPENSE
+                        && item.getItemType() != CycleItemType.VARIABLE_EXPENSE) {
+                    continue;
+                }
+                porCategoria.merge(item.getCategoryId(), item.getPlannedAmount(), BigDecimal::add);
+            }
+
+            resultado.add(new CycleCategoryTotals(cycle.getPublicId(), porCategoria));
+        }
+
+        return resultado;
+    }
+
+    /**
+     * El total planeado por categoria de gasto (id de categoria -> suma),
+     * en un solo ciclo. Nace y vive solo para categoryTotalsOfRecentCycles.
+     */
+    public record CycleCategoryTotals(String cyclePublicId, Map<Long, BigDecimal> byCategoryId) {}
 
     /** El resultado del motor presupuestal para un ciclo. */
     @Transactional(readOnly = true)
