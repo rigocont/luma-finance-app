@@ -41,6 +41,7 @@ LUMA no es un registro de gastos. Organiza el dinero en **ciclos presupuestales*
 | 15 | Interfaz bilingue (es/en): idioma del sistema por defecto, cambiable desde Ajustes; lo que la persona escribe nunca se traduce | Pendiente |
 
 El plan completo esta en [`docs/00-arquitectura-fase-0.md`](docs/00-arquitectura-fase-0.md).
+El plan de las apps moviles (iOS/Android) esta en [`docs/roadmap-mobile.md`](docs/roadmap-mobile.md).
 
 > **Para retomar el proyecto:** empieza por
 > [`docs/PUNTO-DE-RETORNO.md`](docs/PUNTO-DE-RETORNO.md). Trae el estado, las
