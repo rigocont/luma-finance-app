@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 
 import { useCurrentUser, useLogout } from '@/features/auth/useAuth';
+import { NotificationBell } from '@/features/notifications/NotificationBell';
 import { testIds } from '@/lib/testids';
 import { useUiStore } from '@/store/uiStore';
 
@@ -57,6 +58,8 @@ export function Header({ onOpenSidebar, sidebarWidth }: HeaderProps) {
             {user.name}
           </Typography>
         )}
+
+        <NotificationBell />
 
         <Tooltip title={isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}>
           <IconButton

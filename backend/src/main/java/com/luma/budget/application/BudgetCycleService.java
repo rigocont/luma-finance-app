@@ -6,8 +6,10 @@ import com.luma.budget.domain.BudgetPeriod;
 import com.luma.budget.domain.BudgetResult;
 import com.luma.budget.domain.CycleItem;
 import com.luma.budget.domain.CycleItemType;
+import com.luma.budget.domain.CycleDeficit;
 import com.luma.budget.domain.CyclePlanner;
 import com.luma.budget.domain.CycleStatus;
+import com.luma.budget.domain.DueSoonItem;
 import com.luma.budget.domain.ItemStatus;
 import com.luma.budget.domain.PlannedItem;
 import com.luma.budget.infrastructure.BudgetCycleRepository;
@@ -254,6 +256,66 @@ public class BudgetCycleService {
         }
 
         return tendencia;
+    }
+
+    /**
+     * Los renglones activos que vencen exactamente esa fecha, de todos los
+     * usuarios.
+     *
+     * <p>Lectura publica para {@code PaymentAlertsJob}, del modulo de
+     * notificaciones: es la puerta correcta segun {@code docs/architecture.md}
+     * para que un modulo pregunte algo de otro, en lugar de que le abra sus
+     * repositorios.
+     */
+    @Transactional(readOnly = true)
+    public List<DueSoonItem> itemsDueOn(LocalDate date) {
+        return items.findDueOn(
+                date, CycleStatus.ACTIVE, List.of(ItemStatus.PENDING, ItemStatus.NEEDS_REVIEW));
+    }
+
+    /**
+     * Los ciclos activos, de cualquier usuario, cuyo balance PRESUPUESTADO es
+     * negativo.
+     *
+     * <p>Misma tecnica que {@link #trends}: los renglones de todos los ciclos
+     * activos se traen en una sola consulta y se agrupan en memoria, en lugar
+     * de calcular un ciclo a la vez. La moneda usada para el calculo es
+     * irrelevante aqui —solo se necesita la MAGNITUD del faltante, nunca sale
+     * de este metodo un {@code Money}— asi que se usa una constante en vez de
+     * pedir la preferencia de cada usuario.
+     */
+    @Transactional(readOnly = true)
+    public List<CycleDeficit> activeCyclesInDeficit() {
+        List<BudgetCycle> activos = cycles.findByStatus(CycleStatus.ACTIVE);
+
+        if (activos.isEmpty()) {
+            return List.of();
+        }
+
+        Map<Long, List<CycleItem>> porCiclo =
+                items.findByBudgetCycleIdIn(activos.stream().map(BudgetCycle::getId).toList())
+                        .stream()
+                        .collect(Collectors.groupingBy(CycleItem::getBudgetCycleId));
+
+        List<CycleDeficit> deficits = new ArrayList<>();
+
+        for (BudgetCycle cycle : activos) {
+            List<PlannedItem> planeados =
+                    porCiclo.getOrDefault(cycle.getId(), List.of()).stream()
+                            .map(item -> item.toPlannedItem(Money.DEFAULT_CURRENCY))
+                            .toList();
+
+            BudgetResult resultado = BudgetCalculator.calculate(planeados, Money.DEFAULT_CURRENCY);
+
+            if (resultado.planned().balance().isNegative()) {
+                deficits.add(new CycleDeficit(
+                        cycle.getUserId(),
+                        cycle.getPublicId(),
+                        resultado.planned().balance().negate().amount()));
+            }
+        }
+
+        return deficits;
     }
 
     /** El resultado del motor presupuestal para un ciclo. */

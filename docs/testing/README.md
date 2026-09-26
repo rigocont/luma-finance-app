@@ -38,6 +38,7 @@ pantalla que todavía no está construida.
 | [10-revision-del-ciclo.md](10-revision-del-ciclo.md) | Revision de gastos variables, sugerencia entre ciclos, historial y confirmacion en lote | ✅ Automatizable |
 | [11-alta-guiada.md](11-alta-guiada.md) | Asistente de configuracion inicial y limpieza de altas abandonadas | ✅ Automatizable |
 | [12-resumen-financiero.md](12-resumen-financiero.md) | Balance del ciclo, consejo de deficit, comparacion entre ciclos y cierre | ✅ Automatizable |
+| [13-alertas.md](13-alertas.md) | Alertas de pago proximo, pago vencido y deficit; campana con contador de no leidas | ✅ Automatizable |
 | [99-escenarios-por-fase.md](99-escenarios-por-fase.md) | Todo lo que llega en fases posteriores | ⏳ Pendiente |
 
 Todas las funcionalidades del MVP tienen interfaz. Los escenarios `@ui` del

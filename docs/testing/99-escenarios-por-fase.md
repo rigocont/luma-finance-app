@@ -21,21 +21,14 @@ mismo formato que los anteriores.
 | 7 — Revisión por ciclo | [`10-revision-del-ciclo.md`](10-revision-del-ciclo.md) |
 | 9 — Onboarding | [`11-alta-guiada.md`](11-alta-guiada.md) |
 | 10 — Resumen financiero | [`12-resumen-financiero.md`](12-resumen-financiero.md) |
+| 11 — Alertas | [`13-alertas.md`](13-alertas.md) |
 
 ---
 
-## Fases 11 a 13
+## Fases 12 y 13
 
 ```gherkin
 # language: es
-
-@pendiente @fase-11 @notificaciones
-Característica: Alertas
-
-  Escenario: Un pago próximo genera una alerta
-  Escenario: Un pago vencido genera una alerta
-  Escenario: Un déficit genera una alerta
-  Escenario: Marcar una alerta como leída reduce el contador
 
 @pendiente @fase-12 @suscripciones
 Característica: Planes

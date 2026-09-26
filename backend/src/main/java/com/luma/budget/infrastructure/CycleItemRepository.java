@@ -2,6 +2,8 @@ package com.luma.budget.infrastructure;
 
 import com.luma.budget.domain.CycleItem;
 import com.luma.budget.domain.CycleItemType;
+import com.luma.budget.domain.CycleStatus;
+import com.luma.budget.domain.DueSoonItem;
 import com.luma.budget.domain.ItemHistoryEntry;
 import com.luma.budget.domain.ItemSource;
 import com.luma.budget.domain.ItemStatus;
@@ -68,4 +70,28 @@ public interface CycleItemRepository extends JpaRepository<CycleItem, Long> {
             @Param("sourceId") Long sourceId,
             @Param("before") LocalDate before,
             Pageable pageable);
+
+    /**
+     * Los renglones activos que vencen exactamente en esa fecha.
+     *
+     * <p>Fecha exacta y no un rango: el job que la usa corre una vez al dia, asi
+     * que "vence en 3 dias" solo puede ser cierto un dia para cada renglon. Un
+     * rango obligaria a esta consulta o a quien la llama a saber cuales ya se
+     * avisaron, y esa responsabilidad ya la tiene {@code NotificationService}.
+     *
+     * <p>Trae {@code c.userId} porque {@link com.luma.budget.domain.CycleItem}
+     * no lo conoce, solo el id de su ciclo.
+     */
+    @Query("""
+            SELECT new com.luma.budget.domain.DueSoonItem(c.userId, i.publicId, i.name, i.plannedAmount, i.dueDate)
+            FROM CycleItem i, BudgetCycle c
+            WHERE i.budgetCycleId = c.id
+              AND c.status = :cycleStatus
+              AND i.dueDate = :date
+              AND i.status IN :statuses
+            """)
+    List<DueSoonItem> findDueOn(
+            @Param("date") LocalDate date,
+            @Param("cycleStatus") CycleStatus cycleStatus,
+            @Param("statuses") Collection<ItemStatus> statuses);
 }

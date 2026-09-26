@@ -33,6 +33,7 @@ LUMA no es un registro de gastos. Organiza el dinero en **ciclos presupuestales*
 | 7 | Revision por ciclo: «Este ciclo», API y pantalla | Completada |
 | 9 | Alta guiada: asistente inicial y limpieza de altas abandonadas | Completada |
 | 10 | **Resumen financiero: balance, consejo de deficit y comparacion** | **Completada -> MVP** |
+| 11 | Alertas: pago proximo, pago vencido, deficit y campana de notificaciones | Completada |
 
 El plan completo esta en [`docs/00-arquitectura-fase-0.md`](docs/00-arquitectura-fase-0.md).
 

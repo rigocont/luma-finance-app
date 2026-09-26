@@ -283,6 +283,16 @@ export const testIds = {
     movementsEmpty: 'savings-movements-empty',
   },
 
+  notifications: {
+    bell: 'notifications-bell',
+    badge: 'notifications-badge',
+    menu: 'notifications-menu',
+    list: 'notifications-list',
+    row: (id: string) => `notifications-row-${id}`,
+    empty: 'notifications-empty',
+    markAllRead: 'notifications-mark-all-read',
+  },
+
   dashboard: {
     page: 'dashboard-page',
     greeting: 'dashboard-greeting',

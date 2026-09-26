@@ -161,6 +161,32 @@ La insignia solo existe cuando hay algo pendiente, y hoy solo la lleva
 `current-cycle`. Un escenario que la busque con la bandeja vacia no la va a
 encontrar, y eso es correcto: un contador en cero no se dibuja.
 
+### Alertas
+
+| Elemento | `data-testid` |
+|---|---|
+| Boton de la campana | `notifications-bell` |
+| Insignia con el conteo | `notifications-badge` |
+| Menu desplegable | `notifications-menu` |
+| Lista de alertas | `notifications-list` |
+| Una alerta (por id) | `notifications-row-<id>` |
+| Bandeja vacia | `notifications-empty` |
+| Marcar todas como leidas | `notifications-mark-all-read` |
+
+Dos cosas que evitan escenarios fragiles:
+
+`notifications-list` se dibuja siempre, vacia o no; `notifications-empty` se
+agrega ademas cuando no hay alertas. Un escenario que busque la bandeja vacia
+comprueba `notifications-empty`, no la ausencia de `notifications-list`.
+
+`notifications-mark-all-read` **solo existe con alertas sin leer**. Con todo
+leido el boton no se dibuja, y no es un fallo.
+
+No hay pantalla propia para las alertas en esta fase: cada fila manda a "Este
+ciclo" (`layout-nav-current-cycle`), que es donde las tres condiciones se
+resuelven de verdad. Un escenario que busque una ruta como `/notifications` no
+va a encontrar nada.
+
 ### Resumen financiero
 
 | Elemento | `data-testid` |

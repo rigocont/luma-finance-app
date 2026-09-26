@@ -686,3 +686,57 @@ Acepta `?status=` para filtrar por `ACTIVE`, `COMPLETED`, `PAUSED` o `CANCELED`.
 
 `DELETE` responde 204 y la meta desaparece de las listas, pero se conserva: los
 ciclos anteriores que tienen su renglón siguen teniendo explicación.
+
+## Alertas
+
+### Tres condiciones vigiladas por LUMA, no por quien usa la app
+
+`GET /notifications` devuelve alertas de tres tipos:
+
+| `type` | Cuándo nace |
+|---|---|
+| `PAYMENT_DUE_SOON` | Un renglón vence en 3 días |
+| `PAYMENT_OVERDUE` | Un renglón pasó su fecha sin marcarse pagado |
+| `CYCLE_DEFICIT` | El ciclo activo no alcanza con lo planeado |
+
+`itemName`, `amount` y `dueDate` llegan nulos cuando el tipo no los usa: un
+déficit no señala un renglón, así que viajan vacíos. El cliente arma la oración
+según `type` con un mapa fijo en la interfaz, igual que ya hace con `BudgetState`
+en el resumen financiero: nunca calculando el texto.
+
+### Los tres días no son una preferencia
+
+`PAYMENT_DUE_SOON` avisa siempre 3 días antes del vencimiento. Es una constante
+del job, no un ajuste de usuario: la decisión más simple que cumple el
+escenario, sin abrir una preferencia nueva hasta que alguien la pida de verdad.
+
+### Una alerta por condición hasta que se resuelva
+
+El job que revisa pagos próximos y déficits corre una vez al día y puede volver
+a ver la misma condición muchas veces mientras dure. No genera una fila nueva
+cada vez: `(userId, type, referenceId)` es único a nivel de base de datos, y el
+servicio comprueba lo mismo antes de insertar (el doble candado, para cuando el
+job corriera dos veces a la vez).
+
+La alerta desaparece de "no leídas" solo cuando la persona la marca; la
+condición en sí se resuelve sola cuando cambia la referencia: un ciclo cerrado
+da paso a uno con otro id, un renglón pagado ya no vuelve a vencerse.
+
+`PAYMENT_OVERDUE` no nace de este job: nace del mismo evento que
+`OverdueItemsJob` dispara al marcar un renglón `OVERDUE` la primera vez, así
+que tampoco se repite día a día.
+
+### Solo viven adentro de la aplicación
+
+No hay correo ni push para estas alertas: es la decisión que documenta
+`architecture.md` ("Alertas internas"). Se consultan con `GET /notifications`,
+se cuentan las no leídas con `GET /notifications/unread-count` (para la
+insignia de la campana), y se marcan con `POST /notifications/{id}/read` o,
+todas a la vez, con `POST /notifications/read-all`.
+
+### Leídas y no leídas viajan juntas
+
+`GET /notifications` no filtra por estado: la lista trae todo, de la más
+reciente a la más vieja, y el menú desplegable distingue estilo por el campo
+`read`, no con una segunda petición.
+
