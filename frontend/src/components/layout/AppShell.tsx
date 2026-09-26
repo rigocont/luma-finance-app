@@ -3,6 +3,7 @@ import Drawer from '@mui/material/Drawer';
 import Toolbar from '@mui/material/Toolbar';
 import { Outlet } from 'react-router';
 
+import { AdSlot } from '@/features/ads/AdSlot';
 import { testIds } from '@/lib/testids';
 import { useUiStore } from '@/store/uiStore';
 
@@ -62,6 +63,12 @@ export function AppShell() {
       >
         <Toolbar sx={{ minHeight: 64 }} />
         <Outlet />
+
+        {/* Un espacio por pantalla: es como LUMA se sostiene sin cobrar por
+            el uso. No vive dentro de cada pagina porque es el mismo anuncio
+            en el mismo lugar para las seis, y aqui es donde el shell ya sabe
+            que esta a punto de terminar el contenido. */}
+        <AdSlot />
       </Box>
     </Box>
   );

@@ -32,6 +32,11 @@ export const testIds = {
     root: 'toast-root',
   },
 
+  ads: {
+    slot: 'ads-slot',
+    placeholder: 'ads-placeholder',
+  },
+
   confirm: {
     dialog: 'confirm-dialog',
     accept: 'confirm-accept',

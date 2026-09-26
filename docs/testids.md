@@ -187,6 +187,22 @@ ciclo" (`layout-nav-current-cycle`), que es donde las tres condiciones se
 resuelven de verdad. Un escenario que busque una ruta como `/notifications` no
 va a encontrar nada.
 
+### Anuncios
+
+| Elemento | `data-testid` |
+|---|---|
+| Espacio real (cuenta configurada) | `ads-slot` |
+| Marcador (sin cuenta configurada) | `ads-placeholder` |
+
+Uno de los dos existe, nunca ambos: sin `VITE_ADSENSE_CLIENT_ID` y
+`VITE_ADSENSE_SLOT_ID` -el caso normal en desarrollo- se dibuja el marcador;
+con ambas, el espacio real. Un escenario de este entorno siempre encuentra
+`ads-placeholder`.
+
+El mismo espacio aparece al final de las seis pantallas dentro del shell
+(resumen, este ciclo, ingresos, gastos, ahorros, ajustes). No aparece en la
+alta guiada ni en las pantallas de sesion, que viven fuera de `AppShell`.
+
 ### Resumen financiero
 
 | Elemento | `data-testid` |

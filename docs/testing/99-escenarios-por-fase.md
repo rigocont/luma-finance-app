@@ -22,20 +22,14 @@ mismo formato que los anteriores.
 | 9 — Onboarding | [`11-alta-guiada.md`](11-alta-guiada.md) |
 | 10 — Resumen financiero | [`12-resumen-financiero.md`](12-resumen-financiero.md) |
 | 11 — Alertas | [`13-alertas.md`](13-alertas.md) |
+| 12 — Anuncios | [`14-anuncios.md`](14-anuncios.md) |
 
 ---
 
-## Fases 12 y 13
+## Fase 13
 
 ```gherkin
 # language: es
-
-@pendiente @fase-12 @suscripciones
-Característica: Planes
-
-  Escenario: Una cuenta nueva empieza en el plan gratuito
-  Escenario: Una función premium no está disponible en el plan gratuito
-  Escenario: El límite del plan gratuito se comunica con claridad
 
 @pendiente @fase-13 @analisis
 Característica: Análisis financiero

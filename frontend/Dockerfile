@@ -14,6 +14,13 @@ COPY . .
 ARG VITE_API_BASE_URL=/api/v1
 ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 
+# Igual para la cuenta de anuncios: vacias, AdSlot reserva el espacio con un
+# marcador y no llama a nada externo (ver docs/architecture.md, Fase 12).
+ARG VITE_ADSENSE_CLIENT_ID=
+ENV VITE_ADSENSE_CLIENT_ID=$VITE_ADSENSE_CLIENT_ID
+ARG VITE_ADSENSE_SLOT_ID=
+ENV VITE_ADSENSE_SLOT_ID=$VITE_ADSENSE_SLOT_ID
+
 RUN npm run build
 
 # ---------- Ejecucion ----------

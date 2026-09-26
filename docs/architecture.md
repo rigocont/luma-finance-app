@@ -31,10 +31,19 @@ com.luma
   onboarding      Wizard inicial                            (Fase 9)
   dashboard       Composicion de resumenes                  (Fase 10)
   notifications   Alertas internas                          (Fase 11)
-  subscriptions   Planes y acceso a funciones               (Fase 12)
   insights        Reglas deterministas y, despues, IA       (Fase 13)
   system          Diagnostico
 ```
+
+**Fase 12 no agrego un modulo.** El plan original preveia `subscriptions`
+(FREE/PREMIUM, `FeatureAccessService`, billing) para limitar el uso gratuito.
+Se decidio lo contrario: el uso es y sigue siendo gratuito, sin limites ni
+funciones premium, y la monetizacion es por anuncios. Sin un plan que vigilar,
+no hay nada que este modulo tuviera que hacer en el backend: el espacio de
+anuncio es una decision de presentacion, resuelta enteramente en el frontend
+(`AdSlot`, dentro de `AppShell`). Si algun dia se necesita mas -anuncios que
+varien por region, frecuencia limitada, o quitarlos para alguien que pague-
+ese es el momento de abrir el modulo, no antes.
 
 ## Capas dentro de cada modulo
 

@@ -68,6 +68,8 @@ services:
       context: ./frontend
       args:
         VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8080/api/v1}
+        VITE_ADSENSE_CLIENT_ID: ${VITE_ADSENSE_CLIENT_ID:-}
+        VITE_ADSENSE_SLOT_ID: ${VITE_ADSENSE_SLOT_ID:-}
     container_name: luma-frontend
     restart: unless-stopped
     depends_on:

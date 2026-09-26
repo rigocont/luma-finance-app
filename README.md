@@ -34,6 +34,7 @@ LUMA no es un registro de gastos. Organiza el dinero en **ciclos presupuestales*
 | 9 | Alta guiada: asistente inicial y limpieza de altas abandonadas | Completada |
 | 10 | **Resumen financiero: balance, consejo de deficit y comparacion** | **Completada -> MVP** |
 | 11 | Alertas: pago proximo, pago vencido, deficit y campana de notificaciones | Completada |
+| 12 | Anuncios: espacio publicitario en el shell; monetizacion sin planes de pago | Completada |
 
 El plan completo esta en [`docs/00-arquitectura-fase-0.md`](docs/00-arquitectura-fase-0.md).
 
@@ -179,6 +180,8 @@ Copia `.env.example` a `.env`. Ningun secreto se versiona.
 | `SPRING_PROFILES_ACTIVE` | `local`, `dev`, `qa` o `prod` | `local` |
 | `LUMA_CORS_ALLOWED_ORIGINS` | Origenes permitidos, separados por coma | `http://localhost:5173` |
 | `VITE_API_BASE_URL` | URL de la API que consume el navegador | `/api/v1` |
+| `VITE_ADSENSE_CLIENT_ID` | Cuenta de Google AdSense. Vacia en desarrollo | (vacio) |
+| `VITE_ADSENSE_SLOT_ID` | Espacio de anuncio de esa cuenta. Vacio en desarrollo | (vacio) |
 
 En produccion todos estos valores llegan por variables de entorno o GitHub
 Secrets. Nunca por un archivo del repositorio.
