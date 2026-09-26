@@ -252,7 +252,11 @@ export function ReviewPage() {
                             {formatMoney(item.plannedAmount)}
                           </Typography>
                           {item.status === 'OVERDUE' && (
-                            <Chip size="small" color="warning" label={t('review.savingsSection.overdueChip')} />
+                            <Chip
+                              size="small"
+                              color="warning"
+                              label={t('review.savingsSection.overdueChip')}
+                            />
                           )}
                         </Stack>
                       </Stack>

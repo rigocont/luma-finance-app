@@ -223,9 +223,7 @@ export function SavingsGoalFormDrawer({
             />
           )}
 
-          {values.mode === 'MANUAL' && (
-            <Alert severity="info">{t('savings.manualNotice')}</Alert>
-          )}
+          {values.mode === 'MANUAL' && <Alert severity="info">{t('savings.manualNotice')}</Alert>}
 
           {editando && (
             <Typography variant="body2" color="text.secondary">

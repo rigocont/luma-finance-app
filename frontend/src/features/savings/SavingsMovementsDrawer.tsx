@@ -57,7 +57,9 @@ export function SavingsMovementsDrawer({
             <Typography variant="overline" color="text.disabled">
               {t('savings.movements.eyebrow')}
             </Typography>
-            <Typography variant="h3">{goal?.name ?? t('savings.movements.goalFallback')}</Typography>
+            <Typography variant="h3">
+              {goal?.name ?? t('savings.movements.goalFallback')}
+            </Typography>
             {goal && (
               <Typography variant="body2" color="text.secondary">
                 {t('savings.movements.summary', {

@@ -83,7 +83,10 @@ function ResetLinkSent({ email }: { email: string }) {
   const { t } = useTranslation();
 
   return (
-    <AuthLayout title={t('auth.forgotPassword.sentTitle')} subtitle={t('auth.forgotPassword.sentSubtitle')}>
+    <AuthLayout
+      title={t('auth.forgotPassword.sentTitle')}
+      subtitle={t('auth.forgotPassword.sentSubtitle')}
+    >
       <Stack spacing={5} data-testid={testIds.auth.resetLinkSent}>
         <Alert severity="success" icon={false}>
           <Typography variant="body2">

@@ -148,7 +148,9 @@ export function IncomeFormDrawer({
               {editando ? t('incomes.form.editing') : t('incomes.form.new')}
             </Typography>
             <Typography variant="h3" data-testid={testIds.incomes.drawerTitle}>
-              {editando ? values.name || t('incomes.form.editTitleFallback') : t('incomes.form.newTitle')}
+              {editando
+                ? values.name || t('incomes.form.editTitleFallback')
+                : t('incomes.form.newTitle')}
             </Typography>
           </Stack>
 
@@ -308,7 +310,11 @@ export function IncomeFormDrawer({
               disabled={pending}
               data-testid={testIds.incomes.submitButton}
             >
-              {pending ? t('common.oneMoment') : editando ? t('incomes.form.submitEdit') : t('incomes.form.submitNew')}
+              {pending
+                ? t('common.oneMoment')
+                : editando
+                  ? t('incomes.form.submitEdit')
+                  : t('incomes.form.submitNew')}
             </Button>
           </Stack>
         </Stack>

@@ -185,7 +185,11 @@ export function CompositionCard({ totals, savingsRate, hasEstimates }: Compositi
               testId={testIds.dashboard.totalSavings}
             />
             <Renglon
-              label={seExcede ? t('dashboard.composition.overflow') : t('dashboard.composition.available')}
+              label={
+                seExcede
+                  ? t('dashboard.composition.overflow')
+                  : t('dashboard.composition.available')
+              }
               // El balance ya viene calculado: es ingreso menos salidas. Restarlo
               // aqui seria hacer aritmetica de dinero en el cliente, y con
               // deficit llega en negativo, que es justo lo que hay que mostrar.

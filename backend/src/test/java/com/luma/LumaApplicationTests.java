@@ -56,7 +56,7 @@ class LumaApplicationTests extends IntegrationTest {
                 """,
                 String.class);
 
-        assertThat(versiones).containsExactly("1", "2", "3");
+        assertThat(versiones).containsExactly("1", "2", "3", "4");
     }
 
     @Test

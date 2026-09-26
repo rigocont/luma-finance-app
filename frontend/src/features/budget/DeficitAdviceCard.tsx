@@ -87,10 +87,18 @@ export function DeficitAdviceCard({
                       >
                         <Typography variant="body1">{cut.name}</Typography>
                         {cut.itemType === 'SAVING' && (
-                          <Chip size="small" variant="outlined" label={t('dashboard.advice.savingChip')} />
+                          <Chip
+                            size="small"
+                            variant="outlined"
+                            label={t('dashboard.advice.savingChip')}
+                          />
                         )}
                         {cut.estimated && (
-                          <Chip size="small" variant="outlined" label={t('dashboard.advice.estimatedChip')} />
+                          <Chip
+                            size="small"
+                            variant="outlined"
+                            label={t('dashboard.advice.estimatedChip')}
+                          />
                         )}
                       </Stack>
                       <Typography variant="caption" color="text.secondary">
@@ -113,7 +121,9 @@ export function DeficitAdviceCard({
                         onClick={() => onSkip(cut)}
                         data-testid={testIds.dashboard.adviceSkipAction}
                       >
-                        {pendingItemId === cut.itemId ? t('common.oneMoment') : t('dashboard.advice.skip')}
+                        {pendingItemId === cut.itemId
+                          ? t('common.oneMoment')
+                          : t('dashboard.advice.skip')}
                       </Button>
                     </Stack>
                   </Stack>

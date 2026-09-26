@@ -37,7 +37,9 @@ export function BalanceHero({ balance, onReviewClick }: BalanceHeroProps) {
     <Stack spacing={3} data-testid={testIds.dashboard.hero}>
       <Stack spacing={1}>
         <Typography variant="overline" color="text.disabled">
-          {balance.state === 'DEFICIT' ? t('dashboard.hero.cycleBalance') : t('dashboard.hero.available')}
+          {balance.state === 'DEFICIT'
+            ? t('dashboard.hero.cycleBalance')
+            : t('dashboard.hero.available')}
         </Typography>
 
         <Typography

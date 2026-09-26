@@ -84,7 +84,8 @@ function etiquetaDe(iso: string): string {
 
   const [ano, mes, dia] = partes.map(Number) as [number, number, number];
 
-  return new Intl.DateTimeFormat(intlLocaleFor(i18n.language), { day: 'numeric', month: 'short' }).format(
-    new Date(ano, mes - 1, dia),
-  );
+  return new Intl.DateTimeFormat(intlLocaleFor(i18n.language), {
+    day: 'numeric',
+    month: 'short',
+  }).format(new Date(ano, mes - 1, dia));
 }

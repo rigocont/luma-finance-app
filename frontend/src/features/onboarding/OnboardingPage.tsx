@@ -205,9 +205,7 @@ export function OnboardingPage() {
             </Alert>
           )}
 
-          {bloqueadoPorIngresos && (
-            <Alert severity="info">{t('onboarding.incomesRequired')}</Alert>
-          )}
+          {bloqueadoPorIngresos && <Alert severity="info">{t('onboarding.incomesRequired')}</Alert>}
 
           <Stack
             direction={{ xs: 'column-reverse', sm: 'row' }}

@@ -238,7 +238,11 @@ export function ExpenseFormDrawer({
           )}
 
           <TextField
-            label={values.kind === 'VARIABLE' ? t('expenses.form.estimatedAmount') : t('expenses.form.amount')}
+            label={
+              values.kind === 'VARIABLE'
+                ? t('expenses.form.estimatedAmount')
+                : t('expenses.form.amount')
+            }
             value={values.amount}
             onChange={(event) => set('amount', event.target.value)}
             error={Boolean(fieldErrors.amount)}

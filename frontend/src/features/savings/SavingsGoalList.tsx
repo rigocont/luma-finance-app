@@ -18,12 +18,7 @@ import { formatDay } from '@/lib/date';
 import { formatMoney, isPositive } from '@/lib/money';
 import { testIds } from '@/lib/testids';
 
-import {
-  contributionModeLabel,
-  goalStatusLabel,
-  progressPercent,
-  type SavingsGoal,
-} from './types';
+import { contributionModeLabel, goalStatusLabel, progressPercent, type SavingsGoal } from './types';
 
 interface SavingsGoalListProps {
   goals: SavingsGoal[];

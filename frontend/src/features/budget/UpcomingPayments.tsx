@@ -80,7 +80,9 @@ export function UpcomingPayments({ items, onSettle }: UpcomingPaymentsProps) {
                       </Stack>
                       {item.dueDate !== null && (
                         <Typography variant="caption" color="text.secondary">
-                          {vencido ? t('dashboard.upcoming.overdueLabel') : t('dashboard.upcoming.dueLabel')}{' '}
+                          {vencido
+                            ? t('dashboard.upcoming.overdueLabel')
+                            : t('dashboard.upcoming.dueLabel')}{' '}
                           {formatDay(item.dueDate)}
                         </Typography>
                       )}

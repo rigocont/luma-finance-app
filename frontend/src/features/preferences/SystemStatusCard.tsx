@@ -63,7 +63,11 @@ export function SystemStatusCard() {
               />
               <Campo
                 label={t('settings.system.profile')}
-                value={data.profiles.length > 0 ? data.profiles.join(', ') : t('settings.system.defaultProfile')}
+                value={
+                  data.profiles.length > 0
+                    ? data.profiles.join(', ')
+                    : t('settings.system.defaultProfile')
+                }
               />
               <Campo
                 label={t('settings.system.serverTime')}

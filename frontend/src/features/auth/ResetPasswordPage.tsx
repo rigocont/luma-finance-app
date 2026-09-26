@@ -98,7 +98,10 @@ function InvalidLink() {
   const { t } = useTranslation();
 
   return (
-    <AuthLayout title={t('auth.resetPassword.invalidTitle')} subtitle={t('auth.resetPassword.invalidSubtitle')}>
+    <AuthLayout
+      title={t('auth.resetPassword.invalidTitle')}
+      subtitle={t('auth.resetPassword.invalidSubtitle')}
+    >
       <Stack spacing={5} data-testid={testIds.auth.invalidResetLink}>
         <Alert severity="error" icon={false}>
           <Typography variant="body2">{t('auth.resetPassword.invalidMessage')}</Typography>

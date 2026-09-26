@@ -69,7 +69,11 @@ export function DashboardPage() {
     <Stack data-testid={testIds.dashboard.page}>
       <PageHeader
         eyebrow={t('dashboard.eyebrow')}
-        title={user ? t('dashboard.greeting', { name: user.name.split(' ')[0] }) : t('dashboard.greetingPlain')}
+        title={
+          user
+            ? t('dashboard.greeting', { name: user.name.split(' ')[0] })
+            : t('dashboard.greetingPlain')
+        }
         description={resumen.data ? undefined : t('dashboard.noSummaryYet')}
         action={
           resumen.data && balance ? (

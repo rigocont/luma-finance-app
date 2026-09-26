@@ -116,7 +116,9 @@ export function ItemHistoryDialog({
                     </Stack>
 
                     <Typography variant="caption" color="text.disabled">
-                      {t('review.history.estimatedWas', { amount: formatMoney(entry.plannedAmount) })}
+                      {t('review.history.estimatedWas', {
+                        amount: formatMoney(entry.plannedAmount),
+                      })}
                     </Typography>
                   </Stack>
                 ))}

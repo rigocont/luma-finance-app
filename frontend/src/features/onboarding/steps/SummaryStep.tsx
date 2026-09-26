@@ -75,12 +75,7 @@ export function SummaryStep({ state, preferences }: SummaryStepProps) {
   );
 }
 
-function contar(
-  t: TFunction,
-  cuantos: number,
-  singularKey: string,
-  pluralKey: string,
-): string {
+function contar(t: TFunction, cuantos: number, singularKey: string, pluralKey: string): string {
   if (cuantos === 0) return t('onboarding.summary.none');
   return t(`onboarding.summary.${cuantos === 1 ? singularKey : pluralKey}`, { count: cuantos });
 }

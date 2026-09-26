@@ -96,7 +96,10 @@ export function TrendCard({ trends, loading }: TrendCardProps) {
  * el lint del proyecto el que lo exigio, y tenia razon — esta funcion empezo
  * restando dos montos y sacandoles el valor absoluto.
  */
-function frasePara(t: (key: string, opts?: Record<string, unknown>) => string, change: Change | null): string {
+function frasePara(
+  t: (key: string, opts?: Record<string, unknown>) => string,
+  change: Change | null,
+): string {
   if (change === null || change.direction === 'SAME') {
     return t('dashboard.trend.same');
   }
