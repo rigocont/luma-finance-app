@@ -44,3 +44,6 @@ build-report.txt
 # Carpeta de entrega temporal de archivos hacia el chat. Lo que sirve de ahi ya
 # vive en su lugar del repositorio.
 Claude outputs/
+_claude-run-verify.bat
+_claude-run-verify.marker
+_claude-launch-stdout.log
