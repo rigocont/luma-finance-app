@@ -4,6 +4,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { useTranslation } from 'react-i18next';
 
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorState } from '@/components/ui/ErrorState';
@@ -44,6 +45,8 @@ export function ItemHistoryDialog({
   onRetry,
   onClose,
 }: ItemHistoryDialogProps) {
+  const { t } = useTranslation();
+
   return (
     <Dialog
       open={open}
@@ -63,8 +66,8 @@ export function ItemHistoryDialog({
 
           {history && history.entries.length === 0 && (
             <EmptyState
-              title="Es la primera vez"
-              description="Cuando confirmes este gasto un par de ciclos, aqui vas a poder ver como se mueve."
+              title={t('review.history.firstTime.title')}
+              description={t('review.history.firstTime.description')}
             />
           )}
 
@@ -76,8 +79,15 @@ export function ItemHistoryDialog({
                   color="text.secondary"
                   data-testid={testIds.review.historyAverage}
                 >
-                  En los ultimos {history.cycles} {history.cycles === 1 ? 'ciclo' : 'ciclos'} te
-                  costo {formatMoney(history.average)} en promedio.
+                  {history.cycles === 1
+                    ? t('review.history.averageOne', {
+                        cycles: history.cycles,
+                        amount: formatMoney(history.average),
+                      })
+                    : t('review.history.averageMany', {
+                        cycles: history.cycles,
+                        amount: formatMoney(history.average),
+                      })}
                 </Typography>
               )}
 
@@ -106,7 +116,7 @@ export function ItemHistoryDialog({
                     </Stack>
 
                     <Typography variant="caption" color="text.disabled">
-                      Habias estimado {formatMoney(entry.plannedAmount)}
+                      {t('review.history.estimatedWas', { amount: formatMoney(entry.plannedAmount) })}
                     </Typography>
                   </Stack>
                 ))}

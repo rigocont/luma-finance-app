@@ -64,43 +64,32 @@ export interface ExpenseFilters {
   size: number;
 }
 
-export const EXPENSE_KIND_LABELS: Record<ExpenseKind, string> = {
-  FIXED: 'Monto estable',
-  VARIABLE: 'Monto que cambia',
-};
+import i18n from '@/i18n';
+
+export function expenseKindLabel(value: ExpenseKind): string {
+  return i18n.t(`expenses.kinds.${value}`);
+}
 
 /**
  * La flexibilidad no es decorativa: es lo que impide que el analisis sugiera
  * retrasar la renta. Las etiquetas lo dicen en terminos de consecuencia, no de
  * categoria abstracta.
  */
-export const FLEXIBILITY_LABELS: Record<Flexibility, string> = {
-  CRITICAL: 'No se puede mover',
-  IMPORTANT: 'Se puede mover con consecuencias',
-  FLEXIBLE: 'Se puede posponer o recortar',
-};
+export function flexibilityLabel(value: Flexibility): string {
+  return i18n.t(`expenses.flexibility.${value}`);
+}
 
-export const FLEXIBILITY_SHORT: Record<Flexibility, string> = {
-  CRITICAL: 'Critico',
-  IMPORTANT: 'Importante',
-  FLEXIBLE: 'Flexible',
-};
+export function flexibilityShort(value: Flexibility): string {
+  return i18n.t(`expenses.flexibilityShort.${value}`);
+}
 
-export const FREQUENCY_LABELS: Record<Frequency, string> = {
-  BIWEEKLY: 'Cada quincena',
-  MONTHLY: 'Cada mes',
-  BIMONTHLY: 'Cada dos meses',
-  ANNUAL: 'Una vez al ano',
-  ONE_TIME: 'Una sola vez',
-};
+export function frequencyLabel(value: Frequency): string {
+  return i18n.t(`common.frequency.${value}`);
+}
 
-export const EXPENSE_SORT_LABELS: Record<ExpenseSort, string> = {
-  NEWEST: 'Mas reciente',
-  NAME: 'Nombre',
-  AMOUNT_DESC: 'Mayor monto',
-  AMOUNT_ASC: 'Menor monto',
-  DUE_DAY: 'Dia de pago',
-};
+export function expenseSortLabel(value: ExpenseSort): string {
+  return i18n.t(`expenses.sort.${value}`);
+}
 
 export function needsDueDay(frequency: Frequency): boolean {
   return frequency !== 'ANNUAL' && frequency !== 'ONE_TIME';

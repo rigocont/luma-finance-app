@@ -2,10 +2,12 @@ import Alert from '@mui/material/Alert';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 
 import { testIds } from '@/lib/testids';
 
-import { CYCLE_TYPE_LABELS, type CyclePreferences } from '../../preferences/types';
+import { cycleTypeLabel, type CyclePreferences } from '../../preferences/types';
 import type { OnboardingState } from '../types';
 
 interface SummaryStepProps {
@@ -22,59 +24,65 @@ interface SummaryStepProps {
  * vez que el frontend calcula dinero, y no va a ser en una pantalla de alta.
  */
 export function SummaryStep({ state, preferences }: SummaryStepProps) {
+  const { t } = useTranslation();
+
   return (
     <Stack spacing={5} data-testid={testIds.onboarding.step('summary')}>
       <Typography variant="body1" color="text.secondary">
-        Con esto ya podemos abrir tu primer ciclo y decirte cuanto te queda.
+        {t('onboarding.summary.intro')}
       </Typography>
 
       <Card variant="outlined" sx={{ p: 5 }}>
         <Stack spacing={4}>
           <Linea
-            etiqueta="Cada cuanto presupuestas"
+            etiqueta={t('onboarding.summary.cycleLine')}
             valor={
               preferences
-                ? `${CYCLE_TYPE_LABELS[preferences.budgetCycleType]}, desde el dia ${preferences.cycleAnchorDay}`
+                ? t('onboarding.summary.cycleValue', {
+                    type: cycleTypeLabel(preferences.budgetCycleType),
+                    day: preferences.cycleAnchorDay,
+                  })
                 : '—'
             }
             testId={testIds.onboarding.summaryCycle}
           />
           <Linea
-            etiqueta="Ingresos"
-            valor={contar(state.incomeCount, 'ingreso', 'ingresos')}
+            etiqueta={t('onboarding.summary.incomesLine')}
+            valor={contar(t, state.incomeCount, 'countIncomes', 'countIncomesPlural')}
             testId={testIds.onboarding.summaryIncomes}
           />
           <Linea
-            etiqueta="Gastos"
-            valor={contar(state.expenseCount, 'gasto', 'gastos')}
+            etiqueta={t('onboarding.summary.expensesLine')}
+            valor={contar(t, state.expenseCount, 'countExpenses', 'countExpensesPlural')}
             testId={testIds.onboarding.summaryExpenses}
           />
           <Linea
-            etiqueta="Metas de ahorro"
-            valor={contar(state.goalCount, 'meta', 'metas')}
+            etiqueta={t('onboarding.summary.goalsLine')}
+            valor={contar(t, state.goalCount, 'countGoals', 'countGoalsPlural')}
             testId={testIds.onboarding.summaryGoals}
           />
         </Stack>
       </Card>
 
       {state.expenseCount === 0 && (
-        <Alert severity="info">
-          No capturaste gastos. Puedes empezar asi y agregarlos desde la seccion de Gastos; tu ciclo
-          en curso los va a tomar en cuanto existan.
-        </Alert>
+        <Alert severity="info">{t('onboarding.summary.noExpensesNotice')}</Alert>
       )}
 
       <Typography variant="body2" color="text.secondary">
-        Al empezar se abre tu primer ciclo con estos renglones ya puestos. Todo esto se puede
-        cambiar despues desde cada seccion.
+        {t('onboarding.summary.footer')}
       </Typography>
     </Stack>
   );
 }
 
-function contar(cuantos: number, singular: string, plural: string): string {
-  if (cuantos === 0) return 'Ninguno por ahora';
-  return `${cuantos} ${cuantos === 1 ? singular : plural}`;
+function contar(
+  t: TFunction,
+  cuantos: number,
+  singularKey: string,
+  pluralKey: string,
+): string {
+  if (cuantos === 0) return t('onboarding.summary.none');
+  return t(`onboarding.summary.${cuantos === 1 ? singularKey : pluralKey}`, { count: cuantos });
 }
 
 function Linea({ etiqueta, valor, testId }: { etiqueta: string; valor: string; testId: string }) {

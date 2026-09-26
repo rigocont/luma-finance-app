@@ -3,6 +3,8 @@ import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { Link as RouterLink, useLocation } from 'react-router';
 
 import { testIds } from '@/lib/testids';
@@ -12,24 +14,27 @@ import { AuthForm, type FieldSpec } from './AuthForm';
 import { AuthLayout } from './AuthLayout';
 import { useLogin } from './useAuth';
 
-const FIELDS: FieldSpec[] = [
-  {
-    name: 'email',
-    label: 'Correo',
-    type: 'email',
-    autoComplete: 'email',
-    testId: testIds.auth.emailInput,
-  },
-  {
-    name: 'password',
-    label: 'Contrasena',
-    type: 'password',
-    autoComplete: 'current-password',
-    testId: testIds.auth.passwordInput,
-  },
-];
+function getFields(t: TFunction): FieldSpec[] {
+  return [
+    {
+      name: 'email',
+      label: t('auth.fields.email'),
+      type: 'email',
+      autoComplete: 'email',
+      testId: testIds.auth.emailInput,
+    },
+    {
+      name: 'password',
+      label: t('auth.fields.password'),
+      type: 'password',
+      autoComplete: 'current-password',
+      testId: testIds.auth.passwordInput,
+    },
+  ];
+}
 
 export function LoginPage() {
+  const { t } = useTranslation();
   const location = useLocation();
   const state = location.state as { from?: string; notice?: string } | null;
   const from = state?.from ?? paths.dashboard;
@@ -40,8 +45,8 @@ export function LoginPage() {
 
   return (
     <AuthLayout
-      title="Bienvenido de vuelta"
-      subtitle="Entra para ver como va tu ciclo. Te mantenemos dentro en este dispositivo."
+      title={t('auth.login.title')}
+      subtitle={t('auth.login.subtitle')}
       footer={
         <Stack spacing={2.5}>
           <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
@@ -51,18 +56,18 @@ export function LoginPage() {
               data-testid={testIds.auth.goToForgotPassword}
               underline="hover"
             >
-              Olvidaste tu contrasena?
+              {t('auth.login.forgotPassword')}
             </Link>
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
-            Todavia no tienes cuenta?{' '}
+            {t('auth.login.noAccount')}{' '}
             <Link
               component={RouterLink}
               to={paths.register}
               data-testid={testIds.auth.goToRegister}
               underline="hover"
             >
-              Crear una
+              {t('auth.login.createOne')}
             </Link>
           </Typography>
         </Stack>
@@ -75,11 +80,11 @@ export function LoginPage() {
           </Alert>
         )}
         <AuthForm
-          fields={FIELDS}
+          fields={getFields(t)}
           values={values}
           onChange={(name, value) => setValues((prev) => ({ ...prev, [name]: value }))}
           onSubmit={() => mutate({ email: values.email ?? '', password: values.password ?? '' })}
-          submitLabel="Entrar"
+          submitLabel={t('auth.login.submit')}
           submitTestId={testIds.auth.submitButton}
           pending={isPending}
           error={error}

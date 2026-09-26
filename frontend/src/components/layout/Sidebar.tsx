@@ -6,6 +6,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
 import { usePendingReviewCount } from '@/features/review/useReview';
@@ -19,6 +20,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ onNavigate }: SidebarProps) {
+  const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -71,7 +73,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
                     component="span"
                     sx={{ fontSize: '0.875rem', fontWeight: selected ? 600 : 500 }}
                   >
-                    {item.label}
+                    {t(`layout.nav.${item.labelKey}`)}
                   </Typography>
                 }
               />
@@ -82,7 +84,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
                   color="primary"
                   label={porRevisar}
                   data-testid={testIds.layout.navBadge(item.key)}
-                  aria-label={`${porRevisar} por revisar`}
+                  aria-label={`${porRevisar} ${t('review.pendingCountMany')}`}
                 />
               )}
             </ListItemButton>
@@ -93,7 +95,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
       <Box sx={{ flex: 1 }} />
 
       <Typography variant="caption" color="text.disabled" sx={{ px: 6, pb: 5 }}>
-        Version {__APP_VERSION__}
+        {t('layout.version', { version: __APP_VERSION__ })}
       </Typography>
     </Box>
   );

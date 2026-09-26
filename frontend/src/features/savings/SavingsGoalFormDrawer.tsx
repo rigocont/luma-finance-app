@@ -8,14 +8,15 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState, type FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { ApiError } from '@/lib/api/types';
 import { testIds } from '@/lib/testids';
 
 import {
   CONTRIBUTION_MODES,
-  CONTRIBUTION_MODE_HELP,
-  CONTRIBUTION_MODE_LABELS,
+  contributionModeHelp,
+  contributionModeLabel,
   type ContributionMode,
   type SavingsGoal,
   type SavingsGoalPayload,
@@ -74,6 +75,7 @@ export function SavingsGoalFormDrawer({
   onSubmit,
   onClose,
 }: SavingsGoalFormDrawerProps) {
+  const { t } = useTranslation();
   const [values, setValues] = useState<FormValues>(() => valoresIniciales(goal));
 
   useEffect(() => {
@@ -121,10 +123,12 @@ export function SavingsGoalFormDrawer({
         <Stack spacing={5}>
           <Stack spacing={1}>
             <Typography variant="overline" color="text.disabled">
-              {editando ? 'Editar' : 'Nueva'}
+              {editando ? t('savings.form.editing') : t('savings.form.new')}
             </Typography>
             <Typography variant="h3" data-testid={testIds.savings.drawerTitle}>
-              {editando ? values.name || 'Meta' : 'Crear una meta'}
+              {editando
+                ? values.name || t('savings.form.editTitleFallback')
+                : t('savings.form.newTitle')}
             </Typography>
           </Stack>
 
@@ -135,11 +139,11 @@ export function SavingsGoalFormDrawer({
           )}
 
           <TextField
-            label="Para que es"
+            label={t('savings.form.name')}
             value={values.name}
             onChange={(event) => set('name', event.target.value)}
             error={Boolean(fieldErrors.name)}
-            helperText={fieldErrors.name ?? 'Fondo de emergencia, vacaciones, enganche...'}
+            helperText={fieldErrors.name ?? t('savings.form.nameHelp')}
             disabled={pending}
             fullWidth
             autoFocus
@@ -147,11 +151,11 @@ export function SavingsGoalFormDrawer({
           />
 
           <TextField
-            label="Cuanto quieres juntar"
+            label={t('savings.form.target')}
             value={values.target}
             onChange={(event) => set('target', event.target.value)}
             error={Boolean(fieldErrors.target)}
-            helperText={fieldErrors.target ?? 'Hasta dos decimales, sin signos ni comas'}
+            helperText={fieldErrors.target ?? t('savings.form.targetHelp')}
             disabled={pending}
             fullWidth
             slotProps={{
@@ -167,33 +171,30 @@ export function SavingsGoalFormDrawer({
 
           <TextField
             select
-            label="Como vas a apartar"
+            label={t('savings.form.mode')}
             value={values.mode}
             onChange={(event) => set('mode', event.target.value as ContributionMode)}
             error={Boolean(fieldErrors.mode)}
-            helperText={fieldErrors.mode ?? CONTRIBUTION_MODE_HELP[values.mode]}
+            helperText={fieldErrors.mode ?? contributionModeHelp(values.mode)}
             disabled={pending}
             fullWidth
             data-testid={testIds.savings.modeInput}
           >
             {CONTRIBUTION_MODES.map((mode) => (
               <MenuItem key={mode} value={mode}>
-                {CONTRIBUTION_MODE_LABELS[mode]}
+                {contributionModeLabel(mode)}
               </MenuItem>
             ))}
           </TextField>
 
           {pideFecha && (
             <TextField
-              label="Para cuando"
+              label={t('savings.form.targetDate')}
               type="date"
               value={values.targetDate}
               onChange={(event) => set('targetDate', event.target.value)}
               error={Boolean(fieldErrors.targetDate)}
-              helperText={
-                fieldErrors.targetDate ??
-                'Sin fecha no hay entre cuantos ciclos repartir lo que falta.'
-              }
+              helperText={fieldErrors.targetDate ?? t('savings.form.targetDateHelp')}
               disabled={pending}
               fullWidth
               slotProps={{
@@ -205,14 +206,11 @@ export function SavingsGoalFormDrawer({
 
           {pideMonto && (
             <TextField
-              label="Cuanto por ciclo"
+              label={t('savings.form.perCycle')}
               value={values.plannedPerCycle}
               onChange={(event) => set('plannedPerCycle', event.target.value)}
               error={Boolean(fieldErrors.plannedPerCycle)}
-              helperText={
-                fieldErrors.plannedPerCycle ??
-                'Se aparta en cada ciclo, aunque la meta tarde mas en llegar.'
-              }
+              helperText={fieldErrors.plannedPerCycle ?? t('savings.form.perCycleHelp')}
               disabled={pending}
               fullWidth
               slotProps={{
@@ -226,22 +224,18 @@ export function SavingsGoalFormDrawer({
           )}
 
           {values.mode === 'MANUAL' && (
-            <Alert severity="info">
-              Esta meta no resta de tu presupuesto. No va a aparecer como renglon en tus ciclos:
-              registras los aportes cuando los hagas.
-            </Alert>
+            <Alert severity="info">{t('savings.manualNotice')}</Alert>
           )}
 
           {editando && (
             <Typography variant="body2" color="text.secondary">
-              Los cambios aplican desde el siguiente ciclo. El ciclo en curso conserva lo que ya
-              tenia.
+              {t('savings.form.editNotice')}
             </Typography>
           )}
 
           <Stack direction="row" spacing={3} sx={{ justifyContent: 'flex-end', pt: 2 }}>
             <Button onClick={onClose} disabled={pending} data-testid={testIds.savings.cancelButton}>
-              Cancelar
+              {t('common.cancel')}
             </Button>
             <Button
               type="submit"
@@ -249,7 +243,11 @@ export function SavingsGoalFormDrawer({
               disabled={pending}
               data-testid={testIds.savings.submitButton}
             >
-              {pending ? 'Un momento...' : editando ? 'Guardar cambios' : 'Crear meta'}
+              {pending
+                ? t('common.oneMoment')
+                : editando
+                  ? t('savings.form.submitEdit')
+                  : t('savings.form.submitNew')}
             </Button>
           </Stack>
         </Stack>

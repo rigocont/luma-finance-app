@@ -1,3 +1,4 @@
+import i18n from '@/i18n';
 import type { MoneyValue } from '@/lib/money';
 
 /** Debe coincidir con com.luma.savings.domain.ContributionMode. */
@@ -61,31 +62,21 @@ export interface MovementPayload {
   notes: string | null;
 }
 
-export const CONTRIBUTION_MODE_LABELS: Record<ContributionMode, string> = {
-  AUTO_BY_TARGET_DATE: 'Calcularlo por mi, segun la fecha',
-  FIXED_PER_CYCLE: 'Un monto fijo cada ciclo',
-  MANUAL: 'Aporto cuando puedo',
-};
+export function contributionModeLabel(value: ContributionMode): string {
+  return i18n.t(`savings.contributionMode.${value}`);
+}
 
-export const CONTRIBUTION_MODE_HELP: Record<ContributionMode, string> = {
-  AUTO_BY_TARGET_DATE:
-    'LUMA reparte lo que falta entre los ciclos que quedan hasta tu fecha objetivo.',
-  FIXED_PER_CYCLE: 'Tu decides cuanto apartar en cada ciclo.',
-  MANUAL: 'No resta de tu presupuesto. Registras los aportes cuando los hagas.',
-};
+export function contributionModeHelp(value: ContributionMode): string {
+  return i18n.t(`savings.contributionModeHelp.${value}`);
+}
 
-export const GOAL_STATUS_LABELS: Record<GoalStatus, string> = {
-  ACTIVE: 'En marcha',
-  COMPLETED: 'Alcanzada',
-  PAUSED: 'Pausada',
-  CANCELED: 'Cancelada',
-};
+export function goalStatusLabel(value: GoalStatus): string {
+  return i18n.t(`savings.goalStatus.${value}`);
+}
 
-export const MOVEMENT_TYPE_LABELS: Record<ContributionType, string> = {
-  PLANNED: 'Del ciclo',
-  EXTRA: 'Aportacion extra',
-  WITHDRAWAL: 'Retiro',
-};
+export function movementTypeLabel(value: ContributionType): string {
+  return i18n.t(`savings.movementType.${value}`);
+}
 
 /** El porcentaje entero que se muestra junto a la barra. */
 export function progressPercent(goal: SavingsGoal): number {

@@ -1,6 +1,7 @@
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { testIds } from '@/lib/testids';
@@ -25,6 +26,7 @@ interface CycleActionsProps {
  * el boton seria ofrecer un error.
  */
 export function CycleActions({ balance, closing, onClose }: CycleActionsProps) {
+  const { t } = useTranslation();
   const [confirmando, setConfirmando] = useState(false);
 
   const sinConfirmar = balance.counts.needsReview + balance.counts.pending;
@@ -38,22 +40,22 @@ export function CycleActions({ balance, closing, onClose }: CycleActionsProps) {
           disabled={closing}
           data-testid={testIds.dashboard.closeCycleButton}
         >
-          Cerrar este ciclo
+          {t('dashboard.cycleActions.close')}
         </Button>
       </Stack>
 
       <ConfirmDialog
         open={confirmando}
-        title="Cerrar este ciclo"
+        title={t('dashboard.cycleActions.confirmTitle')}
         description={
           sinConfirmar > 0
-            ? `Al cerrarlo, sus ${balance.counts.total} renglones quedan como registro y ya no se ` +
-              `pueden cambiar. Todavia hay ${sinConfirmar} sin confirmar: van a quedarse asi para ` +
-              `siempre, y el ciclo cerrado es lo que despues explica tu historial.`
-            : `Al cerrarlo, sus ${balance.counts.total} renglones quedan como registro y ya no se ` +
-              `pueden cambiar. Todo esta confirmado, asi que no vas a perder nada.`
+            ? t('dashboard.cycleActions.confirmWithPending', {
+                total: balance.counts.total,
+                pending: sinConfirmar,
+              })
+            : t('dashboard.cycleActions.confirmAllSettled', { total: balance.counts.total })
         }
-        confirmLabel="Cerrar el ciclo"
+        confirmLabel={t('dashboard.cycleActions.confirmLabel')}
         destructive
         pending={closing}
         onConfirm={() => {

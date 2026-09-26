@@ -25,33 +25,7 @@ mismo formato que los anteriores.
 | 12 — Anuncios | [`14-anuncios.md`](14-anuncios.md) |
 | 13 — Analisis financiero (parte determinista) | [`15-analisis-financiero.md`](15-analisis-financiero.md) |
 | 14 — Tour guiado de bienvenida | [`16-tour-guiado.md`](16-tour-guiado.md) |
-
----
-
-## Fase 15
-
-```gherkin
-# language: es
-
-@pendiente @fase-15 @idioma
-Característica: Interfaz bilingüe (español / inglés)
-
-  Escenario: Una cuenta nueva ve la interfaz en el idioma de su sistema, si es uno de los dos soportados
-  Escenario: Una cuenta nueva en un idioma no soportado ve la interfaz en español, por defecto
-  Escenario: Cambiar el idioma desde Ajustes traduce toda la interfaz al instante
-  Escenario: El idioma elegido se recuerda entre sesiones, incluso en otro dispositivo
-  Escenario: Lo que la persona escribió -nombres de gastos, metas, notas- nunca se traduce
-  Escenario: Los montos y las fechas se formatean según el idioma, no solo se traducen las palabras
-```
-
-Es de presentación, no de dominio: ningún cálculo cambia entre idiomas. Del
-servidor viaja sin traducir todo lo que la persona capturó; toda oración fija
-de la interfaz (títulos, botones, mensajes, y los mapas como
-`STATE_HEADLINE` en el resumen financiero) sale de un catálogo de
-traducciones por idioma, no de la cadena en español que hoy está escrita a
-mano. Es la misma idea que ya usa el proyecto para traducir códigos estables
-del servidor -`BudgetState`, tipos de alerta- llevada a dos idiomas en vez de
-a una sola redacción.
+| 15 — Interfaz bilingue (es/en) | [`17-idioma.md`](17-idioma.md) |
 
 ---
 

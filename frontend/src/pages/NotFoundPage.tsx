@@ -1,5 +1,6 @@
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
 import { PageHeader } from '@/components/layout/PageHeader';
@@ -7,18 +8,19 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { paths } from '@/routes/paths';
 
 export function NotFoundPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
     <div>
-      <PageHeader title="No encontramos esta pagina" />
+      <PageHeader title={t('notFound.title')} />
       <Card>
         <EmptyState
-          title="La direccion no existe"
-          description="Puede que el enlace este mal escrito o que la seccion todavia no exista."
+          title={t('notFound.heading')}
+          description={t('notFound.description')}
           action={
             <Button variant="contained" onClick={() => navigate(paths.dashboard)}>
-              Ir al resumen
+              {t('notFound.goToDashboard')}
             </Button>
           }
         />

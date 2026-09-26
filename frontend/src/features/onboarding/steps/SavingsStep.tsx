@@ -9,6 +9,7 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useState, type FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { ApiError } from '@/lib/api/types';
 import { formatMoney } from '@/lib/money';
@@ -26,6 +27,7 @@ import { useCreateGoal, useDeleteGoal, useSavingsGoals } from '../../savings/use
  * creada y el presupuesto a la vista.
  */
 export function SavingsStep() {
+  const { t } = useTranslation();
   const metas = useSavingsGoals();
   const crear = useCreateGoal();
   const eliminar = useDeleteGoal();
@@ -62,8 +64,7 @@ export function SavingsStep() {
   return (
     <Stack spacing={5} data-testid={testIds.onboarding.step('savings')}>
       <Typography variant="body1" color="text.secondary">
-        Un fondo de emergencia, un viaje, un enganche. Lo que apartes se resta de tu presupuesto en
-        cada ciclo, para que no lo gastes sin darte cuenta.
+        {t('onboarding.savings.intro')}
       </Typography>
 
       {generalMessage && (
@@ -75,11 +76,11 @@ export function SavingsStep() {
       <Box component="form" onSubmit={agregar} noValidate>
         <Stack spacing={4}>
           <TextField
-            label="Para que es"
+            label={t('onboarding.savings.name')}
             value={nombre}
             onChange={(event) => setNombre(event.target.value)}
             error={Boolean(fieldErrors.name)}
-            helperText={fieldErrors.name ?? 'Fondo de emergencia, vacaciones...'}
+            helperText={fieldErrors.name ?? t('onboarding.savings.nameHelp')}
             disabled={crear.isPending}
             fullWidth
             slotProps={{
@@ -89,7 +90,7 @@ export function SavingsStep() {
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
             <TextField
-              label="Cuanto quieres juntar"
+              label={t('onboarding.savings.target')}
               value={objetivo}
               onChange={(event) => setObjetivo(event.target.value)}
               error={Boolean(fieldErrors.target)}
@@ -106,11 +107,11 @@ export function SavingsStep() {
             />
 
             <TextField
-              label="Cuanto por ciclo"
+              label={t('onboarding.savings.perCycle')}
               value={porCiclo}
               onChange={(event) => setPorCiclo(event.target.value)}
               error={Boolean(fieldErrors.plannedPerCycle)}
-              helperText={fieldErrors.plannedPerCycle ?? 'Lo puedes cambiar cuando quieras'}
+              helperText={fieldErrors.plannedPerCycle ?? t('onboarding.savings.perCycleHelp')}
               disabled={crear.isPending}
               fullWidth
               slotProps={{
@@ -130,7 +131,7 @@ export function SavingsStep() {
               disabled={crear.isPending}
               data-testid={testIds.onboarding.goalAdd}
             >
-              {crear.isPending ? 'Un momento...' : 'Agregar meta'}
+              {crear.isPending ? t('common.oneMoment') : t('onboarding.savings.add')}
             </Button>
           </Box>
         </Stack>
@@ -149,7 +150,7 @@ export function SavingsStep() {
                 <Stack spacing={0.5} sx={{ minWidth: 0 }}>
                   <Typography variant="body1">{goal.name}</Typography>
                   <Typography variant="caption" color="text.secondary">
-                    {formatMoney(goal.plannedPerCycle)} por ciclo
+                    {formatMoney(goal.plannedPerCycle)} {t('onboarding.savings.perCycleSuffix')}
                   </Typography>
                 </Stack>
 
@@ -159,7 +160,7 @@ export function SavingsStep() {
                   </Typography>
                   <IconButton
                     size="small"
-                    aria-label={`Quitar ${goal.name}`}
+                    aria-label={t('onboarding.savings.remove', { name: goal.name })}
                     disabled={eliminar.isPending}
                     onClick={() => eliminar.mutate({ id: goal.id, name: goal.name })}
                   >

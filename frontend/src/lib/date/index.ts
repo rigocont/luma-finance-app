@@ -1,3 +1,6 @@
+import i18n from '@/i18n';
+import { intlLocaleFor } from '@/lib/money';
+
 /**
  * Formato de fechas.
  *
@@ -9,15 +12,19 @@
  * a `new Date(iso)` las interpreta en UTC, y en husos negativos —el de LUMA
  * entre ellos— eso muestra el dia ANTERIOR. Por eso la cadena se parte a mano y
  * se construye una fecha local.
+ *
+ * El locale sigue el idioma de la interfaz (Fase 15): el formateador no se
+ * cachea en una constante de modulo porque el idioma puede cambiar sin
+ * recargar la pagina.
  */
 
-const DEFAULT_LOCALE = 'es-MX';
-
-const CORTO = new Intl.DateTimeFormat(DEFAULT_LOCALE, {
-  day: 'numeric',
-  month: 'short',
-  year: 'numeric',
-});
+function formatter(): Intl.DateTimeFormat {
+  return new Intl.DateTimeFormat(intlLocaleFor(i18n.language), {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+}
 
 /** Una fecha ISO sin hora, en la zona local. Nulo si la cadena no lo es. */
 export function parseLocalDate(iso: string): Date | null {
@@ -38,5 +45,5 @@ export function parseLocalDate(iso: string): Date | null {
  */
 export function formatDay(iso: string): string {
   const fecha = parseLocalDate(iso);
-  return fecha ? CORTO.format(fecha) : iso;
+  return fecha ? formatter().format(fecha) : iso;
 }

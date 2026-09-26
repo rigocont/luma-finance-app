@@ -8,6 +8,7 @@ import Stepper from '@mui/material/Stepper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Navigate } from 'react-router';
 
 import { LumaMark } from '@/components/layout/LumaMark';
@@ -29,7 +30,7 @@ import {
   previousStep,
   OPTIONAL_STEPS,
   STEPS,
-  STEP_LABELS,
+  stepLabel,
   type Step as WizardStep,
 } from './types';
 import { useCyclePreferences } from '../preferences/usePreferences';
@@ -45,14 +46,6 @@ import { useCompleteOnboarding, useOnboardingState, useSkipOnboarding } from './
  */
 const FILTROS_DE_INGRESOS = { sort: 'NEWEST', page: 0, size: 50 } as const;
 
-const TITULOS: Record<WizardStep, string> = {
-  CYCLE: 'Empecemos por tu calendario',
-  INCOMES: 'Que entra a tu bolsillo',
-  EXPENSES: 'Que se te va cada mes',
-  SAVINGS: 'Que quieres juntar',
-  SUMMARY: 'Todo listo',
-};
-
 /**
  * El alta guiada.
  *
@@ -64,6 +57,7 @@ const TITULOS: Record<WizardStep, string> = {
  * cerrar la pestana no pierde nada: al volver, el servidor ya sabe que hay.
  */
 export function OnboardingPage() {
+  const { t } = useTranslation();
   const user = useCurrentUser();
   const estado = useOnboardingState();
   const ingresos = useIncomes(FILTROS_DE_INGRESOS);
@@ -148,7 +142,7 @@ export function OnboardingPage() {
     errorDelPie instanceof ApiError
       ? errorDelPie.message
       : errorDelPie
-        ? 'Algo fallo. Intentalo de nuevo.'
+        ? t('onboarding.genericError')
         : null;
 
   const ocupado = avanzando || terminar.isPending || posponer.isPending;
@@ -178,7 +172,7 @@ export function OnboardingPage() {
           >
             {STEPS.map((value) => (
               <Step key={value}>
-                <StepLabel>{STEP_LABELS[value]}</StepLabel>
+                <StepLabel>{stepLabel(value)}</StepLabel>
               </Step>
             ))}
           </Stepper>
@@ -188,11 +182,15 @@ export function OnboardingPage() {
             color="text.disabled"
             sx={{ display: { xs: 'block', sm: 'none' } }}
           >
-            Paso {indice + 1} de {STEPS.length} · {STEP_LABELS[paso]}
+            {t('onboarding.stepIndicator', {
+              current: indice + 1,
+              total: STEPS.length,
+              label: stepLabel(paso),
+            })}
           </Typography>
 
           <Stack spacing={2}>
-            <Typography variant="h2">{TITULOS[paso]}</Typography>
+            <Typography variant="h2">{t(`onboarding.titles.${paso}`)}</Typography>
           </Stack>
 
           {paso === 'CYCLE' && <CycleStep onRegisterSave={registrarGuardado} />}
@@ -208,9 +206,7 @@ export function OnboardingPage() {
           )}
 
           {bloqueadoPorIngresos && (
-            <Alert severity="info">
-              Agrega al menos un ingreso para seguir. Sin el no hay presupuesto que calcular.
-            </Alert>
+            <Alert severity="info">{t('onboarding.incomesRequired')}</Alert>
           )}
 
           <Stack
@@ -223,7 +219,7 @@ export function OnboardingPage() {
               disabled={ocupado}
               data-testid={testIds.onboarding.skipAllButton}
             >
-              Hacerlo despues
+              {t('onboarding.skipAll')}
             </Button>
 
             <Stack direction="row" spacing={3} sx={{ alignItems: 'center' }}>
@@ -233,7 +229,7 @@ export function OnboardingPage() {
                   disabled={ocupado}
                   data-testid={testIds.onboarding.backButton}
                 >
-                  Atras
+                  {t('onboarding.back')}
                 </Button>
               )}
 
@@ -243,7 +239,7 @@ export function OnboardingPage() {
                   disabled={ocupado}
                   data-testid={testIds.onboarding.skipStepButton}
                 >
-                  Saltar
+                  {t('onboarding.skipStep')}
                 </Button>
               )}
 
@@ -254,7 +250,7 @@ export function OnboardingPage() {
                   disabled={ocupado || !hayIngresos}
                   data-testid={testIds.onboarding.finishButton}
                 >
-                  {terminar.isPending ? 'Abriendo tu ciclo...' : 'Empezar'}
+                  {terminar.isPending ? t('onboarding.finishing') : t('onboarding.finish')}
                 </Button>
               ) : (
                 <Button
@@ -263,7 +259,7 @@ export function OnboardingPage() {
                   disabled={ocupado || bloqueadoPorIngresos}
                   data-testid={testIds.onboarding.nextButton}
                 >
-                  {avanzando ? 'Un momento...' : 'Continuar'}
+                  {avanzando ? t('common.oneMoment') : t('onboarding.continue')}
                 </Button>
               )}
             </Stack>

@@ -6,12 +6,13 @@ import Popper from '@mui/material/Popper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 import { testIds } from '@/lib/testids';
 import { useTourStore } from '@/store/tourStore';
 import { palette, shadows } from '@/theme/tokens';
 
-import { tourSteps, type TourStep } from './tourSteps';
+import { tourStepDescription, tourStepTitle, tourSteps, type TourStep } from './tourSteps';
 
 const SPOTLIGHT_PADDING = 8;
 
@@ -65,6 +66,10 @@ function useTargetRect(testId: string | null, active: boolean): DOMRect | null {
  * "Volver a tomar el tour" desde Ajustes lo pueda arrancar sin importar en
  * que pantalla este montado. No navega entre rutas: cada paso senala su
  * elemento en la barra lateral, que esta siempre presente (ver tourSteps.ts).
+ *
+ * El texto de cada paso sigue el idioma de la interfaz desde la Fase 15: no
+ * vive en `tourSteps`, se busca por clave con `tourStepTitle`/
+ * `tourStepDescription`.
  */
 export function GuidedTour() {
   const theme = useTheme();
@@ -193,6 +198,8 @@ function TourCard({
   onFinish,
   boxShadow,
 }: TourCardProps) {
+  const { t } = useTranslation();
+
   return (
     <Paper
       variant="elevation"
@@ -203,19 +210,19 @@ function TourCard({
       <Stack spacing={3}>
         <Stack spacing={1}>
           <Typography variant="overline" color="text.disabled" data-testid={testIds.tour.progress}>
-            Paso {index + 1} de {tourSteps.length}
+            {t('tour.progress', { current: index + 1, total: tourSteps.length })}
           </Typography>
           <Typography variant="h4" data-testid={testIds.tour.title}>
-            {step.title}
+            {tourStepTitle(step)}
           </Typography>
           <Typography variant="body2" color="text.secondary" data-testid={testIds.tour.description}>
-            {step.description}
+            {tourStepDescription(step)}
           </Typography>
         </Stack>
 
         <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
           <Button size="small" onClick={onSkip} data-testid={testIds.tour.skipButton}>
-            Omitir
+            {t('tour.skip')}
           </Button>
 
           <Stack direction="row" spacing={2}>
@@ -226,7 +233,7 @@ function TourCard({
                 onClick={onPrev}
                 data-testid={testIds.tour.prevButton}
               >
-                Anterior
+                {t('tour.prev')}
               </Button>
             )}
             {isLast ? (
@@ -236,7 +243,7 @@ function TourCard({
                 onClick={onFinish}
                 data-testid={testIds.tour.finishButton}
               >
-                Entendido
+                {t('tour.finish')}
               </Button>
             ) : (
               <Button
@@ -245,7 +252,7 @@ function TourCard({
                 onClick={onNext}
                 data-testid={testIds.tour.nextButton}
               >
-                Siguiente
+                {t('tour.next')}
               </Button>
             )}
           </Stack>

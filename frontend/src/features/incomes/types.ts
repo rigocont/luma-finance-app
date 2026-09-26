@@ -56,36 +56,26 @@ export interface IncomeFilters {
   size: number;
 }
 
+import i18n from '@/i18n';
+
 /**
- * La API devuelve codigos estables; la pantalla habla espanol normal.
+ * La API devuelve codigos estables; la pantalla habla en el idioma elegido
+ * (Fase 15).
  *
  * La traduccion vive aqui y no repartida por los componentes: un enum nuevo en
  * el backend se traduce en un solo lugar.
  */
-export const INCOME_TYPE_LABELS: Record<IncomeType, string> = {
-  RECURRENT: 'Sueldo o ingreso fijo',
-  VARIABLE: 'Monto variable',
-  BONUS: 'Bono',
-  AGUINALDO: 'Aguinaldo',
-  SALE: 'Venta',
-  OTHER: 'Otro',
-};
+export function incomeTypeLabel(value: IncomeType): string {
+  return i18n.t(`incomes.types.${value}`);
+}
 
-export const FREQUENCY_LABELS: Record<Frequency, string> = {
-  BIWEEKLY: 'Cada quincena',
-  MONTHLY: 'Cada mes',
-  BIMONTHLY: 'Cada dos meses',
-  ANNUAL: 'Una vez al ano',
-  ONE_TIME: 'Una sola vez',
-};
+export function frequencyLabel(value: Frequency): string {
+  return i18n.t(`common.frequency.${value}`);
+}
 
-export const INCOME_SORT_LABELS: Record<IncomeSort, string> = {
-  NEWEST: 'Mas reciente',
-  NAME: 'Nombre',
-  AMOUNT_DESC: 'Mayor monto',
-  AMOUNT_ASC: 'Menor monto',
-  START_DATE: 'Fecha de inicio',
-};
+export function incomeSortLabel(value: IncomeSort): string {
+  return i18n.t(`incomes.sort.${value}`);
+}
 
 /**
  * Las frecuencias anual y de una sola vez se resuelven con la fecha de inicio,

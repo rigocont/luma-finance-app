@@ -1,0 +1,759 @@
+{
+  "common": {
+    "oneMoment": "One moment...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "retry": "Retry",
+    "edit": "Edit",
+    "delete": "Delete",
+    "all": "All",
+    "clearFilters": "Clear filters",
+    "networkError": "We couldn't connect. Check your connection and try again.",
+    "sessionExpired": "Your session expired. Sign in again.",
+    "forbidden": "You don't have access to this section.",
+    "notFoundApi": "We couldn't find what you were looking for.",
+    "serverError": "Something went wrong on our end. Try again in a moment.",
+    "frequency": {
+      "BIWEEKLY": "Every two weeks",
+      "MONTHLY": "Every month",
+      "BIMONTHLY": "Every two months",
+      "ANNUAL": "Once a year",
+      "ONE_TIME": "One time only"
+    }
+  },
+  "layout": {
+    "openMenu": "Open menu",
+    "themeToLight": "Switch to light theme",
+    "themeToDark": "Switch to dark theme",
+    "changeTheme": "Change theme",
+    "logout": "Log out",
+    "version": "Version {{version}}",
+    "nav": {
+      "dashboard": "Dashboard",
+      "current-cycle": "This cycle",
+      "incomes": "Incomes",
+      "expenses": "Expenses",
+      "savings": "Savings",
+      "settings": "Settings"
+    }
+  },
+  "state": {
+    "errorTitle": "We couldn't load this section",
+    "errorDefault": "Something went wrong. Try again in a moment.",
+    "errorReference": "Reference: {{traceId}}",
+    "retry": "Retry"
+  },
+  "ads": {
+    "placeholder": "Ad space"
+  },
+  "notFound": {
+    "title": "We couldn't find this page",
+    "heading": "This address doesn't exist",
+    "description": "The link might be mistyped, or this section might not exist yet.",
+    "goToDashboard": "Go to the dashboard"
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Sign in to see how your cycle is going. We'll keep you signed in on this device.",
+      "forgotPassword": "Forgot your password?",
+      "noAccount": "Don't have an account yet?",
+      "createOne": "Create one",
+      "submit": "Sign in"
+    },
+    "register": {
+      "title": "Let's get started",
+      "subtitle": "Create your account and set up your first budget.",
+      "haveAccount": "Already have an account?",
+      "enter": "Sign in",
+      "submit": "Create account",
+      "nameLabel": "What's your name",
+      "passwordHelp": "At least 8 characters"
+    },
+    "fields": {
+      "email": "Email",
+      "password": "Password",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPasswordFull": "Confirm your new password",
+      "confirmPasswordShort": "Confirm your password"
+    },
+    "forgotPassword": {
+      "title": "Recover your access",
+      "subtitle": "We'll send you a link to choose a new password.",
+      "backToLogin": "Back to sign in",
+      "submit": "Send link",
+      "sentTitle": "Check your email",
+      "sentSubtitle": "If there's an account with that email, a link to recover it is already on its way.",
+      "sentTo": "Sent to",
+      "expiry": "The link expires in an hour and works only once. If it doesn't arrive in a few minutes, check your spam folder."
+    },
+    "resetPassword": {
+      "title": "Choose a new password",
+      "subtitle": "Saving it will close every open session on your account.",
+      "submit": "Save password",
+      "mismatch": "The passwords don't match",
+      "invalidTitle": "This link doesn't work",
+      "invalidSubtitle": "It's missing the recovery code, or it was already used.",
+      "invalidMessage": "Recovery links expire in an hour and work only once.",
+      "requestNew": "Request a new link",
+      "successNotice": "Your password is ready. Sign in with the new one."
+    },
+    "changePassword": {
+      "title": "Password",
+      "description": "Changing it will close every one of your sessions, including this one, and you'll have to sign in again.",
+      "submit": "Change password",
+      "mismatch": "The passwords don't match",
+      "successNotice": "We changed your password. Sign in with the new one."
+    }
+  },
+  "settings": {
+    "eyebrow": "Your account",
+    "title": "Settings",
+    "description": "Your account, your budget cycle, and how the app looks.",
+    "account": {
+      "title": "Your account",
+      "name": "Name",
+      "email": "Email"
+    },
+    "theme": {
+      "title": "Appearance",
+      "description": "This preference is saved on this browser.",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "Match the system"
+    },
+    "tour": {
+      "title": "Guided tour",
+      "description": "The welcome tour that explains the main screens.",
+      "restart": "Take the tour again"
+    },
+    "language": {
+      "title": "Language",
+      "description": "The interface language. It's remembered on your account, even on another device.",
+      "es": "Espanol",
+      "en": "English"
+    },
+    "cycle": {
+      "title": "Your budget cycle",
+      "description": "The period you budget at once. The change applies to your next cycle: the one that's open keeps its dates.",
+      "typeLabel": "How often",
+      "dayLabel": "Day it starts on",
+      "dayHelp": "In short months, day 31 falls on the last day.",
+      "submit": "Save",
+      "types": {
+        "BIWEEKLY": "Every two weeks",
+        "MONTHLY": "Every month",
+        "BIMONTHLY": "Every two months"
+      },
+      "help": {
+        "BIWEEKLY": "The most common choice if you get paid on the 15th and 30th.",
+        "MONTHLY": "One budget per month, start to finish.",
+        "BIMONTHLY": "Useful if your income arrives every two months."
+      },
+      "saved": "Done. The change applies to your next cycle."
+    },
+    "system": {
+      "title": "System status",
+      "responding": "Responding",
+      "version": "Version",
+      "profile": "Profile",
+      "defaultProfile": "default",
+      "serverTime": "Server time"
+    }
+  },
+  "tour": {
+    "progress": "Step {{current}} of {{total}}",
+    "skip": "Skip",
+    "prev": "Back",
+    "next": "Next",
+    "finish": "Got it",
+    "steps": {
+      "welcome": {
+        "title": "Welcome to LUMA",
+        "description": "A quick tour of the main screens. You can skip it at any time, and take it again later from Settings."
+      },
+      "dashboard": {
+        "title": "Dashboard",
+        "description": "How much money you have left this cycle, and why."
+      },
+      "current-cycle": {
+        "title": "This cycle",
+        "description": "The payments coming up and the ones already overdue. This is where you confirm the real amounts of what you spent."
+      },
+      "incomes": {
+        "title": "Incomes",
+        "description": "What comes in each cycle: your paycheck and any other recurring income."
+      },
+      "expenses": {
+        "title": "Expenses",
+        "description": "Your fixed and variable expenses, with their category and due date."
+      },
+      "savings": {
+        "title": "Savings",
+        "description": "Your savings goals and how much you've saved toward each one."
+      },
+      "settings": {
+        "title": "Settings",
+        "description": "Your account, your cycle type, the language, and the appearance. This tour also lives here, in case you want to repeat it."
+      },
+      "closing": {
+        "title": "All set",
+        "description": "That's it. You can start using LUMA now."
+      }
+    }
+  },
+  "notifications": {
+    "alerts": "Alerts",
+    "markAllRead": "Mark all as read",
+    "empty": "No alerts for now.",
+    "dueSoon": "Due soon: {{item}}",
+    "overdue": "Overdue: {{item}}",
+    "overdueSince": "Was due on {{date}} · {{amount}}",
+    "dueSoonDetail": "{{date}} · {{amount}}",
+    "deficitTitle": "Your cycle doesn't add up",
+    "deficitBody": "You're short {{amount}} to close it"
+  },
+  "dashboard": {
+    "eyebrow": "Your money",
+    "greeting": "Hi, {{name}}",
+    "greetingPlain": "Hi",
+    "noSummaryYet": "This is where the summary of your current cycle will live.",
+    "cycleRange": "From {{start}} to {{end}}",
+    "noCycle": {
+      "title": "You don't have an open cycle yet",
+      "description": "A cycle is the two-week or month period you're budgeting. Once you open it, your incomes, expenses, and goals come in as line items and your balance shows up.",
+      "opening": "Opening...",
+      "open": "Open my first cycle"
+    },
+    "hero": {
+      "cycleBalance": "Cycle balance",
+      "available": "You have left",
+      "estimateReview": "Review",
+      "estimateNoticeOne": "One expense still doesn't have a confirmed amount, so this figure is an estimate.",
+      "estimateNoticeMany": "{{count}} expenses still don't have a confirmed amount, so this figure is an estimate.",
+      "deficitDetail": "Your expenses and savings add up to more than what comes in this cycle. Below is where the difference could come from.",
+      "balancedDetail": "What comes in is just enough for what you planned. No room to spare, but nothing missing either.",
+      "surplusWithSavingsDetail": "Your savings for this cycle are already accounted for: this is what's left over after setting it aside.",
+      "surplusNoSavingsDetail": "This is your margin for the cycle. If you want, part of it could go to a savings goal.",
+      "state": {
+        "SURPLUS": "You're covered",
+        "BALANCED": "Just enough",
+        "DEFICIT": "You're short to close it"
+      }
+    },
+    "composition": {
+      "title": "How it's split",
+      "subtitle": "Out of {{income}} coming in this cycle.",
+      "fixed": "Fixed expenses",
+      "variable": "Expenses that change",
+      "savings": "Savings",
+      "overflow": "What doesn't fit",
+      "available": "Available",
+      "savingsRate": "You're setting aside {{percent}}% of what comes in."
+    },
+    "cycleActions": {
+      "close": "Close this cycle",
+      "confirmTitle": "Close this cycle",
+      "confirmLabel": "Close the cycle",
+      "confirmWithPending": "Closing it will lock its {{total}} line items as a record that can no longer change. {{pending}} are still unconfirmed: they'll stay that way for good, and the closed cycle is what later explains your history.",
+      "confirmAllSettled": "Closing it will lock its {{total}} line items as a record that can no longer change. Everything is confirmed, so you won't lose anything."
+    },
+    "advice": {
+      "title": "Where it could come from",
+      "subtitle": "You're short {{amount}}. Here's what can be moved, from cheapest to move to most.",
+      "noOptions": "We couldn't find anything that can be moved without touching your critical expenses. You'd need to adjust an income or check whether some critical expense really is one.",
+      "shortfall": "Even moving all of this ({{covered}}) isn't enough to cover what's missing. It gets you closer, not to closing the cycle.",
+      "savingChip": "Savings",
+      "estimatedChip": "Estimated",
+      "savingNote": "If you don't set it aside this cycle, the goal picks it back up in the next one.",
+      "expenseNote": "Removing it from this cycle doesn't delete the expense or deactivate it.",
+      "skip": "Remove from cycle"
+    },
+    "trend": {
+      "title": "Compared with the last cycle",
+      "emptyTitle": "There's nothing to compare yet",
+      "emptyDescription": "Once you close your first cycle, you'll be able to see here whether you're doing better or worse than last time.",
+      "previousOutflow": "The cycle that started on {{date}} came out to {{amount}}.",
+      "same": "You're spending about the same as last cycle.",
+      "up": "You're spending {{amount}} more than last cycle.",
+      "down": "You're spending {{amount}} less than last cycle.",
+      "seriesLabel": "What was left over"
+    },
+    "upcoming": {
+      "title": "What's next",
+      "emptyTitle": "Nothing pending",
+      "emptyDescription": "There's nothing left to pay this cycle.",
+      "overdueChip": "Overdue",
+      "overdueLabel": "Was due on",
+      "dueLabel": "Due on",
+      "settle": "I already paid it"
+    },
+    "insights": {
+      "title": "Financial insights",
+      "deficitCause": "\"{{category}}\" is what went up the most this cycle: from {{previous}} to {{current}} (+{{increase}}).",
+      "deficitCauseNote": "It's not the only possible reason for the deficit, but it's the one that changed the most compared with the last cycle.",
+      "surplusIntro": "You have {{amount}} left over this cycle.",
+      "surplusSharesIntro": "This is how far it would go, following the order of your goals:",
+      "surplusNoGoals": "You don't have any active goal to assign it to. Create one in Savings if you want to make use of it.",
+      "growthIntro": "Categories on an upward streak:",
+      "growthCycles": "{{first}} → {{last}} ({{cycles}} cycles)"
+    }
+  },
+  "incomes": {
+    "eyebrow": "Your money",
+    "title": "Incomes",
+    "description": "Where the money comes from that you use to build each cycle.",
+    "create": "Add income",
+    "captureFirst": "Add the first one",
+    "table": {
+      "name": "Name",
+      "type": "Type",
+      "schedule": "How often",
+      "amount": "Amount"
+    },
+    "schedule": {
+      "withDay": "{{frequency}}, day {{day}}"
+    },
+    "inactiveChip": "Not counted",
+    "reviewChip": "Needs review",
+    "actionsFor": "Actions for {{name}}",
+    "menu": {
+      "edit": "Edit",
+      "activate": "Count it again",
+      "deactivate": "Stop counting it",
+      "delete": "Delete"
+    },
+    "filters": {
+      "type": "Type",
+      "status": "Status",
+      "sort": "Sort by",
+      "active": "Counted",
+      "inactive": "Not counted"
+    },
+    "sort": {
+      "NEWEST": "Newest",
+      "NAME": "Name",
+      "AMOUNT_DESC": "Highest amount",
+      "AMOUNT_ASC": "Lowest amount",
+      "START_DATE": "Start date"
+    },
+    "types": {
+      "RECURRENT": "Paycheck or fixed income",
+      "VARIABLE": "Variable amount",
+      "BONUS": "Bonus",
+      "AGUINALDO": "Year-end bonus",
+      "SALE": "Sale",
+      "OTHER": "Other"
+    },
+    "empty": {
+      "filteredTitle": "Nothing with those filters",
+      "filteredDescription": "Try removing one to see the rest.",
+      "title": "You haven't added any income yet",
+      "description": "Start with your paycheck. If you already have an open cycle, it will show up there right away."
+    },
+    "pagination": {
+      "perPage": "Per page",
+      "displayedRows": "{{from}}-{{to}} of {{count}}"
+    },
+    "deleteConfirm": {
+      "title": "Delete \"{{name}}\"",
+      "description": "It disappears from your lists and can't be recovered. Cycles that already had it are unaffected. If you just want it to stop counting, use \"Stop counting it\"."
+    },
+    "form": {
+      "editing": "Edit",
+      "new": "New",
+      "editTitleFallback": "Income",
+      "newTitle": "Add an income",
+      "name": "Name",
+      "nameHelp": "How you recognize it: Paycheck, Commissions, Rental income",
+      "type": "Type",
+      "reviewNotice": "Since the amount changes, each cycle will ask you to confirm what it was before treating it as final.",
+      "amount": "Amount",
+      "amountHelp": "Up to two decimals, no signs or commas",
+      "frequency": "How often",
+      "expectedDay": "Day of the month",
+      "expectedDayHelp": "If you enter 31, in short months it falls on the last day",
+      "startDate": "Starting",
+      "endDate": "Until (optional)",
+      "endDateHelp": "Leave it empty if it has no end date",
+      "notes": "Notes (optional)",
+      "editNotice": "Changes apply starting next cycle. The current cycle keeps what it already had.",
+      "submitNew": "Add income",
+      "submitEdit": "Save changes"
+    },
+    "toast": {
+      "created": "Income \"{{name}}\" added.",
+      "updated": "Income \"{{name}}\" updated. It applies starting next cycle.",
+      "activated": "\"{{name}}\" counts in your cycles again.",
+      "deactivated": "\"{{name}}\" stops counting in the following cycles.",
+      "deleted": "Income \"{{name}}\" deleted."
+    }
+  },
+  "expenses": {
+    "eyebrow": "Your money",
+    "title": "Expenses",
+    "description": "What goes out each cycle: what always costs the same and what changes.",
+    "create": "Add expense",
+    "captureFirst": "Add the first one",
+    "table": {
+      "name": "Name",
+      "category": "Category",
+      "schedule": "When",
+      "amount": "Amount"
+    },
+    "schedule": {
+      "withDay": "{{frequency}}, day {{day}}"
+    },
+    "noCategory": "No category",
+    "inactiveChip": "Not counted",
+    "reviewChip": "Needs review",
+    "actionsFor": "Actions for {{name}}",
+    "menu": {
+      "edit": "Edit",
+      "activate": "Count it again",
+      "deactivate": "Stop counting it",
+      "delete": "Delete"
+    },
+    "filters": {
+      "kind": "Amount type",
+      "category": "Category",
+      "allCategories": "All",
+      "status": "Status",
+      "sort": "Sort by",
+      "active": "Counted",
+      "inactive": "Not counted"
+    },
+    "sort": {
+      "NEWEST": "Newest",
+      "NAME": "Name",
+      "AMOUNT_DESC": "Highest amount",
+      "AMOUNT_ASC": "Lowest amount",
+      "DUE_DAY": "Due day"
+    },
+    "kinds": {
+      "FIXED": "Stable amount",
+      "VARIABLE": "Amount that changes"
+    },
+    "flexibility": {
+      "CRITICAL": "Can't be moved",
+      "IMPORTANT": "Can be moved, with consequences",
+      "FLEXIBLE": "Can be postponed or cut"
+    },
+    "flexibilityShort": {
+      "CRITICAL": "Critical",
+      "IMPORTANT": "Important",
+      "FLEXIBLE": "Flexible"
+    },
+    "empty": {
+      "filteredTitle": "Nothing with those filters",
+      "filteredDescription": "Try removing one to see the rest.",
+      "title": "You haven't added any expense yet",
+      "description": "Start with the ones that never fail: rent, utilities, groceries. If you already have an open cycle, they'll show up there right away."
+    },
+    "pagination": {
+      "perPage": "Per page",
+      "displayedRows": "{{from}}-{{to}} of {{count}}"
+    },
+    "deleteConfirm": {
+      "title": "Delete \"{{name}}\"",
+      "description": "It disappears from your lists and can't be recovered. Cycles that already had it are unaffected. If you just want it to stop counting, use \"Stop counting it\"."
+    },
+    "form": {
+      "editing": "Edit",
+      "new": "New",
+      "editTitleFallback": "Expense",
+      "newTitle": "Add an expense",
+      "name": "Name",
+      "nameHelp": "Rent, Electricity, Groceries, Credit card...",
+      "category": "Category",
+      "categoryHelp": "Optional, but it helps the analysis later on",
+      "noCategory": "No category",
+      "kind": "Amount type",
+      "variableNotice": "Each cycle will ask you to confirm what it was before treating it as final. The amount you enter here is just an estimate.",
+      "amount": "Amount",
+      "estimatedAmount": "Estimated amount",
+      "amountHelp": "Up to two decimals, no signs or commas",
+      "flexibility": "How much it can be moved",
+      "criticalNotice": "LUMA will never suggest delaying this payment, even if you run short of money this cycle.",
+      "frequency": "How often",
+      "dueDay": "Due day",
+      "dueDayHelp": "If you enter 31, in short months it falls on the last day",
+      "startDate": "Starting",
+      "endDate": "Until (optional)",
+      "endDateHelp": "Leave it empty if it has no end date",
+      "notes": "Notes (optional)",
+      "editNotice": "Changes apply starting next cycle. The current cycle keeps what it already had.",
+      "submitNew": "Add expense",
+      "submitEdit": "Save changes"
+    },
+    "toast": {
+      "created": "Expense \"{{name}}\" added.",
+      "updated": "Expense \"{{name}}\" updated. It applies starting next cycle.",
+      "activated": "\"{{name}}\" counts in your cycles again.",
+      "deactivated": "\"{{name}}\" stops counting in the following cycles.",
+      "deleted": "Expense \"{{name}}\" deleted."
+    }
+  },
+  "savings": {
+    "eyebrow": "Your money",
+    "title": "Savings",
+    "description": "Your goals in priority order: how much you've saved and how much goes toward each cycle.",
+    "create": "Create goal",
+    "createFirst": "Create the first one",
+    "clearFilter": "Clear filter",
+    "filters": {
+      "status": "Status",
+      "all": "All"
+    },
+    "goalStatus": {
+      "ACTIVE": "Active",
+      "COMPLETED": "Reached",
+      "PAUSED": "Paused",
+      "CANCELED": "Canceled"
+    },
+    "contributionMode": {
+      "AUTO_BY_TARGET_DATE": "Calculate it for me, based on the date",
+      "FIXED_PER_CYCLE": "A fixed amount each cycle",
+      "MANUAL": "I contribute when I can"
+    },
+    "contributionModeHelp": {
+      "AUTO_BY_TARGET_DATE": "LUMA splits what's missing across the cycles left until your target date.",
+      "FIXED_PER_CYCLE": "You decide how much to set aside each cycle.",
+      "MANUAL": "It doesn't subtract from your budget. You log contributions whenever you make them."
+    },
+    "movementType": {
+      "PLANNED": "From the cycle",
+      "EXTRA": "Extra contribution",
+      "WITHDRAWAL": "Withdrawal"
+    },
+    "empty": {
+      "filteredTitle": "Nothing with that status",
+      "filteredDescription": "Try another status to see the rest.",
+      "title": "You don't have any goals yet",
+      "description": "Start with an emergency fund. If the goal subtracts from your budget, its contribution enters your current cycle right away."
+    },
+    "priorityNotice": "The order is the priority: when a cycle has money left over, it's shared out from top to bottom. Drag a card or use the arrows to change it.",
+    "raisePriority": "Raise the priority of {{name}}",
+    "lowerPriority": "Lower the priority of {{name}}",
+    "actionsFor": "Actions for {{name}}",
+    "progressOf": "Progress on {{name}}",
+    "savedOf": "of {{target}}",
+    "remaining": "You have {{amount}} left to go",
+    "perCycle": "{{amount}} per cycle",
+    "targetOn": "By {{date}}",
+    "menu": {
+      "contribute": "Log a contribution",
+      "withdraw": "Log a withdrawal",
+      "movements": "View movements",
+      "edit": "Edit",
+      "pause": "Pause",
+      "resume": "Resume",
+      "delete": "Delete"
+    },
+    "manualNotice": "This goal doesn't subtract from your budget. It won't show up as a line item in your cycles: you log contributions whenever you make them.",
+    "deleteConfirm": {
+      "title": "Delete \"{{name}}\"",
+      "description": "The goal disappears from your lists and stops subtracting from your cycles. What you already saved stays in the history, but the goal can't be recovered. If you just want to pause it for a while, use \"Pause\"."
+    },
+    "form": {
+      "editing": "Edit",
+      "new": "New",
+      "editTitleFallback": "Goal",
+      "newTitle": "Create a goal",
+      "name": "What it's for",
+      "nameHelp": "Emergency fund, vacation, down payment...",
+      "target": "How much you want to save",
+      "targetHelp": "Up to two decimals, no signs or commas",
+      "mode": "How you'll set it aside",
+      "targetDate": "By when",
+      "targetDateHelp": "Without a date there's no way to split what's missing across cycles.",
+      "perCycle": "How much per cycle",
+      "perCycleHelp": "It's set aside every cycle, even if the goal takes longer to reach.",
+      "editNotice": "Changes apply starting next cycle. The current cycle keeps what it already had.",
+      "submitNew": "Create goal",
+      "submitEdit": "Save changes"
+    },
+    "movement": {
+      "titleContribution": "Log a contribution",
+      "titleWithdrawal": "Log a withdrawal",
+      "summary": "{{name}}: you have {{saved}} of {{target}}.",
+      "amount": "Amount",
+      "amountHelpWithdrawal": "As a positive number. Can't be more than what you've saved.",
+      "amountHelpContribution": "As a positive number, up to two decimals.",
+      "when": "When",
+      "notes": "Notes (optional)",
+      "notesHelpWithdrawal": "Where it went and what for, so you remember later.",
+      "submitContribution": "Log contribution",
+      "submitWithdrawal": "Log withdrawal"
+    },
+    "movements": {
+      "eyebrow": "Movements",
+      "goalFallback": "Goal",
+      "summary": "You have {{saved}} of {{target}}.",
+      "emptyTitle": "There are no movements yet",
+      "emptyDescription": "Contributions you confirm in your cycles and the ones you log yourself will show up here.",
+      "fromCycle": "Came in when the cycle was confirmed"
+    },
+    "toast": {
+      "created": "Goal \"{{name}}\" created.",
+      "updated": "Goal \"{{name}}\" updated.",
+      "withdrawal": "Withdrawal logged. You have {{saved}} of {{target}}.",
+      "contributionCompleted": "Contribution logged. You reached \"{{name}}\".",
+      "contribution": "Contribution logged for \"{{name}}\".",
+      "reordered": "Priority order saved.",
+      "paused": "\"{{name}}\" stops subtracting from your cycles.",
+      "resumed": "\"{{name}}\" counts in your cycles again.",
+      "deleted": "Goal \"{{name}}\" deleted."
+    }
+  },
+  "review": {
+    "eyebrow": "Your money",
+    "title": "This cycle",
+    "description": "What's left to settle before the balance means anything.",
+    "cycleRange": "From {{start}} to {{end}}",
+    "noCycle": {
+      "title": "You don't have an open cycle yet",
+      "description": "A cycle is the two-week or month period you're budgeting. Once you open the first one, what's left to review will show up here.",
+      "startWithExpenses": "Start with my expenses"
+    },
+    "noneToReview": {
+      "title": "There's nothing left to review",
+      "description": "Every expense this cycle already has an amount. When you add a new variable one, it'll show up here."
+    },
+    "banner": "These expenses change amount every cycle. Until you say what they were, the balance treats them as an estimate, not a fact.",
+    "invalidAmount": "A number with up to two decimals",
+    "pendingCountOne": "expense to review",
+    "pendingCountMany": "expenses to review",
+    "confirmAll": "Confirm all",
+    "list": {
+      "plannedAmount": "You estimated {{amount}}",
+      "dueDate": " · due {{date}}",
+      "suggestion": "The cycle that started {{date}} it was {{amount}}",
+      "useSuggestion": "Use that amount",
+      "amountLabel": "How much it was",
+      "amountAriaLabel": "Amount for {{name}}",
+      "viewHistory": "See previous cycles",
+      "historyFor": "History for {{name}}"
+    },
+    "history": {
+      "firstTime": {
+        "title": "This is the first time",
+        "description": "Once you confirm this expense a couple of cycles, you'll be able to see how it moves here."
+      },
+      "averageOne": "Over the last {{cycles}} cycle it cost you {{amount}} on average.",
+      "averageMany": "Over the last {{cycles}} cycles it cost you {{amount}} on average.",
+      "estimatedWas": "You had estimated {{amount}}"
+    },
+    "savingsSection": {
+      "title": "Your goals for this cycle",
+      "description": "Once you set the money aside, log it here to move the goal's progress forward.",
+      "overdueChip": "Already overdue",
+      "settle": "Log contribution"
+    },
+    "settle": {
+      "title": "Log the contribution",
+      "summary": "{{name}}: you planned to set aside {{amount}} this cycle.",
+      "amountLabel": "How much you set aside",
+      "amountHelp": "If it was less, the line item stays partial.",
+      "when": "When",
+      "skipGoal": "Don't log it toward the goal",
+      "skipGoalHelp": "The expense stays in the cycle, but the goal's progress doesn't move.",
+      "submit": "Log it"
+    },
+    "toast": {
+      "confirmedOne": "Done: \"{{name}}\" is set at {{amount}}.",
+      "confirmedMany": "Done: {{count}} expenses confirmed.",
+      "settledNoGoal": "\"{{name}}\" logged. It wasn't added to the goal.",
+      "settledWithGoal": "\"{{name}}\" logged and added to your goal."
+    }
+  },
+  "onboarding": {
+    "titles": {
+      "CYCLE": "Let's start with your calendar",
+      "INCOMES": "What comes into your pocket",
+      "EXPENSES": "What goes out every month",
+      "SAVINGS": "What you want to save up for",
+      "SUMMARY": "All set"
+    },
+    "stepLabels": {
+      "CYCLE": "Your cycle",
+      "INCOMES": "What comes in",
+      "EXPENSES": "What goes out",
+      "SAVINGS": "Your goals",
+      "SUMMARY": "Done"
+    },
+    "stepIndicator": "Step {{current}} of {{total}} · {{label}}",
+    "incomesRequired": "Add at least one income to continue. Without it there's no budget to calculate.",
+    "skipAll": "Do it later",
+    "back": "Back",
+    "skipStep": "Skip",
+    "finish": "Get started",
+    "finishing": "Opening your cycle...",
+    "continue": "Continue",
+    "genericError": "Something went wrong. Try again.",
+    "cycle": {
+      "intro": "A cycle is the period you budget at once. It usually matches how often you get paid.",
+      "typeLabel": "How often you budget",
+      "dayLabel": "Day it starts on",
+      "dayHelp": "If you enter 31, in short months it falls on the last day.",
+      "preview": "You can change this later. The cycle that's open keeps its dates, and the change applies to the next one."
+    },
+    "incomes": {
+      "intro": "Your paycheck, a pension, what a side business leaves you. With at least one we can already calculate your budget.",
+      "name": "Name",
+      "nameHelp": "Paycheck, rental income, commissions...",
+      "amount": "Amount",
+      "amountHelp": "What you receive each time",
+      "type": "Type",
+      "frequency": "How often",
+      "day": "Day",
+      "add": "Add income",
+      "remove": "Remove {{name}}"
+    },
+    "expenses": {
+      "intro": "Pick the ones you recognize and enter how much they cost you. You can skip this step and add them later, at your own pace.",
+      "name": "What expense is it",
+      "nameHelpWithCategory": "It'll go under {{category}}, with a {{kind}} amount",
+      "nameHelpWithoutCategory": "Choose a category above or type one that's not on the list",
+      "amount": "How much",
+      "amountHelp": "Per month",
+      "add": "Add expense",
+      "clear": "Clear",
+      "noCategory": "No category",
+      "variableSuffix": " · the amount changes",
+      "remove": "Remove {{name}}"
+    },
+    "savings": {
+      "intro": "An emergency fund, a trip, a down payment. What you set aside is subtracted from your budget each cycle, so you don't spend it without noticing.",
+      "name": "What it's for",
+      "nameHelp": "Emergency fund, vacation...",
+      "target": "How much you want to save",
+      "perCycle": "How much per cycle",
+      "perCycleHelp": "You can change this whenever you want",
+      "add": "Add goal",
+      "perCycleSuffix": "per cycle",
+      "remove": "Remove {{name}}"
+    },
+    "summary": {
+      "intro": "With this we can already open your first cycle and tell you how much you have left.",
+      "cycleLine": "How often you budget",
+      "cycleValue": "{{type}}, starting on day {{day}}",
+      "incomesLine": "Incomes",
+      "expensesLine": "Expenses",
+      "goalsLine": "Savings goals",
+      "none": "None for now",
+      "countIncomes": "{{count}} income",
+      "countIncomesPlural": "{{count}} incomes",
+      "countExpenses": "{{count}} expense",
+      "countExpensesPlural": "{{count}} expenses",
+      "countGoals": "{{count}} goal",
+      "countGoalsPlural": "{{count}} goals",
+      "noExpensesNotice": "You didn't add any expenses. You can start this way and add them from the Expenses section; your current cycle will pick them up as soon as they exist.",
+      "footer": "Starting opens your first cycle with these line items already in place. All of this can be changed later from each section."
+    },
+    "toast": {
+      "completed": "Your first cycle is ready."
+    }
+  }
+}

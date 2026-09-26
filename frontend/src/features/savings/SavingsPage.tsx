@@ -5,6 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { PageHeader } from '@/components/layout/PageHeader';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
@@ -19,7 +20,7 @@ import { SavingsMovementDialog } from './SavingsMovementDialog';
 import { SavingsMovementsDrawer } from './SavingsMovementsDrawer';
 import {
   GOAL_STATUSES,
-  GOAL_STATUS_LABELS,
+  goalStatusLabel,
   type GoalStatus,
   type MovementPayload,
   type SavingsGoal,
@@ -39,6 +40,7 @@ import {
 type MovementKind = MovementPayload['type'];
 
 export function SavingsPage() {
+  const { t } = useTranslation();
   const [status, setStatus] = useState<GoalStatus | undefined>(undefined);
   const [enEdicion, setEnEdicion] = useState<SavingsGoal | null>(null);
   const [cajonAbierto, setCajonAbierto] = useState(false);
@@ -110,9 +112,9 @@ export function SavingsPage() {
   return (
     <Stack data-testid={testIds.savings.page}>
       <PageHeader
-        eyebrow="Tu dinero"
-        title="Ahorros"
-        description="Tus metas en orden de prioridad: cuanto llevas y cuanto se aparta en cada ciclo."
+        eyebrow={t('savings.eyebrow')}
+        title={t('savings.title')}
+        description={t('savings.description')}
         action={
           <Button
             variant="contained"
@@ -120,7 +122,7 @@ export function SavingsPage() {
             onClick={abrirNueva}
             data-testid={testIds.savings.createButton}
           >
-            Crear meta
+            {t('savings.create')}
           </Button>
         }
       />
@@ -129,7 +131,7 @@ export function SavingsPage() {
         <TextField
           select
           size="small"
-          label="Estado"
+          label={t('savings.filters.status')}
           value={status ?? ''}
           onChange={(event) =>
             setStatus((event.target.value || undefined) as GoalStatus | undefined)
@@ -137,10 +139,10 @@ export function SavingsPage() {
           sx={{ minWidth: 180 }}
           data-testid={testIds.savings.filterStatus}
         >
-          <MenuItem value="">Todas</MenuItem>
+          <MenuItem value="">{t('savings.filters.all')}</MenuItem>
           {GOAL_STATUSES.map((value) => (
             <MenuItem key={value} value={value}>
-              {GOAL_STATUS_LABELS[value]}
+              {goalStatusLabel(value)}
             </MenuItem>
           ))}
         </TextField>
@@ -152,18 +154,16 @@ export function SavingsPage() {
 
       {metas && metas.length === 0 && (
         <EmptyState
-          title={hayFiltro ? 'Nada con ese estado' : 'Todavia no tienes ninguna meta'}
+          title={hayFiltro ? t('savings.empty.filteredTitle') : t('savings.empty.title')}
           description={
-            hayFiltro
-              ? 'Prueba con otro estado para ver el resto.'
-              : 'Empieza por un fondo de emergencia. Si la meta resta de tu presupuesto, su aporte entra a tu ciclo en curso de inmediato.'
+            hayFiltro ? t('savings.empty.filteredDescription') : t('savings.empty.description')
           }
           action={
             hayFiltro ? (
-              <Button onClick={() => setStatus(undefined)}>Quitar el filtro</Button>
+              <Button onClick={() => setStatus(undefined)}>{t('savings.clearFilter')}</Button>
             ) : (
               <Button variant="contained" onClick={abrirNueva}>
-                Crear la primera
+                {t('savings.createFirst')}
               </Button>
             )
           }
@@ -173,10 +173,7 @@ export function SavingsPage() {
       {metas && metas.length > 0 && (
         <Stack spacing={4}>
           {metas.length > 1 && !hayFiltro && (
-            <Alert severity="info">
-              El orden es la prioridad: cuando sobre dinero en un ciclo, se reparte de arriba hacia
-              abajo. Arrastra una tarjeta o usa las flechas para cambiarlo.
-            </Alert>
+            <Alert severity="info">{t('savings.priorityNotice')}</Alert>
           )}
 
           <SavingsGoalList
@@ -225,13 +222,9 @@ export function SavingsPage() {
 
       <ConfirmDialog
         open={porEliminar !== null}
-        title={`Eliminar "${porEliminar?.name ?? ''}"`}
-        description={
-          'La meta desaparece de tus listas y deja de restar de tus ciclos. Lo ' +
-          'que ya habias apartado se conserva en el historial, pero la meta no ' +
-          'se puede recuperar. Si solo quieres detenerla un rato, usa "Pausar".'
-        }
-        confirmLabel="Eliminar"
+        title={t('savings.deleteConfirm.title', { name: porEliminar?.name ?? '' })}
+        description={t('savings.deleteConfirm.description')}
+        confirmLabel={t('common.delete')}
         destructive
         pending={eliminar.isPending}
         onConfirm={confirmarEliminacion}

@@ -13,11 +13,13 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import { useState, type MouseEvent } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 
 import { formatMoney } from '@/lib/money';
 import { testIds } from '@/lib/testids';
 
-import { FLEXIBILITY_SHORT, FREQUENCY_LABELS, type Expense } from './types';
+import { flexibilityShort, frequencyLabel, type Expense } from './types';
 
 interface ExpenseListProps {
   expenses: Expense[];
@@ -26,13 +28,14 @@ interface ExpenseListProps {
   onDelete: (expense: Expense) => void;
 }
 
-function calendario(expense: Expense): string {
-  const cada = FREQUENCY_LABELS[expense.frequency];
+function calendario(t: TFunction, expense: Expense): string {
+  const cada = frequencyLabel(expense.frequency);
   if (expense.dueDay === null) return cada;
-  return `${cada}, dia ${expense.dueDay}`;
+  return t('expenses.schedule.withDay', { frequency: cada, day: expense.dueDay });
 }
 
 export function ExpenseList({ expenses, onEdit, onToggleActive, onDelete }: ExpenseListProps) {
+  const { t } = useTranslation();
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
   const [seleccionado, setSeleccionado] = useState<Expense | null>(null);
 
@@ -57,10 +60,10 @@ export function ExpenseList({ expenses, onEdit, onToggleActive, onDelete }: Expe
         <Table data-testid={testIds.expenses.list}>
           <TableHead>
             <TableRow>
-              <TableCell>Nombre</TableCell>
-              <TableCell>Categoria</TableCell>
-              <TableCell>Cuando</TableCell>
-              <TableCell align="right">Monto</TableCell>
+              <TableCell>{t('expenses.table.name')}</TableCell>
+              <TableCell>{t('expenses.table.category')}</TableCell>
+              <TableCell>{t('expenses.table.schedule')}</TableCell>
+              <TableCell align="right">{t('expenses.table.amount')}</TableCell>
               <TableCell align="right" />
             </TableRow>
           </TableHead>
@@ -82,7 +85,7 @@ export function ExpenseList({ expenses, onEdit, onToggleActive, onDelete }: Expe
                       <Chip
                         size="small"
                         variant="outlined"
-                        label={FLEXIBILITY_SHORT[expense.flexibility]}
+                        label={flexibilityShort(expense.flexibility)}
                         // Un gasto critico se marca en negativo: es el que no se
                         // puede mover cuando el ciclo no alcanza.
                         color={expense.flexibility === 'CRITICAL' ? 'error' : 'default'}
@@ -91,7 +94,7 @@ export function ExpenseList({ expenses, onEdit, onToggleActive, onDelete }: Expe
                       {!expense.active && (
                         <Chip
                           size="small"
-                          label="Sin contar"
+                          label={t('expenses.inactiveChip')}
                           data-testid={testIds.expenses.rowInactive}
                         />
                       )}
@@ -100,7 +103,7 @@ export function ExpenseList({ expenses, onEdit, onToggleActive, onDelete }: Expe
                           size="small"
                           color="warning"
                           variant="outlined"
-                          label="Pide revision"
+                          label={t('expenses.reviewChip')}
                           data-testid={testIds.expenses.rowReview}
                         />
                       )}
@@ -110,13 +113,13 @@ export function ExpenseList({ expenses, onEdit, onToggleActive, onDelete }: Expe
 
                 <TableCell data-testid={testIds.expenses.rowCategory}>
                   <Typography variant="body2" color="text.secondary">
-                    {expense.category?.name ?? 'Sin categoria'}
+                    {expense.category?.name ?? t('expenses.noCategory')}
                   </Typography>
                 </TableCell>
 
                 <TableCell data-testid={testIds.expenses.rowSchedule}>
                   <Typography variant="body2" color="text.secondary">
-                    {calendario(expense)}
+                    {calendario(t, expense)}
                   </Typography>
                 </TableCell>
 
@@ -134,7 +137,7 @@ export function ExpenseList({ expenses, onEdit, onToggleActive, onDelete }: Expe
 
                 <TableCell align="right">
                   <IconButton
-                    aria-label={`Acciones de ${expense.name}`}
+                    aria-label={t('expenses.actionsFor', { name: expense.name })}
                     onClick={(event) => abrirMenu(event, expense)}
                     data-testid={testIds.expenses.rowMenu}
                   >
@@ -149,16 +152,16 @@ export function ExpenseList({ expenses, onEdit, onToggleActive, onDelete }: Expe
 
       <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={cerrarMenu}>
         <MenuItem onClick={() => ejecutar(onEdit)} data-testid={testIds.expenses.editAction}>
-          Editar
+          {t('expenses.menu.edit')}
         </MenuItem>
         <MenuItem
           onClick={() => ejecutar(onToggleActive)}
           data-testid={testIds.expenses.toggleActiveAction}
         >
-          {seleccionado?.active ? 'Dejar de contarlo' : 'Volver a contarlo'}
+          {seleccionado?.active ? t('expenses.menu.deactivate') : t('expenses.menu.activate')}
         </MenuItem>
         <MenuItem onClick={() => ejecutar(onDelete)} data-testid={testIds.expenses.deleteAction}>
-          Eliminar
+          {t('expenses.menu.delete')}
         </MenuItem>
       </Menu>
     </Card>

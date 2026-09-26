@@ -13,11 +13,13 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import { useState, type MouseEvent } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 
 import { formatMoney } from '@/lib/money';
 import { testIds } from '@/lib/testids';
 
-import { FREQUENCY_LABELS, INCOME_TYPE_LABELS, type Income } from './types';
+import { frequencyLabel, incomeTypeLabel, type Income } from './types';
 
 interface IncomeListProps {
   incomes: Income[];
@@ -26,13 +28,14 @@ interface IncomeListProps {
   onDelete: (income: Income) => void;
 }
 
-function calendario(income: Income): string {
-  const cada = FREQUENCY_LABELS[income.frequency];
+function calendario(t: TFunction, income: Income): string {
+  const cada = frequencyLabel(income.frequency);
   if (income.expectedDay === null) return cada;
-  return `${cada}, dia ${income.expectedDay}`;
+  return t('incomes.schedule.withDay', { frequency: cada, day: income.expectedDay });
 }
 
 export function IncomeList({ incomes, onEdit, onToggleActive, onDelete }: IncomeListProps) {
+  const { t } = useTranslation();
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
   const [seleccionado, setSeleccionado] = useState<Income | null>(null);
 
@@ -57,10 +60,10 @@ export function IncomeList({ incomes, onEdit, onToggleActive, onDelete }: Income
         <Table data-testid={testIds.incomes.list}>
           <TableHead>
             <TableRow>
-              <TableCell>Nombre</TableCell>
-              <TableCell>Tipo</TableCell>
-              <TableCell>Cada cuando</TableCell>
-              <TableCell align="right">Monto</TableCell>
+              <TableCell>{t('incomes.table.name')}</TableCell>
+              <TableCell>{t('incomes.table.type')}</TableCell>
+              <TableCell>{t('incomes.table.schedule')}</TableCell>
+              <TableCell align="right">{t('incomes.table.amount')}</TableCell>
               <TableCell align="right" />
             </TableRow>
           </TableHead>
@@ -84,7 +87,7 @@ export function IncomeList({ incomes, onEdit, onToggleActive, onDelete }: Income
                       {!income.active && (
                         <Chip
                           size="small"
-                          label="Sin contar"
+                          label={t('incomes.inactiveChip')}
                           data-testid={testIds.incomes.rowInactive}
                         />
                       )}
@@ -93,7 +96,7 @@ export function IncomeList({ incomes, onEdit, onToggleActive, onDelete }: Income
                           size="small"
                           color="warning"
                           variant="outlined"
-                          label="Pide revision"
+                          label={t('incomes.reviewChip')}
                           data-testid={testIds.incomes.rowReview}
                         />
                       )}
@@ -103,13 +106,13 @@ export function IncomeList({ incomes, onEdit, onToggleActive, onDelete }: Income
 
                 <TableCell data-testid={testIds.incomes.rowType}>
                   <Typography variant="body2" color="text.secondary">
-                    {INCOME_TYPE_LABELS[income.type]}
+                    {incomeTypeLabel(income.type)}
                   </Typography>
                 </TableCell>
 
                 <TableCell data-testid={testIds.incomes.rowSchedule}>
                   <Typography variant="body2" color="text.secondary">
-                    {calendario(income)}
+                    {calendario(t, income)}
                   </Typography>
                 </TableCell>
 
@@ -128,7 +131,7 @@ export function IncomeList({ incomes, onEdit, onToggleActive, onDelete }: Income
 
                 <TableCell align="right">
                   <IconButton
-                    aria-label={`Acciones de ${income.name}`}
+                    aria-label={t('incomes.actionsFor', { name: income.name })}
                     onClick={(event) => abrirMenu(event, income)}
                     data-testid={testIds.incomes.rowMenu}
                   >
@@ -143,16 +146,16 @@ export function IncomeList({ incomes, onEdit, onToggleActive, onDelete }: Income
 
       <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={cerrarMenu}>
         <MenuItem onClick={() => ejecutar(onEdit)} data-testid={testIds.incomes.editAction}>
-          Editar
+          {t('incomes.menu.edit')}
         </MenuItem>
         <MenuItem
           onClick={() => ejecutar(onToggleActive)}
           data-testid={testIds.incomes.toggleActiveAction}
         >
-          {seleccionado?.active ? 'Dejar de contarlo' : 'Volver a contarlo'}
+          {seleccionado?.active ? t('incomes.menu.deactivate') : t('incomes.menu.activate')}
         </MenuItem>
         <MenuItem onClick={() => ejecutar(onDelete)} data-testid={testIds.incomes.deleteAction}>
-          Eliminar
+          {t('incomes.menu.delete')}
         </MenuItem>
       </Menu>
     </Card>

@@ -10,6 +10,7 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useState, type FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { LoadingState } from '@/components/ui/LoadingState';
 import { ApiError } from '@/lib/api/types';
@@ -18,9 +19,9 @@ import { testIds } from '@/lib/testids';
 
 import {
   FREQUENCIES,
-  FREQUENCY_LABELS,
+  frequencyLabel,
   INCOME_TYPES,
-  INCOME_TYPE_LABELS,
+  incomeTypeLabel,
   needsExpectedDay,
   type Frequency,
   type IncomeType,
@@ -46,6 +47,7 @@ const VACIO = {
  * tres capturas en nueve clics.
  */
 export function IncomesStep() {
+  const { t } = useTranslation();
   const lista = useIncomes({ sort: 'NEWEST', page: 0, size: 50 });
   const crear = useCreateIncome();
   const eliminar = useDeleteIncome();
@@ -87,8 +89,7 @@ export function IncomesStep() {
   return (
     <Stack spacing={5} data-testid={testIds.onboarding.step('incomes')}>
       <Typography variant="body1" color="text.secondary">
-        Tu sueldo, una pension, lo que te deje un negocio. Con al menos uno ya podemos calcular tu
-        presupuesto.
+        {t('onboarding.incomes.intro')}
       </Typography>
 
       {generalMessage && (
@@ -101,11 +102,11 @@ export function IncomesStep() {
         <Stack spacing={4}>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
             <TextField
-              label="Nombre"
+              label={t('onboarding.incomes.name')}
               value={values.name}
               onChange={(event) => set('name', event.target.value)}
               error={Boolean(fieldErrors.name)}
-              helperText={fieldErrors.name ?? 'Sueldo, renta que cobro, comisiones...'}
+              helperText={fieldErrors.name ?? t('onboarding.incomes.nameHelp')}
               disabled={crear.isPending}
               fullWidth
               autoFocus
@@ -115,11 +116,11 @@ export function IncomesStep() {
             />
 
             <TextField
-              label="Monto"
+              label={t('onboarding.incomes.amount')}
               value={values.amount}
               onChange={(event) => set('amount', event.target.value)}
               error={Boolean(fieldErrors.amount)}
-              helperText={fieldErrors.amount ?? 'Lo que recibes cada vez'}
+              helperText={fieldErrors.amount ?? t('onboarding.incomes.amountHelp')}
               disabled={crear.isPending}
               sx={{ width: { xs: '100%', sm: 200 } }}
               slotProps={{
@@ -135,7 +136,7 @@ export function IncomesStep() {
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
             <TextField
               select
-              label="Tipo"
+              label={t('onboarding.incomes.type')}
               value={values.type}
               onChange={(event) => set('type', event.target.value as IncomeType)}
               error={Boolean(fieldErrors.type)}
@@ -146,14 +147,14 @@ export function IncomesStep() {
             >
               {INCOME_TYPES.map((value) => (
                 <MenuItem key={value} value={value}>
-                  {INCOME_TYPE_LABELS[value]}
+                  {incomeTypeLabel(value)}
                 </MenuItem>
               ))}
             </TextField>
 
             <TextField
               select
-              label="Cada cuanto"
+              label={t('onboarding.incomes.frequency')}
               value={values.frequency}
               onChange={(event) => set('frequency', event.target.value as Frequency)}
               error={Boolean(fieldErrors.frequency)}
@@ -164,14 +165,14 @@ export function IncomesStep() {
             >
               {FREQUENCIES.map((value) => (
                 <MenuItem key={value} value={value}>
-                  {FREQUENCY_LABELS[value]}
+                  {frequencyLabel(value)}
                 </MenuItem>
               ))}
             </TextField>
 
             {pideDia && (
               <TextField
-                label="Dia"
+                label={t('onboarding.incomes.day')}
                 type="number"
                 value={values.expectedDay}
                 onChange={(event) => set('expectedDay', event.target.value)}
@@ -197,7 +198,7 @@ export function IncomesStep() {
               disabled={crear.isPending}
               data-testid={testIds.onboarding.incomeAdd}
             >
-              {crear.isPending ? 'Un momento...' : 'Agregar ingreso'}
+              {crear.isPending ? t('common.oneMoment') : t('onboarding.incomes.add')}
             </Button>
           </Box>
         </Stack>
@@ -219,7 +220,7 @@ export function IncomesStep() {
                 <Stack spacing={0.5} sx={{ minWidth: 0 }}>
                   <Typography variant="body1">{income.name}</Typography>
                   <Typography variant="caption" color="text.secondary">
-                    {FREQUENCY_LABELS[income.frequency]}
+                    {frequencyLabel(income.frequency)}
                   </Typography>
                 </Stack>
 
@@ -229,7 +230,7 @@ export function IncomesStep() {
                   </Typography>
                   <IconButton
                     size="small"
-                    aria-label={`Quitar ${income.name}`}
+                    aria-label={t('onboarding.incomes.remove', { name: income.name })}
                     disabled={eliminar.isPending}
                     onClick={() => eliminar.mutate({ id: income.id, name: income.name })}
                   >

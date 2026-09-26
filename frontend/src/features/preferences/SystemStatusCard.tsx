@@ -4,10 +4,12 @@ import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 
 import { ErrorState } from '@/components/ui/ErrorState';
 import { LoadingState } from '@/components/ui/LoadingState';
 import { fetchSystemInfo, systemKeys } from '@/lib/api/system';
+import { intlLocaleFor } from '@/lib/money';
 import { testIds } from '@/lib/testids';
 
 /**
@@ -20,6 +22,7 @@ import { testIds } from '@/lib/testids';
  * la conexion.
  */
 export function SystemStatusCard() {
+  const { t, i18n } = useTranslation();
   const { data, isPending, isError, error, refetch } = useQuery({
     queryKey: systemKeys.info,
     queryFn: fetchSystemInfo,
@@ -35,10 +38,10 @@ export function SystemStatusCard() {
             useFlexGap
             sx={{ alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}
           >
-            <Typography variant="h3">Estado del sistema</Typography>
+            <Typography variant="h3">{t('settings.system.title')}</Typography>
             {data && (
               <Chip
-                label="Respondiendo"
+                label={t('settings.system.responding')}
                 color="success"
                 variant="outlined"
                 size="small"
@@ -53,14 +56,18 @@ export function SystemStatusCard() {
 
           {data && (
             <Stack direction="row" spacing={8} useFlexGap sx={{ flexWrap: 'wrap', rowGap: 3 }}>
-              <Campo label="Version" value={data.version} testId={testIds.settings.systemVersion} />
               <Campo
-                label="Perfil"
-                value={data.profiles.length > 0 ? data.profiles.join(', ') : 'default'}
+                label={t('settings.system.version')}
+                value={data.version}
+                testId={testIds.settings.systemVersion}
               />
               <Campo
-                label="Hora del servidor"
-                value={new Date(data.serverTime).toLocaleString('es-MX')}
+                label={t('settings.system.profile')}
+                value={data.profiles.length > 0 ? data.profiles.join(', ') : t('settings.system.defaultProfile')}
+              />
+              <Campo
+                label={t('settings.system.serverTime')}
+                value={new Date(data.serverTime).toLocaleString(intlLocaleFor(i18n.language))}
               />
             </Stack>
           )}

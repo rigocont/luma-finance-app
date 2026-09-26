@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import i18n from '@/i18n';
 import { ApiError } from '@/lib/api/types';
 import { showToast } from '@/store/toastStore';
 
@@ -72,7 +73,7 @@ export function useOpenNextCycle() {
       // Abrir un ciclo materializa renglones a partir de ingresos, gastos y
       // metas: casi todo lo que la aplicacion tenia en cache quedo viejo.
       await queryClient.invalidateQueries();
-      showToast('Tu siguiente ciclo esta abierto.');
+      showToast(i18n.t('dashboard.cycleOpenedToast'));
     },
   });
 }
@@ -84,7 +85,7 @@ export function useCloseCycle() {
     mutationFn: (cycleId: string) => closeCycle(cycleId),
     onSuccess: async () => {
       await queryClient.invalidateQueries();
-      showToast('Ciclo cerrado. Queda como registro y ya no se puede cambiar.');
+      showToast(i18n.t('dashboard.cycleClosedToast'));
     },
   });
 }
@@ -96,7 +97,7 @@ export function useSkipItem(cycleId: string | undefined) {
     mutationFn: (itemId: string) => skipItem(cycleId as string, itemId),
     onSuccess: async (item) => {
       await queryClient.invalidateQueries({ queryKey: budgetKeys.all });
-      showToast(`"${item.name}" ya no cuenta en este ciclo.`);
+      showToast(i18n.t('dashboard.itemSkippedToast', { name: item.name }));
     },
   });
 }

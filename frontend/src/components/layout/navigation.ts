@@ -10,7 +10,8 @@ import { paths } from '@/routes/paths';
 
 export interface NavItem {
   key: string;
-  label: string;
+  /** Clave de traduccion bajo `layout.nav` (Fase 15). No es el texto en si. */
+  labelKey: string;
   path: string;
   icon: SvgIconComponent;
   /**
@@ -23,16 +24,26 @@ export interface NavItem {
 }
 
 export const navItems: NavItem[] = [
-  { key: 'dashboard', label: 'Resumen', path: paths.dashboard, icon: DashboardOutlinedIcon },
+  { key: 'dashboard', labelKey: 'dashboard', path: paths.dashboard, icon: DashboardOutlinedIcon },
   {
     key: 'current-cycle',
-    label: 'Este ciclo',
+    labelKey: 'current-cycle',
     path: paths.currentCycle,
     icon: FactCheckOutlinedIcon,
     showsPendingCount: true,
   },
-  { key: 'incomes', label: 'Ingresos', path: paths.incomes, icon: TrendingUpOutlinedIcon },
-  { key: 'expenses', label: 'Gastos', path: paths.expenses, icon: ReceiptLongOutlinedIcon },
-  { key: 'savings', label: 'Ahorros', path: paths.savings, icon: SavingsOutlinedIcon },
-  { key: 'settings', label: 'Ajustes', path: paths.settings, icon: SettingsOutlinedIcon },
+  {
+    key: 'incomes',
+    labelKey: 'incomes',
+    path: paths.incomes,
+    icon: TrendingUpOutlinedIcon,
+  },
+  {
+    key: 'expenses',
+    labelKey: 'expenses',
+    path: paths.expenses,
+    icon: ReceiptLongOutlinedIcon,
+  },
+  { key: 'savings', labelKey: 'savings', path: paths.savings, icon: SavingsOutlinedIcon },
+  { key: 'settings', labelKey: 'settings', path: paths.settings, icon: SettingsOutlinedIcon },
 ];

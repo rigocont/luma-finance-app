@@ -1,6 +1,8 @@
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { Link as RouterLink } from 'react-router';
 
 import { testIds } from '@/lib/testids';
@@ -10,31 +12,34 @@ import { AuthForm, type FieldSpec } from './AuthForm';
 import { AuthLayout } from './AuthLayout';
 import { useRegister } from './useAuth';
 
-const FIELDS: FieldSpec[] = [
-  {
-    name: 'name',
-    label: 'Como te llamas',
-    autoComplete: 'name',
-    testId: testIds.auth.nameInput,
-  },
-  {
-    name: 'email',
-    label: 'Correo',
-    type: 'email',
-    autoComplete: 'email',
-    testId: testIds.auth.emailInput,
-  },
-  {
-    name: 'password',
-    label: 'Contrasena',
-    type: 'password',
-    autoComplete: 'new-password',
-    testId: testIds.auth.passwordInput,
-    helperText: 'Al menos 8 caracteres',
-  },
-];
+function getFields(t: TFunction): FieldSpec[] {
+  return [
+    {
+      name: 'name',
+      label: t('auth.register.nameLabel'),
+      autoComplete: 'name',
+      testId: testIds.auth.nameInput,
+    },
+    {
+      name: 'email',
+      label: t('auth.fields.email'),
+      type: 'email',
+      autoComplete: 'email',
+      testId: testIds.auth.emailInput,
+    },
+    {
+      name: 'password',
+      label: t('auth.fields.password'),
+      type: 'password',
+      autoComplete: 'new-password',
+      testId: testIds.auth.passwordInput,
+      helperText: t('auth.register.passwordHelp'),
+    },
+  ];
+}
 
 export function RegisterPage() {
+  const { t } = useTranslation();
   const [values, setValues] = useState<Record<string, string>>({
     name: '',
     email: '',
@@ -44,25 +49,25 @@ export function RegisterPage() {
 
   return (
     <AuthLayout
-      title="Empecemos"
-      subtitle="Crea tu cuenta y arma tu primer presupuesto."
+      title={t('auth.register.title')}
+      subtitle={t('auth.register.subtitle')}
       footer={
         <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
-          Ya tienes cuenta?{' '}
+          {t('auth.register.haveAccount')}{' '}
           <Link
             component={RouterLink}
             to={paths.login}
             data-testid={testIds.auth.goToLogin}
             underline="hover"
           >
-            Entrar
+            {t('auth.register.enter')}
           </Link>
         </Typography>
       }
     >
       <div data-testid={testIds.auth.registerPage}>
         <AuthForm
-          fields={FIELDS}
+          fields={getFields(t)}
           values={values}
           onChange={(name, value) => setValues((prev) => ({ ...prev, [name]: value }))}
           onSubmit={() =>
@@ -72,7 +77,7 @@ export function RegisterPage() {
               password: values.password ?? '',
             })
           }
-          submitLabel="Crear cuenta"
+          submitLabel={t('auth.register.submit')}
           submitTestId={testIds.auth.submitButton}
           pending={isPending}
           error={error}

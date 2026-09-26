@@ -8,6 +8,8 @@ import {
 } from '@/features/auth/authStore';
 import type { AuthResponse } from '@/features/auth/types';
 
+import i18n from '@/i18n';
+
 import { ApiError, type ApiProblem, type ErrorCode } from './types';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api/v1';
@@ -81,7 +83,7 @@ api.interceptors.response.use(
     if (!error.response) {
       return Promise.reject(
         new ApiError({
-          message: 'No pudimos conectarnos. Revisa tu conexion e intentalo de nuevo.',
+          message: i18n.t('common.networkError'),
           status: 0,
           code: 'NETWORK_ERROR',
         }),
@@ -144,8 +146,8 @@ function codeFromStatus(status: number): ErrorCode {
 }
 
 function fallbackMessage(status: number): string {
-  if (status === 401) return 'Tu sesion expiro. Inicia sesion de nuevo.';
-  if (status === 403) return 'No tienes acceso a esta seccion.';
-  if (status === 404) return 'No encontramos lo que buscabas.';
-  return 'Algo fallo de nuestro lado. Intentalo de nuevo en un momento.';
+  if (status === 401) return i18n.t('common.sessionExpired');
+  if (status === 403) return i18n.t('common.forbidden');
+  if (status === 404) return i18n.t('common.notFoundApi');
+  return i18n.t('common.serverError');
 }

@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import i18n from '@/i18n';
 import { ApiError } from '@/lib/api/types';
 import { showToast } from '@/store/toastStore';
 
@@ -77,8 +78,11 @@ export function useConfirmAmounts(cycleId: string | undefined) {
       await queryClient.invalidateQueries({ queryKey: reviewKeys.all });
       showToast(
         confirmados.length === 1
-          ? `Listo: "${confirmados[0]!.name}" queda en ${confirmados[0]!.plannedAmount.amount}.`
-          : `Listo: ${confirmados.length} gastos confirmados.`,
+          ? i18n.t('review.toast.confirmedOne', {
+              name: confirmados[0]!.name,
+              amount: confirmados[0]!.plannedAmount.amount,
+            })
+          : i18n.t('review.toast.confirmedMany', { count: confirmados.length }),
       );
     },
   });
@@ -98,8 +102,8 @@ export function useSettleItem(cycleId: string | undefined) {
 
       showToast(
         payload.registerInGoal === false
-          ? `"${item.name}" registrado. No se sumo a la meta.`
-          : `"${item.name}" registrado y sumado a tu meta.`,
+          ? i18n.t('review.toast.settledNoGoal', { name: item.name })
+          : i18n.t('review.toast.settledWithGoal', { name: item.name }),
       );
     },
   });

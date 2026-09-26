@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.Instant;
+import java.util.Set;
 
 /**
  * Preferencias del usuario.
@@ -25,6 +26,8 @@ public class UserPreferences {
     public static final String DEFAULT_CURRENCY = "MXN";
     public static final String DEFAULT_LOCALE = "es-MX";
     public static final String DEFAULT_TIMEZONE = "America/Mexico_City";
+    public static final String DEFAULT_UI_LANGUAGE = "es";
+    private static final Set<String> SUPPORTED_UI_LANGUAGES = Set.of("es", "en");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +41,12 @@ public class UserPreferences {
 
     @Column(nullable = false, length = 10)
     private String locale;
+
+    /** "es" o "en". Separado de {@code locale}: gobierna el idioma de la
+     *  interfaz, no el formato de numeros y fechas -aunque hoy el frontend
+     *  deriva uno del otro-. */
+    @Column(name = "ui_language", nullable = false, length = 2)
+    private String uiLanguage;
 
     @Column(nullable = false, length = 64)
     private String timezone;
@@ -72,6 +81,7 @@ public class UserPreferences {
         preferences.userId = userId;
         preferences.currency = DEFAULT_CURRENCY;
         preferences.locale = DEFAULT_LOCALE;
+        preferences.uiLanguage = DEFAULT_UI_LANGUAGE;
         preferences.timezone = DEFAULT_TIMEZONE;
         preferences.budgetCycleType = CycleType.BIWEEKLY;
         preferences.cycleAnchorDay = 1;
@@ -88,6 +98,14 @@ public class UserPreferences {
         this.cycleAnchorDay = anchorDay;
     }
 
+    /** Solo "es" o "en": cualquier otro valor no tiene catalogo de traducciones. */
+    public void changeUiLanguage(String uiLanguage) {
+        if (uiLanguage == null || !SUPPORTED_UI_LANGUAGES.contains(uiLanguage)) {
+            throw new IllegalArgumentException("El idioma debe ser 'es' o 'en'");
+        }
+        this.uiLanguage = uiLanguage;
+    }
+
     public Long getUserId() {
         return userId;
     }
@@ -98,6 +116,10 @@ public class UserPreferences {
 
     public String getLocale() {
         return locale;
+    }
+
+    public String getUiLanguage() {
+        return uiLanguage;
     }
 
     public String getTimezone() {

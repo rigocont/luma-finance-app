@@ -3,6 +3,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import type { FormEvent, ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { ApiError } from '@/lib/api/types';
 
@@ -53,6 +54,7 @@ export function AuthForm({
   fieldErrors: localFieldErrors,
   children,
 }: AuthFormProps) {
+  const { t } = useTranslation();
   const apiError = error instanceof ApiError ? error : null;
   const fieldErrors = { ...(apiError?.fieldErrorMap ?? {}), ...(localFieldErrors ?? {}) };
 
@@ -100,7 +102,7 @@ export function AuthForm({
           disabled={pending}
           data-testid={submitTestId}
         >
-          {pending ? 'Un momento...' : submitLabel}
+          {pending ? t('common.oneMoment') : submitLabel}
         </Button>
 
         {children}

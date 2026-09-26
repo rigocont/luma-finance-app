@@ -82,6 +82,8 @@ export const testIds = {
     cycleError: 'settings-cycle-error',
     themeCard: 'settings-theme-card',
     themeOption: (value: string) => `settings-theme-${value}`,
+    languageCard: 'settings-language-card',
+    languageOption: (value: string) => `settings-language-${value}`,
     changePasswordCard: 'settings-change-password-card',
     changePasswordSubmit: 'settings-change-password-submit',
     changePasswordError: 'settings-change-password-error',

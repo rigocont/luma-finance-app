@@ -38,7 +38,7 @@ LUMA no es un registro de gastos. Organiza el dinero en **ciclos presupuestales*
 | 12 | Anuncios: espacio publicitario en el shell; monetizacion sin planes de pago | Completada |
 | 13 | Analisis financiero (sin IA): causa del deficit, reparto del remanente y crecimiento sostenido | Completada -- la capa de redaccion con IA queda pendiente |
 | 14 | Tour guiado de bienvenida: paso a paso para cuentas nuevas, omitible y repetible desde Ajustes | Completada |
-| 15 | Interfaz bilingue (es/en): idioma del sistema por defecto, cambiable desde Ajustes; lo que la persona escribe nunca se traduce | Pendiente |
+| 15 | Interfaz bilingue (es/en): idioma del sistema por defecto, cambiable desde Ajustes; lo que la persona escribe nunca se traduce | Completada |
 
 El plan completo esta en [`docs/00-arquitectura-fase-0.md`](docs/00-arquitectura-fase-0.md).
 El plan de las apps moviles (iOS/Android) esta en [`docs/roadmap-mobile.md`](docs/roadmap-mobile.md).

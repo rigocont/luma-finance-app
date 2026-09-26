@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import i18n from '@/i18n';
 import { showToast } from '@/store/toastStore';
 
 import {
@@ -51,14 +52,14 @@ function useSavingsMutation<TVariables, TResult>(
 export function useCreateGoal() {
   return useSavingsMutation(
     (payload: SavingsGoalPayload) => createGoal(payload),
-    (payload) => `Meta "${payload.name}" creada.`,
+    (payload) => i18n.t('savings.toast.created', { name: payload.name }),
   );
 }
 
 export function useUpdateGoal() {
   return useSavingsMutation(
     ({ id, payload }: { id: string; payload: SavingsGoalPayload }) => updateGoal(id, payload),
-    ({ payload }) => `Meta "${payload.name}" actualizada.`,
+    ({ payload }) => i18n.t('savings.toast.updated', { name: payload.name }),
   );
 }
 
@@ -68,12 +69,15 @@ export function useRegisterMovement() {
       registerMovement(goalId, payload),
     ({ payload }, result) => {
       if (payload.type === 'WITHDRAWAL') {
-        return `Retiro registrado. Llevas ${result.saved.amount} de ${result.target.amount}.`;
+        return i18n.t('savings.toast.withdrawal', {
+          saved: result.saved.amount,
+          target: result.target.amount,
+        });
       }
       // Alcanzar la meta merece decirse, no quedarse en un numero mas.
       return result.status === 'COMPLETED'
-        ? `Aportacion registrada. Alcanzaste "${result.name}".`
-        : `Aportacion registrada en "${result.name}".`;
+        ? i18n.t('savings.toast.contributionCompleted', { name: result.name })
+        : i18n.t('savings.toast.contribution', { name: result.name });
     },
   );
 }
@@ -81,7 +85,7 @@ export function useRegisterMovement() {
 export function useReorderGoals() {
   return useSavingsMutation(
     (goalIds: string[]) => reorderGoals(goalIds),
-    () => 'Orden de prioridad guardado.',
+    () => i18n.t('savings.toast.reordered'),
   );
 }
 
@@ -90,14 +94,14 @@ export function useSetGoalPaused() {
     ({ id, paused }: { id: string; paused: boolean }) => setGoalPaused(id, paused),
     ({ paused }, result) =>
       paused
-        ? `"${result.name}" deja de restar de tus ciclos.`
-        : `"${result.name}" vuelve a contar en tus ciclos.`,
+        ? i18n.t('savings.toast.paused', { name: result.name })
+        : i18n.t('savings.toast.resumed', { name: result.name }),
   );
 }
 
 export function useDeleteGoal() {
   return useSavingsMutation(
     ({ id }: { id: string; name: string }) => deleteGoal(id),
-    ({ name }) => `Meta "${name}" eliminada.`,
+    ({ name }) => i18n.t('savings.toast.deleted', { name }),
   );
 }

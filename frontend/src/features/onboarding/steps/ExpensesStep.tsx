@@ -10,13 +10,14 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useState, type FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { LoadingState } from '@/components/ui/LoadingState';
 import { ApiError } from '@/lib/api/types';
 import { formatMoney } from '@/lib/money';
 import { testIds } from '@/lib/testids';
 
-import { EXPENSE_KIND_LABELS, type ExpenseCategory } from '../../expenses/types';
+import { expenseKindLabel, type ExpenseCategory } from '../../expenses/types';
 import {
   useCreateExpense,
   useDeleteExpense,
@@ -39,6 +40,7 @@ import {
  * peor que uno incompleto.
  */
 export function ExpensesStep() {
+  const { t } = useTranslation();
   const categorias = useExpenseCategories();
   const lista = useExpenses({ sort: 'NEWEST', page: 0, size: 50 });
   const crear = useCreateExpense();
@@ -92,8 +94,7 @@ export function ExpensesStep() {
   return (
     <Stack spacing={5} data-testid={testIds.onboarding.step('expenses')}>
       <Typography variant="body1" color="text.secondary">
-        Elige los que reconozcas y pon cuanto te cuestan. Puedes saltarte este paso y capturarlos
-        con calma despues.
+        {t('onboarding.expenses.intro')}
       </Typography>
 
       {generalMessage && (
@@ -121,17 +122,18 @@ export function ExpensesStep() {
         <Stack spacing={4}>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
             <TextField
-              label="Que gasto es"
+              label={t('onboarding.expenses.name')}
               value={nombre}
               onChange={(event) => setNombre(event.target.value)}
               error={Boolean(fieldErrors.name)}
               helperText={
                 fieldErrors.name ??
                 (elegida
-                  ? `Va a quedar en ${elegida.name}, con monto ${EXPENSE_KIND_LABELS[
-                      elegida.defaultKind
-                    ].toLowerCase()}`
-                  : 'Elige una categoria arriba o escribe uno que no este en la lista')
+                  ? t('onboarding.expenses.nameHelpWithCategory', {
+                      category: elegida.name,
+                      kind: expenseKindLabel(elegida.defaultKind).toLowerCase(),
+                    })
+                  : t('onboarding.expenses.nameHelpWithoutCategory'))
               }
               disabled={crear.isPending}
               fullWidth
@@ -144,11 +146,11 @@ export function ExpensesStep() {
             />
 
             <TextField
-              label="Cuanto"
+              label={t('onboarding.expenses.amount')}
               value={monto}
               onChange={(event) => setMonto(event.target.value)}
               error={Boolean(fieldErrors.amount)}
-              helperText={fieldErrors.amount ?? 'Al mes'}
+              helperText={fieldErrors.amount ?? t('onboarding.expenses.amountHelp')}
               disabled={crear.isPending}
               sx={{ width: { xs: '100%', sm: 200 } }}
               slotProps={{
@@ -163,11 +165,11 @@ export function ExpensesStep() {
 
           <Stack direction="row" spacing={3}>
             <Button type="submit" variant="outlined" disabled={crear.isPending || !capturado}>
-              {crear.isPending ? 'Un momento...' : 'Agregar gasto'}
+              {crear.isPending ? t('common.oneMoment') : t('onboarding.expenses.add')}
             </Button>
             {capturado && (
               <Button onClick={limpiar} disabled={crear.isPending}>
-                Limpiar
+                {t('onboarding.expenses.clear')}
               </Button>
             )}
           </Stack>
@@ -188,8 +190,8 @@ export function ExpensesStep() {
                 <Stack spacing={0.5} sx={{ minWidth: 0 }}>
                   <Typography variant="body1">{expense.name}</Typography>
                   <Typography variant="caption" color="text.secondary">
-                    {expense.category?.name ?? 'Sin categoria'}
-                    {expense.requiresReview && ' · el monto cambia'}
+                    {expense.category?.name ?? t('onboarding.expenses.noCategory')}
+                    {expense.requiresReview && t('onboarding.expenses.variableSuffix')}
                   </Typography>
                 </Stack>
 
@@ -199,7 +201,7 @@ export function ExpensesStep() {
                   </Typography>
                   <IconButton
                     size="small"
-                    aria-label={`Quitar ${expense.name}`}
+                    aria-label={t('onboarding.expenses.remove', { name: expense.name })}
                     disabled={eliminar.isPending}
                     onClick={() => eliminar.mutate({ id: expense.id, name: expense.name })}
                   >

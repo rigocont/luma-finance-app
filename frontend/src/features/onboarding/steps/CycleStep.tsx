@@ -4,14 +4,15 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { LoadingState } from '@/components/ui/LoadingState';
 import { testIds } from '@/lib/testids';
 
 import {
   CYCLE_TYPES,
-  CYCLE_TYPE_HELP,
-  CYCLE_TYPE_LABELS,
+  cycleTypeHelp,
+  cycleTypeLabel,
   type CycleType,
 } from '../../preferences/types';
 import { useCyclePreferences, useUpdateCyclePreference } from '../../preferences/usePreferences';
@@ -31,6 +32,7 @@ interface CycleStepProps {
  * puede pasar. Guardar solo llama al servidor si algo cambio.
  */
 export function CycleStep({ onRegisterSave }: CycleStepProps) {
+  const { t } = useTranslation();
   const preferencias = useCyclePreferences();
   const guardar = useUpdateCyclePreference();
 
@@ -67,32 +69,31 @@ export function CycleStep({ onRegisterSave }: CycleStepProps) {
   return (
     <Stack spacing={5} data-testid={testIds.onboarding.step('cycle')}>
       <Typography variant="body1" color="text.secondary">
-        Un ciclo es el periodo que presupuestas de una vez. Casi siempre coincide con cada cuanto te
-        pagan.
+        {t('onboarding.cycle.intro')}
       </Typography>
 
       <TextField
         select
-        label="Cada cuanto presupuestas"
+        label={t('onboarding.cycle.typeLabel')}
         value={tipo}
         onChange={(event) => setTipo(event.target.value as CycleType)}
-        helperText={CYCLE_TYPE_HELP[tipo]}
+        helperText={cycleTypeHelp(tipo)}
         fullWidth
         data-testid={testIds.onboarding.cycleTypeInput}
       >
         {CYCLE_TYPES.map((value) => (
           <MenuItem key={value} value={value}>
-            {CYCLE_TYPE_LABELS[value]}
+            {cycleTypeLabel(value)}
           </MenuItem>
         ))}
       </TextField>
 
       <TextField
-        label="Dia en que empieza"
+        label={t('onboarding.cycle.dayLabel')}
         type="number"
         value={dia}
         onChange={(event) => setDia(event.target.value)}
-        helperText="Si pones 31, en los meses cortos cae el ultimo dia."
+        helperText={t('onboarding.cycle.dayHelp')}
         fullWidth
         slotProps={{
           htmlInput: { 'data-testid': testIds.onboarding.cycleAnchorInput, min: 1, max: 31 },
@@ -100,8 +101,7 @@ export function CycleStep({ onRegisterSave }: CycleStepProps) {
       />
 
       <Alert severity="info" data-testid={testIds.onboarding.cyclePreview}>
-        Esto lo puedes cambiar despues. El ciclo que este abierto conserva sus fechas y el cambio
-        aplica al siguiente.
+        {t('onboarding.cycle.preview')}
       </Alert>
     </Stack>
   );

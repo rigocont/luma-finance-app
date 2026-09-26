@@ -3,6 +3,7 @@ import CardContent from '@mui/material/CardContent';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { useTranslation } from 'react-i18next';
 
 import { LoadingState } from '@/components/ui/LoadingState';
 import { formatMoney } from '@/lib/money';
@@ -30,6 +31,8 @@ interface FinancialInsightsCardProps {
  * futura.
  */
 export function FinancialInsightsCard({ insights, loading }: FinancialInsightsCardProps) {
+  const { t } = useTranslation();
+
   if (loading) {
     return (
       <Card data-testid={testIds.dashboard.insights}>
@@ -56,18 +59,20 @@ export function FinancialInsightsCard({ insights, loading }: FinancialInsightsCa
     <Card data-testid={testIds.dashboard.insights}>
       <CardContent>
         <Stack spacing={4} divider={<Divider flexItem />}>
-          <Typography variant="h3">Analisis financiero</Typography>
+          <Typography variant="h3">{t('dashboard.insights.title')}</Typography>
 
           {deficitCause && (
             <Stack spacing={1} data-testid={testIds.dashboard.insightsDeficitCause}>
               <Typography variant="body1">
-                &ldquo;{deficitCause.categoryName}&rdquo; es lo que mas subio este ciclo: de{' '}
-                {formatMoney(deficitCause.previousAmount)} a{' '}
-                {formatMoney(deficitCause.currentAmount)} (+{formatMoney(deficitCause.increase)}).
+                {t('dashboard.insights.deficitCause', {
+                  category: deficitCause.categoryName,
+                  previous: formatMoney(deficitCause.previousAmount),
+                  current: formatMoney(deficitCause.currentAmount),
+                  increase: formatMoney(deficitCause.increase),
+                })}
               </Typography>
               <Typography variant="caption" color="text.secondary">
-                No es la unica razon posible del deficit, pero es la que mas cambio respecto al
-                ciclo anterior.
+                {t('dashboard.insights.deficitCauseNote')}
               </Typography>
             </Stack>
           )}
@@ -75,12 +80,14 @@ export function FinancialInsightsCard({ insights, loading }: FinancialInsightsCa
           {surplusAllocation && (
             <Stack spacing={2} data-testid={testIds.dashboard.insightsSurplus}>
               <Typography variant="body1">
-                Te sobran {formatMoney(surplusAllocation.surplus)} este ciclo.
+                {t('dashboard.insights.surplusIntro', {
+                  amount: formatMoney(surplusAllocation.surplus),
+                })}
               </Typography>
               {surplusAllocation.shares.length > 0 ? (
                 <>
                   <Typography variant="caption" color="text.secondary">
-                    Esto es a donde alcanzaria, si sigues el orden de tus metas:
+                    {t('dashboard.insights.surplusSharesIntro')}
                   </Typography>
                   <Stack spacing={1}>
                     {surplusAllocation.shares.map((share) => (
@@ -100,8 +107,7 @@ export function FinancialInsightsCard({ insights, loading }: FinancialInsightsCa
                 </>
               ) : (
                 <Typography variant="caption" color="text.secondary">
-                  No tienes ninguna meta activa a la que asignarlo. Crea una en Ahorros si quieres
-                  aprovecharlo.
+                  {t('dashboard.insights.surplusNoGoals')}
                 </Typography>
               )}
             </Stack>
@@ -110,7 +116,7 @@ export function FinancialInsightsCard({ insights, loading }: FinancialInsightsCa
           {categoryGrowth.length > 0 && (
             <Stack spacing={1} data-testid={testIds.dashboard.insightsGrowth}>
               <Typography variant="body2" color="text.secondary">
-                Categorias con una racha al alza:
+                {t('dashboard.insights.growthIntro')}
               </Typography>
               <Stack spacing={1}>
                 {categoryGrowth.map((growth) => (
@@ -122,8 +128,11 @@ export function FinancialInsightsCard({ insights, loading }: FinancialInsightsCa
                   >
                     <Typography variant="body2">{growth.categoryName}</Typography>
                     <Typography variant="body2" sx={{ fontVariantNumeric: 'tabular-nums' }}>
-                      {formatMoney(growth.firstAmount)} → {formatMoney(growth.lastAmount)} (
-                      {growth.cycles} ciclos)
+                      {t('dashboard.insights.growthCycles', {
+                        first: formatMoney(growth.firstAmount),
+                        last: formatMoney(growth.lastAmount),
+                        cycles: growth.cycles,
+                      })}
                     </Typography>
                   </Stack>
                 ))}

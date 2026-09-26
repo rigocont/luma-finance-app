@@ -6,6 +6,7 @@ import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
 import { PageHeader } from '@/components/layout/PageHeader';
@@ -35,6 +36,7 @@ import {
 const MONTO_VALIDO = /^\d{1,13}(\.\d{1,2})?$/;
 
 export function ReviewPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const ciclo = useCurrentCycle();
@@ -82,7 +84,7 @@ export function ReviewPage() {
       // que el navegador ya sabe. El servidor lo valida igual: esto es
       // comodidad, no la barrera.
       if (!MONTO_VALIDO.test(valor)) {
-        nuevosErrores[review.item.id] = 'Un numero con hasta dos decimales';
+        nuevosErrores[review.item.id] = t('review.invalidAmount');
       }
     }
 
@@ -120,20 +122,20 @@ export function ReviewPage() {
   return (
     <Stack data-testid={testIds.review.page}>
       <PageHeader
-        eyebrow="Tu dinero"
-        title="Este ciclo"
-        description="Lo que falta por definir antes de que el balance signifique algo."
+        eyebrow={t('review.eyebrow')}
+        title={t('review.title')}
+        description={t('review.description')}
       />
 
       {ciclo.isPending && <LoadingState rows={3} />}
 
       {sinCiclo && (
         <EmptyState
-          title="Todavia no tienes un ciclo abierto"
-          description="Un ciclo es la quincena o el mes que estas presupuestando. Cuando abras el primero, aqui va a aparecer lo que falte por revisar."
+          title={t('review.noCycle.title')}
+          description={t('review.noCycle.description')}
           action={
             <Button variant="contained" onClick={() => navigate(paths.expenses)}>
-              Empezar por mis gastos
+              {t('review.noCycle.startWithExpenses')}
             </Button>
           }
         />
@@ -150,7 +152,10 @@ export function ReviewPage() {
             color="text.secondary"
             data-testid={testIds.review.cycleRange}
           >
-            Del {formatDay(ciclo.data.period.start)} al {formatDay(ciclo.data.period.end)}
+            {t('review.cycleRange', {
+              start: formatDay(ciclo.data.period.start),
+              end: formatDay(ciclo.data.period.end),
+            })}
           </Typography>
 
           {revision.isPending && <LoadingState rows={3} />}
@@ -161,17 +166,14 @@ export function ReviewPage() {
 
           {revision.data && pendientes.length === 0 && (
             <EmptyState
-              title="No falta nada por revisar"
-              description="Todos los gastos de este ciclo ya tienen monto. Cuando captures uno nuevo de monto variable, va a aparecer aqui."
+              title={t('review.noneToReview.title')}
+              description={t('review.noneToReview.description')}
             />
           )}
 
           {pendientes.length > 0 && (
             <Stack spacing={4}>
-              <Alert severity="info">
-                Estos gastos cambian de monto cada ciclo. Hasta que digas cuanto fueron, el balance
-                los trata como una estimacion y no como un dato.
-              </Alert>
+              <Alert severity="info">{t('review.banner')}</Alert>
 
               {errorDelLote && (
                 <Alert severity="error" data-testid={testIds.review.formError}>
@@ -199,7 +201,9 @@ export function ReviewPage() {
                   data-testid={testIds.review.confirmedCount}
                 >
                   {pendientes.length}{' '}
-                  {pendientes.length === 1 ? 'gasto por revisar' : 'gastos por revisar'}
+                  {pendientes.length === 1
+                    ? t('review.pendingCountOne')
+                    : t('review.pendingCountMany')}
                 </Typography>
                 <Button
                   variant="contained"
@@ -207,7 +211,7 @@ export function ReviewPage() {
                   disabled={confirmar.isPending}
                   data-testid={testIds.review.confirmAllButton}
                 >
-                  {confirmar.isPending ? 'Un momento...' : 'Confirmar todo'}
+                  {confirmar.isPending ? t('common.oneMoment') : t('review.confirmAll')}
                 </Button>
               </Stack>
             </Stack>
@@ -218,9 +222,9 @@ export function ReviewPage() {
               <Divider />
 
               <Stack spacing={1}>
-                <Typography variant="h3">Tus metas de este ciclo</Typography>
+                <Typography variant="h3">{t('review.savingsSection.title')}</Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Cuando apartes el dinero, registralo aqui y sube el progreso de la meta.
+                  {t('review.savingsSection.description')}
                 </Typography>
               </Stack>
 
@@ -248,7 +252,7 @@ export function ReviewPage() {
                             {formatMoney(item.plannedAmount)}
                           </Typography>
                           {item.status === 'OVERDUE' && (
-                            <Chip size="small" color="warning" label="Ya vencio" />
+                            <Chip size="small" color="warning" label={t('review.savingsSection.overdueChip')} />
                           )}
                         </Stack>
                       </Stack>
@@ -260,7 +264,7 @@ export function ReviewPage() {
                         }}
                         data-testid={testIds.review.savingsSettleAction}
                       >
-                        Registrar aporte
+                        {t('review.savingsSection.settle')}
                       </Button>
                     </Stack>
                   </Card>

@@ -4,6 +4,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { useTranslation } from 'react-i18next';
 
 import { testIds } from '@/lib/testids';
 
@@ -35,6 +36,8 @@ export function ConfirmDialog({
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
+  const { t } = useTranslation();
+
   return (
     <Dialog
       open={open}
@@ -50,7 +53,7 @@ export function ConfirmDialog({
 
       <DialogActions>
         <Button onClick={onCancel} disabled={pending} data-testid={testIds.confirm.cancel}>
-          Cancelar
+          {t('common.cancel')}
         </Button>
         <Button
           variant="contained"
@@ -59,7 +62,7 @@ export function ConfirmDialog({
           disabled={pending}
           data-testid={testIds.confirm.accept}
         >
-          {pending ? 'Un momento...' : confirmLabel}
+          {pending ? t('common.oneMoment') : confirmLabel}
         </Button>
       </DialogActions>
     </Dialog>

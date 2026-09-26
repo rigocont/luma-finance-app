@@ -1,6 +1,7 @@
 package com.luma.users.api;
 
 import com.luma.users.api.dto.UpdateCyclePreferenceRequest;
+import com.luma.users.api.dto.UpdateLanguageRequest;
 import com.luma.users.api.dto.UserPreferencesResponse;
 import com.luma.users.application.CurrentUserService;
 import com.luma.users.application.UserPreferencesService;
@@ -71,5 +72,22 @@ public class UserPreferencesController {
 
         return UserPreferencesResponse.from(
                 preferences.changeCycle(userId, request.cycleType(), request.anchorDay()));
+    }
+
+    @PatchMapping("/language")
+    @Operation(
+            summary = "Cambiar el idioma de la interfaz",
+            description = """
+                    "es" o "en". Se guarda en la cuenta -no solo en este
+                    navegador- para que el idioma elegido se recuerde tambien
+                    en otro dispositivo.
+                    """)
+    public UserPreferencesResponse changeLanguage(
+            @AuthenticationPrincipal Jwt jwt,
+            @Valid @RequestBody UpdateLanguageRequest request) {
+
+        Long userId = currentUser.requireId(jwt.getSubject());
+
+        return UserPreferencesResponse.from(preferences.changeUiLanguage(userId, request.uiLanguage()));
     }
 }

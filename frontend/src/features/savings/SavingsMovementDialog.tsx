@@ -9,6 +9,7 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState, type FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { ApiError } from '@/lib/api/types';
 import { formatMoney } from '@/lib/money';
@@ -49,6 +50,7 @@ export function SavingsMovementDialog({
   onSubmit,
   onClose,
 }: SavingsMovementDialogProps) {
+  const { t } = useTranslation();
   const [amount, setAmount] = useState('');
   const [date, setDate] = useState(hoy());
   const [notes, setNotes] = useState('');
@@ -87,14 +89,18 @@ export function SavingsMovementDialog({
     >
       <Box component="form" onSubmit={handleSubmit} noValidate>
         <DialogTitle id="savings-movement-title">
-          {retiro ? 'Registrar un retiro' : 'Registrar una aportacion'}
+          {retiro ? t('savings.movement.titleWithdrawal') : t('savings.movement.titleContribution')}
         </DialogTitle>
 
         <DialogContent>
           <Stack spacing={5} sx={{ pt: 2 }}>
             {goal && (
               <Typography variant="body2" color="text.secondary">
-                {goal.name}: llevas {formatMoney(goal.saved)} de {formatMoney(goal.target)}.
+                {t('savings.movement.summary', {
+                  name: goal.name,
+                  saved: formatMoney(goal.saved),
+                  target: formatMoney(goal.target),
+                })}
               </Typography>
             )}
 
@@ -105,15 +111,15 @@ export function SavingsMovementDialog({
             )}
 
             <TextField
-              label="Monto"
+              label={t('savings.movement.amount')}
               value={amount}
               onChange={(event) => setAmount(event.target.value)}
               error={Boolean(fieldErrors.amount)}
               helperText={
                 fieldErrors.amount ??
                 (retiro
-                  ? 'En positivo. No puede pasar de lo que llevas juntado.'
-                  : 'En positivo, hasta dos decimales.')
+                  ? t('savings.movement.amountHelpWithdrawal')
+                  : t('savings.movement.amountHelpContribution'))
               }
               disabled={pending}
               fullWidth
@@ -128,7 +134,7 @@ export function SavingsMovementDialog({
             />
 
             <TextField
-              label="Cuando"
+              label={t('savings.movement.when')}
               type="date"
               value={date}
               onChange={(event) => setDate(event.target.value)}
@@ -143,13 +149,13 @@ export function SavingsMovementDialog({
             />
 
             <TextField
-              label="Notas (opcional)"
+              label={t('savings.movement.notes')}
               value={notes}
               onChange={(event) => setNotes(event.target.value)}
               error={Boolean(fieldErrors.notes)}
               helperText={
                 fieldErrors.notes ??
-                (retiro ? 'De donde salio y para que, para acordarte despues.' : undefined)
+                (retiro ? t('savings.movement.notesHelpWithdrawal') : undefined)
               }
               disabled={pending}
               fullWidth
@@ -164,7 +170,7 @@ export function SavingsMovementDialog({
 
         <DialogActions>
           <Button onClick={onClose} disabled={pending}>
-            Cancelar
+            {t('common.cancel')}
           </Button>
           <Button
             type="submit"
@@ -173,7 +179,11 @@ export function SavingsMovementDialog({
             disabled={pending}
             data-testid={testIds.savings.movementSubmit}
           >
-            {pending ? 'Un momento...' : retiro ? 'Registrar retiro' : 'Registrar aportacion'}
+            {pending
+              ? t('common.oneMoment')
+              : retiro
+                ? t('savings.movement.submitWithdrawal')
+                : t('savings.movement.submitContribution')}
           </Button>
         </DialogActions>
       </Box>

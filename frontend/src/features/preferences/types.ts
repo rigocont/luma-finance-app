@@ -1,18 +1,22 @@
+import i18n from '@/i18n';
+
 /** Debe coincidir con com.luma.budget.domain.CycleType. */
 export const CYCLE_TYPES = ['BIWEEKLY', 'MONTHLY', 'BIMONTHLY'] as const;
 export type CycleType = (typeof CYCLE_TYPES)[number];
 
-export const CYCLE_TYPE_LABELS: Record<CycleType, string> = {
-  BIWEEKLY: 'Cada quincena',
-  MONTHLY: 'Cada mes',
-  BIMONTHLY: 'Cada dos meses',
-};
+/**
+ * La API devuelve codigos estables; la pantalla habla en el idioma elegido
+ * (Fase 15). Se usa `i18n.t` directamente -no el hook- porque este archivo
+ * no es un componente; el componente que llama a esta funcion ya se
+ * resuscribe al idioma con su propio `useTranslation`.
+ */
+export function cycleTypeLabel(value: CycleType): string {
+  return i18n.t(`settings.cycle.types.${value}`);
+}
 
-export const CYCLE_TYPE_HELP: Record<CycleType, string> = {
-  BIWEEKLY: 'Lo mas comun si cobras los dias 15 y 30.',
-  MONTHLY: 'Un presupuesto por mes, de principio a fin.',
-  BIMONTHLY: 'Util si tus ingresos llegan cada dos meses.',
-};
+export function cycleTypeHelp(value: CycleType): string {
+  return i18n.t(`settings.cycle.help.${value}`);
+}
 
 export interface CyclePreferences {
   currency: string;
@@ -21,6 +25,12 @@ export interface CyclePreferences {
   budgetCycleType: CycleType;
   cycleAnchorDay: number;
   expenseAllocationPolicy: string;
+  /**
+   * "es" o "en" (Fase 15). Vive en la cuenta, no en este navegador: es lo que
+   * permite que el idioma elegido se recuerde tambien en otro dispositivo.
+   * Distinto de `locale`, que gobierna el formato de numeros y fechas.
+   */
+  uiLanguage: string;
 }
 
 export interface CyclePreferencePayload {

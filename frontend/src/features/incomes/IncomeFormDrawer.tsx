@@ -8,15 +8,16 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState, type FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { ApiError } from '@/lib/api/types';
 import { testIds } from '@/lib/testids';
 
 import {
   FREQUENCIES,
-  FREQUENCY_LABELS,
+  frequencyLabel,
   INCOME_TYPES,
-  INCOME_TYPE_LABELS,
+  incomeTypeLabel,
   needsExpectedDay,
   typeRequiresReview,
   type Frequency,
@@ -95,6 +96,7 @@ export function IncomeFormDrawer({
   onSubmit,
   onClose,
 }: IncomeFormDrawerProps) {
+  const { t } = useTranslation();
   const [values, setValues] = useState<FormValues>(() => valoresIniciales(income));
 
   // Al abrirse, el formulario refleja el ingreso que se va a editar (o queda
@@ -143,10 +145,10 @@ export function IncomeFormDrawer({
         <Stack spacing={5}>
           <Stack spacing={1}>
             <Typography variant="overline" color="text.disabled">
-              {editando ? 'Editar' : 'Nuevo'}
+              {editando ? t('incomes.form.editing') : t('incomes.form.new')}
             </Typography>
             <Typography variant="h3" data-testid={testIds.incomes.drawerTitle}>
-              {editando ? values.name || 'Ingreso' : 'Capturar un ingreso'}
+              {editando ? values.name || t('incomes.form.editTitleFallback') : t('incomes.form.newTitle')}
             </Typography>
           </Stack>
 
@@ -157,13 +159,11 @@ export function IncomeFormDrawer({
           )}
 
           <TextField
-            label="Nombre"
+            label={t('incomes.form.name')}
             value={values.name}
             onChange={(event) => set('name', event.target.value)}
             error={Boolean(fieldErrors.name)}
-            helperText={
-              fieldErrors.name ?? 'Como lo reconoces: Sueldo, Comisiones, Renta del local'
-            }
+            helperText={fieldErrors.name ?? t('incomes.form.nameHelp')}
             disabled={pending}
             fullWidth
             autoFocus
@@ -172,7 +172,7 @@ export function IncomeFormDrawer({
 
           <TextField
             select
-            label="Tipo"
+            label={t('incomes.form.type')}
             value={values.type}
             onChange={(event) => set('type', event.target.value as IncomeType)}
             error={Boolean(fieldErrors.type)}
@@ -183,24 +183,23 @@ export function IncomeFormDrawer({
           >
             {INCOME_TYPES.map((type) => (
               <MenuItem key={type} value={type}>
-                {INCOME_TYPE_LABELS[type]}
+                {incomeTypeLabel(type)}
               </MenuItem>
             ))}
           </TextField>
 
           {pedira && (
             <Alert severity="info" data-testid={testIds.incomes.reviewNotice}>
-              Como el monto cambia, cada ciclo te va a pedir confirmar cuanto fue antes de darlo por
-              seguro.
+              {t('incomes.form.reviewNotice')}
             </Alert>
           )}
 
           <TextField
-            label="Monto"
+            label={t('incomes.form.amount')}
             value={values.amount}
             onChange={(event) => set('amount', event.target.value)}
             error={Boolean(fieldErrors.amount)}
-            helperText={fieldErrors.amount ?? 'Hasta dos decimales, sin signos ni comas'}
+            helperText={fieldErrors.amount ?? t('incomes.form.amountHelp')}
             disabled={pending}
             fullWidth
             slotProps={{
@@ -209,7 +208,7 @@ export function IncomeFormDrawer({
                 inputMode: 'decimal',
                 // El punto y hasta dos decimales: el mismo patron que valida el
                 // backend, para que el teclado ayude en lugar de estorbar.
-                pattern: '\\d{1,13}(\\.\\d{1,2})?',
+                pattern: '\\\\d{1,13}(\\\\.\\\\d{1,2})?',
               },
             }}
           />
@@ -218,7 +217,7 @@ export function IncomeFormDrawer({
 
           <TextField
             select
-            label="Cada cuanto"
+            label={t('incomes.form.frequency')}
             value={values.frequency}
             onChange={(event) => set('frequency', event.target.value as Frequency)}
             error={Boolean(fieldErrors.frequency)}
@@ -229,21 +228,19 @@ export function IncomeFormDrawer({
           >
             {FREQUENCIES.map((frequency) => (
               <MenuItem key={frequency} value={frequency}>
-                {FREQUENCY_LABELS[frequency]}
+                {frequencyLabel(frequency)}
               </MenuItem>
             ))}
           </TextField>
 
           {pideDia && (
             <TextField
-              label="Dia del mes"
+              label={t('incomes.form.expectedDay')}
               type="number"
               value={values.expectedDay}
               onChange={(event) => set('expectedDay', event.target.value)}
               error={Boolean(fieldErrors.expectedDay)}
-              helperText={
-                fieldErrors.expectedDay ?? 'Si pones 31, en los meses cortos cae el ultimo dia'
-              }
+              helperText={fieldErrors.expectedDay ?? t('incomes.form.expectedDayHelp')}
               disabled={pending}
               fullWidth
               slotProps={{
@@ -253,7 +250,7 @@ export function IncomeFormDrawer({
           )}
 
           <TextField
-            label="Desde"
+            label={t('incomes.form.startDate')}
             type="date"
             value={values.startDate}
             onChange={(event) => set('startDate', event.target.value)}
@@ -268,12 +265,12 @@ export function IncomeFormDrawer({
           />
 
           <TextField
-            label="Hasta (opcional)"
+            label={t('incomes.form.endDate')}
             type="date"
             value={values.endDate}
             onChange={(event) => set('endDate', event.target.value)}
             error={Boolean(fieldErrors.endDate)}
-            helperText={fieldErrors.endDate ?? 'Dejalo vacio si no tiene fecha de termino'}
+            helperText={fieldErrors.endDate ?? t('incomes.form.endDateHelp')}
             disabled={pending}
             fullWidth
             slotProps={{
@@ -283,7 +280,7 @@ export function IncomeFormDrawer({
           />
 
           <TextField
-            label="Notas (opcional)"
+            label={t('incomes.form.notes')}
             value={values.notes}
             onChange={(event) => set('notes', event.target.value)}
             error={Boolean(fieldErrors.notes)}
@@ -297,14 +294,13 @@ export function IncomeFormDrawer({
 
           {editando && (
             <Typography variant="body2" color="text.secondary">
-              Los cambios aplican desde el siguiente ciclo. El ciclo en curso conserva lo que ya
-              tenia.
+              {t('incomes.form.editNotice')}
             </Typography>
           )}
 
           <Stack direction="row" spacing={3} sx={{ justifyContent: 'flex-end', pt: 2 }}>
             <Button onClick={onClose} disabled={pending} data-testid={testIds.incomes.cancelButton}>
-              Cancelar
+              {t('common.cancel')}
             </Button>
             <Button
               type="submit"
@@ -312,7 +308,7 @@ export function IncomeFormDrawer({
               disabled={pending}
               data-testid={testIds.incomes.submitButton}
             >
-              {pending ? 'Un momento...' : editando ? 'Guardar cambios' : 'Capturar ingreso'}
+              {pending ? t('common.oneMoment') : editando ? t('incomes.form.submitEdit') : t('incomes.form.submitNew')}
             </Button>
           </Stack>
         </Stack>

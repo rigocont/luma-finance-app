@@ -1,8 +1,10 @@
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import { BarChart } from '@mui/x-charts/BarChart';
+import { useTranslation } from 'react-i18next';
 
-import { formatMoneyCompact } from '@/lib/money';
+import i18n from '@/i18n';
+import { formatMoneyCompact, intlLocaleFor } from '@/lib/money';
 import { testIds } from '@/lib/testids';
 import { chartPalette } from '@/theme/tokens';
 
@@ -30,6 +32,7 @@ interface TrendChartProps {
  * manda el servidor. Aqui no se reordena.
  */
 export function TrendChart({ trends }: TrendChartProps) {
+  const { t } = useTranslation();
   const theme = useTheme();
   const c = chartPalette[theme.palette.mode];
 
@@ -44,7 +47,7 @@ export function TrendChart({ trends }: TrendChartProps) {
         series={[
           {
             data: balances,
-            label: 'Lo que te quedo',
+            label: t('dashboard.trend.seriesLabel'),
             // El tooltip formatea con la misma funcion que el resto de la
             // aplicacion: una sola forma de escribir dinero.
             valueFormatter: (value) =>
@@ -81,7 +84,7 @@ function etiquetaDe(iso: string): string {
 
   const [ano, mes, dia] = partes.map(Number) as [number, number, number];
 
-  return new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: 'short' }).format(
+  return new Intl.DateTimeFormat(intlLocaleFor(i18n.language), { day: 'numeric', month: 'short' }).format(
     new Date(ano, mes - 1, dia),
   );
 }

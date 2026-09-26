@@ -134,6 +134,8 @@ distinguirlos es exactamente lo que una prueba necesita verificar:
 | Error del ciclo | `settings-cycle-error` |
 | Tarjeta de apariencia | `settings-theme-card` |
 | Opcion de tema | `settings-theme-light`, `settings-theme-dark`, `settings-theme-system` |
+| Tarjeta de idioma | `settings-language-card` |
+| Opcion de idioma | `settings-language-es`, `settings-language-en` |
 | Tarjeta de contrasena | `settings-change-password-card` |
 | Boton de cambiar contrasena | `settings-change-password-submit` |
 | Error del formulario | `settings-change-password-error` |

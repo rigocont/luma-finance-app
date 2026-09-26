@@ -2,6 +2,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { useTranslation } from 'react-i18next';
 
 import { EmptyState } from '@/components/ui/EmptyState';
 import { LoadingState } from '@/components/ui/LoadingState';
@@ -28,6 +29,8 @@ interface TrendCardProps {
  * comparacion se lee como linea de tiempo y no como lista. Aqui no se reordena.
  */
 export function TrendCard({ trends, loading }: TrendCardProps) {
+  const { t } = useTranslation();
+
   if (loading) {
     return (
       <Card data-testid={testIds.dashboard.trend}>
@@ -46,8 +49,8 @@ export function TrendCard({ trends, loading }: TrendCardProps) {
         <CardContent>
           <div data-testid={testIds.dashboard.trendEmpty}>
             <EmptyState
-              title="Todavia no hay con que comparar"
-              description="Cuando cierres tu primer ciclo, aqui vas a poder ver si vas mejor o peor que la vez pasada."
+              title={t('dashboard.trend.emptyTitle')}
+              description={t('dashboard.trend.emptyDescription')}
             />
           </div>
         </CardContent>
@@ -63,17 +66,19 @@ export function TrendCard({ trends, loading }: TrendCardProps) {
       <CardContent>
         <Stack spacing={4}>
           <Stack spacing={1}>
-            <Typography variant="h3">Comparado con el ciclo pasado</Typography>
+            <Typography variant="h3">{t('dashboard.trend.title')}</Typography>
             <Typography
               variant="body1"
               color="text.secondary"
               data-testid={testIds.dashboard.trendDelta}
             >
-              {frasePara(actual.outflowChange)}
+              {frasePara(t, actual.outflowChange)}
             </Typography>
             <Typography variant="caption" color="text.disabled">
-              El ciclo que empezo el {formatDay(anterior.period.start)} salio en{' '}
-              {formatMoney(anterior.planned.totalOutflow)}.
+              {t('dashboard.trend.previousOutflow', {
+                date: formatDay(anterior.period.start),
+                amount: formatMoney(anterior.planned.totalOutflow),
+              })}
             </Typography>
           </Stack>
 
@@ -91,14 +96,14 @@ export function TrendCard({ trends, loading }: TrendCardProps) {
  * el lint del proyecto el que lo exigio, y tenia razon — esta funcion empezo
  * restando dos montos y sacandoles el valor absoluto.
  */
-function frasePara(change: Change | null): string {
+function frasePara(t: (key: string, opts?: Record<string, unknown>) => string, change: Change | null): string {
   if (change === null || change.direction === 'SAME') {
-    return 'Estas gastando practicamente lo mismo que el ciclo pasado.';
+    return t('dashboard.trend.same');
   }
 
   const monto = formatMoney(change.amount);
 
   return change.direction === 'UP'
-    ? `Estas gastando ${monto} mas que el ciclo pasado.`
-    : `Estas gastando ${monto} menos que el ciclo pasado.`;
+    ? t('dashboard.trend.up', { amount: monto })
+    : t('dashboard.trend.down', { amount: monto });
 }

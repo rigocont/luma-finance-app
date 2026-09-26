@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 
 import { markOnboardingCompleted } from '@/features/auth/authStore';
+import i18n from '@/i18n';
 import { showToast } from '@/store/toastStore';
 import { paths } from '@/routes/paths';
 
@@ -30,7 +31,7 @@ export function useCompleteOnboarding() {
     onSuccess: async () => {
       markOnboardingCompleted();
       await queryClient.invalidateQueries();
-      showToast('Tu primer ciclo esta listo.');
+      showToast(i18n.t('onboarding.toast.completed'));
       navigate(paths.dashboard, { replace: true });
     },
   });

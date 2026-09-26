@@ -7,6 +7,7 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import { useTranslation } from 'react-i18next';
 
 import { formatDay } from '@/lib/date';
 import { formatMoney } from '@/lib/money';
@@ -43,6 +44,8 @@ export function ReviewList({
   onAmountChange,
   onShowHistory,
 }: ReviewListProps) {
+  const { t } = useTranslation();
+
   return (
     <Stack spacing={3} data-testid={testIds.review.list}>
       {reviews.map((review) => {
@@ -73,8 +76,9 @@ export function ReviewList({
                   color="text.secondary"
                   data-testid={testIds.review.rowPlanned}
                 >
-                  Estimaste {formatMoney(item.plannedAmount)}
-                  {item.dueDate !== null && ` · vence el ${formatDay(item.dueDate)}`}
+                  {t('review.list.plannedAmount', { amount: formatMoney(item.plannedAmount) })}
+                  {item.dueDate !== null &&
+                    t('review.list.dueDate', { date: formatDay(item.dueDate) })}
                 </Typography>
 
                 {sugerencia !== null && review.suggestedFromStart !== null && (
@@ -88,8 +92,10 @@ export function ReviewList({
                       color="text.secondary"
                       data-testid={testIds.review.rowSuggestion}
                     >
-                      El ciclo del {formatDay(review.suggestedFromStart)} fueron{' '}
-                      {formatMoney(sugerencia)}
+                      {t('review.list.suggestion', {
+                        date: formatDay(review.suggestedFromStart),
+                        amount: formatMoney(sugerencia),
+                      })}
                     </Typography>
 
                     {!yaEsLaSugerencia && (
@@ -99,7 +105,7 @@ export function ReviewList({
                         disabled={pending}
                         data-testid={testIds.review.rowUseSuggestion}
                       >
-                        Usar ese monto
+                        {t('review.list.useSuggestion')}
                       </Button>
                     )}
                   </Stack>
@@ -109,7 +115,7 @@ export function ReviewList({
               <Stack direction="row" spacing={2} sx={{ alignItems: 'flex-start' }}>
                 <TextField
                   size="small"
-                  label="Cuanto fue"
+                  label={t('review.list.amountLabel')}
                   value={capturado}
                   onChange={(event) => onAmountChange(item.id, event.target.value)}
                   error={Boolean(fieldErrors[item.id])}
@@ -121,17 +127,17 @@ export function ReviewList({
                       'data-testid': testIds.review.rowAmountInput,
                       inputMode: 'decimal',
                       pattern: '\\d{1,13}(\\.\\d{1,2})?',
-                      'aria-label': `Monto de ${item.name}`,
+                      'aria-label': t('review.list.amountAriaLabel', { name: item.name }),
                     },
                   }}
                 />
 
                 <Box sx={{ pt: 1 }}>
-                  <Tooltip title="Ver los ciclos anteriores">
+                  <Tooltip title={t('review.list.viewHistory')}>
                     <span>
                       <IconButton
                         size="small"
-                        aria-label={`Historial de ${item.name}`}
+                        aria-label={t('review.list.historyFor', { name: item.name })}
                         onClick={() => onShowHistory(review)}
                         data-testid={testIds.review.rowHistory}
                       >

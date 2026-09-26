@@ -4,6 +4,8 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { useNavigate } from 'react-router';
 
 import { testIds } from '@/lib/testids';
@@ -13,32 +15,35 @@ import { AuthForm, type FieldSpec } from './AuthForm';
 import { useAuthStore } from './authStore';
 import { changePassword } from './passwordApi';
 
-const FIELDS: FieldSpec[] = [
-  {
-    name: 'currentPassword',
-    label: 'Contrasena actual',
-    type: 'password',
-    autoComplete: 'current-password',
-    testId: testIds.auth.currentPasswordInput,
-  },
-  {
-    name: 'newPassword',
-    label: 'Contrasena nueva',
-    type: 'password',
-    autoComplete: 'new-password',
-    testId: testIds.auth.newPasswordInput,
-    helperText: 'Al menos 8 caracteres',
-  },
-  {
-    name: 'confirmPassword',
-    label: 'Confirma la contrasena nueva',
-    type: 'password',
-    autoComplete: 'new-password',
-    testId: testIds.auth.confirmPasswordInput,
-  },
-];
+function getFields(t: TFunction): FieldSpec[] {
+  return [
+    {
+      name: 'currentPassword',
+      label: t('auth.fields.currentPassword'),
+      type: 'password',
+      autoComplete: 'current-password',
+      testId: testIds.auth.currentPasswordInput,
+    },
+    {
+      name: 'newPassword',
+      label: t('auth.fields.newPassword'),
+      type: 'password',
+      autoComplete: 'new-password',
+      testId: testIds.auth.newPasswordInput,
+      helperText: t('auth.register.passwordHelp'),
+    },
+    {
+      name: 'confirmPassword',
+      label: t('auth.fields.confirmPasswordFull'),
+      type: 'password',
+      autoComplete: 'new-password',
+      testId: testIds.auth.confirmPasswordInput,
+    },
+  ];
+}
 
 export function ChangePasswordCard() {
+  const { t } = useTranslation();
   const clearSession = useAuthStore((state) => state.clearSession);
   const navigate = useNavigate();
 
@@ -57,14 +62,14 @@ export function ChangePasswordCard() {
       clearSession();
       navigate(paths.login, {
         replace: true,
-        state: { notice: 'Cambiamos tu contrasena. Entra con la nueva.' },
+        state: { notice: t('auth.changePassword.successNotice') },
       });
     },
   });
 
   function handleSubmit() {
     if (values.newPassword !== values.confirmPassword) {
-      setLocalErrors({ confirmPassword: 'Las contrasenas no coinciden' });
+      setLocalErrors({ confirmPassword: t('auth.changePassword.mismatch') });
       return;
     }
     setLocalErrors({});
@@ -79,19 +84,18 @@ export function ChangePasswordCard() {
       <CardContent>
         <Stack spacing={5}>
           <Stack spacing={1.5}>
-            <Typography variant="h3">Contrasena</Typography>
+            <Typography variant="h3">{t('auth.changePassword.title')}</Typography>
             <Typography variant="body2" color="text.secondary" sx={{ maxWidth: '54ch' }}>
-              Al cambiarla se cerraran todas tus sesiones, incluida esta, y tendras que entrar de
-              nuevo.
+              {t('auth.changePassword.description')}
             </Typography>
           </Stack>
 
           <AuthForm
-            fields={FIELDS}
+            fields={getFields(t)}
             values={values}
             onChange={(name, value) => setValues((prev) => ({ ...prev, [name]: value }))}
             onSubmit={handleSubmit}
-            submitLabel="Cambiar contrasena"
+            submitLabel={t('auth.changePassword.submit')}
             submitTestId={testIds.settings.changePasswordSubmit}
             pending={isPending}
             error={error}

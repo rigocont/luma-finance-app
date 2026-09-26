@@ -1,11 +1,12 @@
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { useTranslation } from 'react-i18next';
 
 import { formatMoney } from '@/lib/money';
 import { testIds } from '@/lib/testids';
 
-import { STATE_HEADLINE, STATE_TONE, type BudgetBalance } from './types';
+import { STATE_TONE, stateHeadline, type BudgetBalance } from './types';
 
 interface BalanceHeroProps {
   balance: BudgetBalance;
@@ -29,13 +30,14 @@ const TONO_A_COLOR = {
  * que no lo es.
  */
 export function BalanceHero({ balance, onReviewClick }: BalanceHeroProps) {
+  const { t } = useTranslation();
   const tono = STATE_TONE[balance.state];
 
   return (
     <Stack spacing={3} data-testid={testIds.dashboard.hero}>
       <Stack spacing={1}>
         <Typography variant="overline" color="text.disabled">
-          {balance.state === 'DEFICIT' ? 'Balance del ciclo' : 'Te queda disponible'}
+          {balance.state === 'DEFICIT' ? t('dashboard.hero.cycleBalance') : t('dashboard.hero.available')}
         </Typography>
 
         <Typography
@@ -62,7 +64,7 @@ export function BalanceHero({ balance, onReviewClick }: BalanceHeroProps) {
 
       <Stack spacing={1}>
         <Typography variant="h3" data-testid={testIds.dashboard.heroHeadline}>
-          {STATE_HEADLINE[balance.state]}
+          {stateHeadline(balance.state)}
         </Typography>
         <Typography
           variant="body1"
@@ -70,7 +72,7 @@ export function BalanceHero({ balance, onReviewClick }: BalanceHeroProps) {
           data-testid={testIds.dashboard.heroDetail}
           sx={{ maxWidth: '52ch' }}
         >
-          {detalleDe(balance)}
+          {detalleDe(t, balance)}
         </Typography>
       </Stack>
 
@@ -92,13 +94,13 @@ export function BalanceHero({ balance, onReviewClick }: BalanceHeroProps) {
                 color: 'inherit',
               }}
             >
-              Revisar
+              {t('dashboard.hero.estimateReview')}
             </Typography>
           }
         >
           {balance.counts.needsReview === 1
-            ? 'Un gasto todavia no tiene monto confirmado, asi que esta cifra es una estimacion.'
-            : `${balance.counts.needsReview} gastos todavia no tienen monto confirmado, asi que esta cifra es una estimacion.`}
+            ? t('dashboard.hero.estimateNoticeOne')
+            : t('dashboard.hero.estimateNoticeMany', { count: balance.counts.needsReview })}
         </Alert>
       )}
     </Stack>
@@ -106,18 +108,18 @@ export function BalanceHero({ balance, onReviewClick }: BalanceHeroProps) {
 }
 
 /** La frase que acompana a la cifra. Dice QUE HACER o QUE PASO, no repite el numero. */
-function detalleDe(balance: BudgetBalance): string {
+function detalleDe(t: (key: string) => string, balance: BudgetBalance): string {
   const ahorro = Number(balance.planned.savings.amount);
 
   if (balance.state === 'DEFICIT') {
-    return 'Tus gastos y tu ahorro suman mas de lo que entra este ciclo. Abajo esta de donde podria salir la diferencia.';
+    return t('dashboard.hero.deficitDetail');
   }
 
   if (balance.state === 'BALANCED') {
-    return 'Lo que entra alcanza justo para lo que planeaste. No hay margen, pero tampoco falta.';
+    return t('dashboard.hero.balancedDetail');
   }
 
   return ahorro > 0
-    ? 'Ya esta contemplado tu ahorro de este ciclo: esto es lo que queda libre despues de apartarlo.'
-    : 'Este es tu margen del ciclo. Si quieres, parte de esto puede ir a una meta de ahorro.';
+    ? t('dashboard.hero.surplusWithSavingsDetail')
+    : t('dashboard.hero.surplusNoSavingsDetail');
 }

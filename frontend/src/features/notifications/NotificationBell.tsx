@@ -10,6 +10,8 @@ import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useState, type MouseEvent } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { useNavigate } from 'react-router';
 
 import { formatDay } from '@/lib/date';
@@ -23,29 +25,40 @@ import {
   useNotifications,
   useUnreadCount,
 } from './useNotifications';
-import type { AppNotification, NotificationType } from './types';
+import type { AppNotification } from './types';
 
 /**
- * La oracion de cada alerta. Un mapa fijo, igual que `STATE_HEADLINE` en el
- * resumen financiero: el cliente arma el texto, nunca una cifra.
+ * La oracion de cada alerta. Igual que `STATE_HEADLINE` en el resumen
+ * financiero: el cliente arma el texto a partir de una clave, nunca de una
+ * cifra sin pasar por el traductor.
  */
-const COPY: Record<
-  NotificationType,
-  (n: AppNotification) => { primary: string; secondary: string }
-> = {
-  PAYMENT_DUE_SOON: (n) => ({
-    primary: `Vence pronto: ${n.itemName}`,
-    secondary: `${formatDay(n.dueDate!)} · ${formatMoney(n.amount!)}`,
-  }),
-  PAYMENT_OVERDUE: (n) => ({
-    primary: `Vencido: ${n.itemName}`,
-    secondary: `Debia pagarse el ${formatDay(n.dueDate!)} · ${formatMoney(n.amount!)}`,
-  }),
-  CYCLE_DEFICIT: (n) => ({
-    primary: 'Tu ciclo no alcanza',
-    secondary: `Falta ${formatMoney(n.amount!)} para cerrarlo`,
-  }),
-};
+function copyFor(t: TFunction, n: AppNotification): { primary: string; secondary: string } {
+  switch (n.type) {
+    case 'PAYMENT_DUE_SOON':
+      return {
+        primary: t('notifications.dueSoon', { item: n.itemName }),
+        secondary: t('notifications.dueSoonDetail', {
+          date: formatDay(n.dueDate!),
+          amount: formatMoney(n.amount!),
+        }),
+      };
+    case 'PAYMENT_OVERDUE':
+      return {
+        primary: t('notifications.overdue', { item: n.itemName }),
+        secondary: t('notifications.overdueSince', {
+          date: formatDay(n.dueDate!),
+          amount: formatMoney(n.amount!),
+        }),
+      };
+    case 'CYCLE_DEFICIT':
+      return {
+        primary: t('notifications.deficitTitle'),
+        secondary: t('notifications.deficitBody', { amount: formatMoney(n.amount!) }),
+      };
+    default:
+      return { primary: '', secondary: '' };
+  }
+}
 
 /**
  * La campana del encabezado: cuenta lo que la persona no ha visto y lo lista
@@ -56,6 +69,7 @@ const COPY: Record<
  * resuelven de verdad.
  */
 export function NotificationBell() {
+  const { t } = useTranslation();
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const abierto = Boolean(anchor);
 
@@ -85,8 +99,12 @@ export function NotificationBell() {
 
   return (
     <>
-      <Tooltip title="Alertas">
-        <IconButton aria-label="Alertas" data-testid={testIds.notifications.bell} onClick={abrir}>
+      <Tooltip title={t('notifications.alerts')}>
+        <IconButton
+          aria-label={t('notifications.alerts')}
+          data-testid={testIds.notifications.bell}
+          onClick={abrir}
+        >
           <Badge badgeContent={noLeidas} color="primary" data-testid={testIds.notifications.badge}>
             <NotificationsNoneOutlinedIcon />
           </Badge>
@@ -104,14 +122,14 @@ export function NotificationBell() {
           direction="row"
           sx={{ alignItems: 'center', justifyContent: 'space-between', px: 3, py: 1.5 }}
         >
-          <Typography variant="subtitle2">Alertas</Typography>
+          <Typography variant="subtitle2">{t('notifications.alerts')}</Typography>
           {noLeidas > 0 && (
             <Button
               size="small"
               data-testid={testIds.notifications.markAllRead}
               onClick={() => marcarTodas.mutate()}
             >
-              Marcar todas como leidas
+              {t('notifications.markAllRead')}
             </Button>
           )}
         </Stack>
@@ -121,14 +139,14 @@ export function NotificationBell() {
         {alertas.length === 0 && (
           <Box sx={{ px: 3, py: 4, textAlign: 'center' }} data-testid={testIds.notifications.empty}>
             <Typography variant="body2" color="text.secondary">
-              Sin alertas por ahora.
+              {t('notifications.empty')}
             </Typography>
           </Box>
         )}
 
         <Box data-testid={testIds.notifications.list} sx={{ maxHeight: 400, overflowY: 'auto' }}>
           {alertas.map((alerta) => {
-            const { primary, secondary } = COPY[alerta.type](alerta);
+            const { primary, secondary } = copyFor(t, alerta);
 
             return (
               <MenuItem

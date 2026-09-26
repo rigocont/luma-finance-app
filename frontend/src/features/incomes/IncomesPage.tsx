@@ -5,6 +5,7 @@ import Stack from '@mui/material/Stack';
 import TablePagination from '@mui/material/TablePagination';
 import TextField from '@mui/material/TextField';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { PageHeader } from '@/components/layout/PageHeader';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
@@ -17,9 +18,9 @@ import { IncomeFormDrawer } from './IncomeFormDrawer';
 import { IncomeList } from './IncomeList';
 import {
   INCOME_SORTS,
-  INCOME_SORT_LABELS,
+  incomeSortLabel,
   INCOME_TYPES,
-  INCOME_TYPE_LABELS,
+  incomeTypeLabel,
   type Income,
   type IncomeFilters,
   type IncomePayload,
@@ -40,6 +41,7 @@ const FILTROS_INICIALES: IncomeFilters = { sort: 'NEWEST', page: 0, size: 20 };
 const TAMANOS_DE_PAGINA = [10, 20, 50];
 
 export function IncomesPage() {
+  const { t } = useTranslation();
   const [filters, setFilters] = useState<IncomeFilters>(FILTROS_INICIALES);
   const [enEdicion, setEnEdicion] = useState<Income | null>(null);
   const [cajonAbierto, setCajonAbierto] = useState(false);
@@ -98,9 +100,9 @@ export function IncomesPage() {
   return (
     <Stack data-testid={testIds.incomes.page}>
       <PageHeader
-        eyebrow="Tu dinero"
-        title="Ingresos"
-        description="De donde viene el dinero con el que armas cada ciclo."
+        eyebrow={t('incomes.eyebrow')}
+        title={t('incomes.title')}
+        description={t('incomes.description')}
         action={
           <Button
             variant="contained"
@@ -108,7 +110,7 @@ export function IncomesPage() {
             onClick={abrirNuevo}
             data-testid={testIds.incomes.createButton}
           >
-            Capturar ingreso
+            {t('incomes.create')}
           </Button>
         }
       />
@@ -117,7 +119,7 @@ export function IncomesPage() {
         <TextField
           select
           size="small"
-          label="Tipo"
+          label={t('incomes.filters.type')}
           value={filters.type ?? ''}
           onChange={(event) =>
             cambiarFiltro({ type: (event.target.value || undefined) as IncomeType | undefined })
@@ -125,10 +127,10 @@ export function IncomesPage() {
           sx={{ minWidth: 200 }}
           data-testid={testIds.incomes.filterType}
         >
-          <MenuItem value="">Todos</MenuItem>
+          <MenuItem value="">{t('common.all')}</MenuItem>
           {INCOME_TYPES.map((type) => (
             <MenuItem key={type} value={type}>
-              {INCOME_TYPE_LABELS[type]}
+              {incomeTypeLabel(type)}
             </MenuItem>
           ))}
         </TextField>
@@ -136,7 +138,7 @@ export function IncomesPage() {
         <TextField
           select
           size="small"
-          label="Estado"
+          label={t('incomes.filters.status')}
           value={filters.active === undefined ? '' : String(filters.active)}
           onChange={(event) =>
             cambiarFiltro({
@@ -146,15 +148,15 @@ export function IncomesPage() {
           sx={{ minWidth: 180 }}
           data-testid={testIds.incomes.filterActive}
         >
-          <MenuItem value="">Todos</MenuItem>
-          <MenuItem value="true">Cuentan</MenuItem>
-          <MenuItem value="false">Sin contar</MenuItem>
+          <MenuItem value="">{t('common.all')}</MenuItem>
+          <MenuItem value="true">{t('incomes.filters.active')}</MenuItem>
+          <MenuItem value="false">{t('incomes.filters.inactive')}</MenuItem>
         </TextField>
 
         <TextField
           select
           size="small"
-          label="Ordenar por"
+          label={t('incomes.filters.sort')}
           value={filters.sort}
           onChange={(event) => cambiarFiltro({ sort: event.target.value as IncomeSort })}
           sx={{ minWidth: 180 }}
@@ -162,7 +164,7 @@ export function IncomesPage() {
         >
           {INCOME_SORTS.map((sort) => (
             <MenuItem key={sort} value={sort}>
-              {INCOME_SORT_LABELS[sort]}
+              {incomeSortLabel(sort)}
             </MenuItem>
           ))}
         </TextField>
@@ -174,18 +176,18 @@ export function IncomesPage() {
 
       {pagina && pagina.content.length === 0 && (
         <EmptyState
-          title={hayFiltros ? 'Nada con esos filtros' : 'Todavia no capturas ningun ingreso'}
+          title={hayFiltros ? t('incomes.empty.filteredTitle') : t('incomes.empty.title')}
           description={
-            hayFiltros
-              ? 'Prueba quitando alguno para ver el resto.'
-              : 'Empieza por tu sueldo. Si ya tienes un ciclo abierto, aparecera ahi de inmediato.'
+            hayFiltros ? t('incomes.empty.filteredDescription') : t('incomes.empty.description')
           }
           action={
             hayFiltros ? (
-              <Button onClick={() => setFilters(FILTROS_INICIALES)}>Quitar filtros</Button>
+              <Button onClick={() => setFilters(FILTROS_INICIALES)}>
+                {t('common.clearFilters')}
+              </Button>
             ) : (
               <Button variant="contained" onClick={abrirNuevo}>
-                Capturar el primero
+                {t('incomes.captureFirst')}
               </Button>
             )
           }
@@ -211,8 +213,10 @@ export function IncomesPage() {
             rowsPerPageOptions={TAMANOS_DE_PAGINA}
             onPageChange={(_event, page) => setFilters((previos) => ({ ...previos, page }))}
             onRowsPerPageChange={(event) => cambiarFiltro({ size: Number(event.target.value) })}
-            labelRowsPerPage="Por pagina"
-            labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count}`}
+            labelRowsPerPage={t('incomes.pagination.perPage')}
+            labelDisplayedRows={({ from, to, count }) =>
+              t('incomes.pagination.displayedRows', { from, to, count })
+            }
             data-testid={testIds.incomes.pagination}
           />
         </Stack>
@@ -229,13 +233,9 @@ export function IncomesPage() {
 
       <ConfirmDialog
         open={porEliminar !== null}
-        title={`Eliminar "${porEliminar?.name ?? ''}"`}
-        description={
-          'Deja de aparecer en tus listas y no se puede recuperar. Los ciclos ' +
-          'que ya lo tenian no cambian. Si solo quieres que deje de contar, ' +
-          'usa "Dejar de contarlo".'
-        }
-        confirmLabel="Eliminar"
+        title={t('incomes.deleteConfirm.title', { name: porEliminar?.name ?? '' })}
+        description={t('incomes.deleteConfirm.description')}
+        confirmLabel={t('common.delete')}
         destructive
         pending={eliminar.isPending}
         onConfirm={confirmarEliminacion}

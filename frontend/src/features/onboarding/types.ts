@@ -4,17 +4,15 @@
  * propio del alta.
  */
 
+import i18n from '@/i18n';
+
 /** Debe coincidir con com.luma.onboarding.application.OnboardingService.Step. */
 export const STEPS = ['CYCLE', 'INCOMES', 'EXPENSES', 'SAVINGS', 'SUMMARY'] as const;
 export type Step = (typeof STEPS)[number];
 
-export const STEP_LABELS: Record<Step, string> = {
-  CYCLE: 'Tu ciclo',
-  INCOMES: 'Lo que entra',
-  EXPENSES: 'Lo que sale',
-  SAVINGS: 'Tus metas',
-  SUMMARY: 'Listo',
-};
+export function stepLabel(value: Step): string {
+  return i18n.t(`onboarding.stepLabels.${value}`);
+}
 
 /** Solo los ingresos son obligatorios. El resto se puede saltar. */
 export const OPTIONAL_STEPS: ReadonlySet<Step> = new Set<Step>(['EXPENSES', 'SAVINGS']);

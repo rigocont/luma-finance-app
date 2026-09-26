@@ -5,6 +5,7 @@ import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 import { formatMoney } from '@/lib/money';
 import { testIds } from '@/lib/testids';
@@ -51,6 +52,7 @@ interface Segmento {
  * para que la barra quede bonita seria mentir con una imagen.
  */
 export function CompositionCard({ totals, savingsRate, hasEstimates }: CompositionCardProps) {
+  const { t } = useTranslation();
   const theme = useTheme();
   const c = chartPalette[theme.palette.mode];
 
@@ -69,7 +71,7 @@ export function CompositionCard({ totals, savingsRate, hasEstimates }: Compositi
   const segmentos: Segmento[] = [
     {
       key: 'fixed',
-      label: 'Gastos fijos',
+      label: t('dashboard.composition.fixed'),
       value: fijos,
       formatted: formatMoney(totals.fixedExpenses),
       color: c.expense,
@@ -77,7 +79,7 @@ export function CompositionCard({ totals, savingsRate, hasEstimates }: Compositi
     },
     {
       key: 'variable',
-      label: 'Gastos que cambian',
+      label: t('dashboard.composition.variable'),
       value: variables,
       formatted: formatMoney(totals.variableExpenses),
       color: c.expense,
@@ -85,7 +87,7 @@ export function CompositionCard({ totals, savingsRate, hasEstimates }: Compositi
     },
     {
       key: 'savings',
-      label: 'Ahorro',
+      label: t('dashboard.composition.savings'),
       value: ahorro,
       formatted: formatMoney(totals.savings),
       color: c.saving,
@@ -98,9 +100,9 @@ export function CompositionCard({ totals, savingsRate, hasEstimates }: Compositi
       <CardContent>
         <Stack spacing={5}>
           <Stack spacing={1}>
-            <Typography variant="h3">En que se reparte</Typography>
+            <Typography variant="h3">{t('dashboard.composition.title')}</Typography>
             <Typography variant="body2" color="text.secondary">
-              De {formatMoney(totals.income)} que entran este ciclo.
+              {t('dashboard.composition.subtitle', { income: formatMoney(totals.income) })}
             </Typography>
           </Stack>
 
@@ -108,7 +110,7 @@ export function CompositionCard({ totals, savingsRate, hasEstimates }: Compositi
             <Box
               data-testid={testIds.dashboard.compositionBar}
               role="img"
-              aria-label={`De ${formatMoney(totals.income)}: ${segmentos
+              aria-label={`${t('dashboard.composition.subtitle', { income: formatMoney(totals.income) })}: ${segmentos
                 .map((segmento) => `${segmento.label} ${segmento.value}`)
                 .join(', ')}`}
               sx={{
@@ -164,26 +166,26 @@ export function CompositionCard({ totals, savingsRate, hasEstimates }: Compositi
             sx={{ flexWrap: 'wrap', rowGap: 3, columnGap: 6 }}
           >
             <Renglon
-              label="Gastos fijos"
+              label={t('dashboard.composition.fixed')}
               value={formatMoney(totals.fixedExpenses)}
               color={c.expense}
               testId={testIds.dashboard.totalFixed}
             />
             <Renglon
-              label="Gastos que cambian"
+              label={t('dashboard.composition.variable')}
               value={formatMoney(totals.variableExpenses)}
               color={c.expense}
               hatched={hasEstimates}
               testId={testIds.dashboard.totalVariable}
             />
             <Renglon
-              label="Ahorro"
+              label={t('dashboard.composition.savings')}
               value={formatMoney(totals.savings)}
               color={c.saving}
               testId={testIds.dashboard.totalSavings}
             />
             <Renglon
-              label={seExcede ? 'Lo que no cabe' : 'Disponible'}
+              label={seExcede ? t('dashboard.composition.overflow') : t('dashboard.composition.available')}
               // El balance ya viene calculado: es ingreso menos salidas. Restarlo
               // aqui seria hacer aritmetica de dinero en el cliente, y con
               // deficit llega en negativo, que es justo lo que hay que mostrar.
@@ -198,7 +200,7 @@ export function CompositionCard({ totals, savingsRate, hasEstimates }: Compositi
             color="text.secondary"
             data-testid={testIds.dashboard.savingsRate}
           >
-            Estas apartando el {ratePercent(savingsRate)}% de lo que entra.
+            {t('dashboard.composition.savingsRate', { percent: ratePercent(savingsRate) })}
           </Typography>
         </Stack>
       </CardContent>

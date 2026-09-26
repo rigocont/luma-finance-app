@@ -1,0 +1,759 @@
+{
+  "common": {
+    "oneMoment": "Un momento...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "retry": "Reintentar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "all": "Todos",
+    "clearFilters": "Quitar filtros",
+    "networkError": "No pudimos conectarnos. Revisa tu conexion e intentalo de nuevo.",
+    "sessionExpired": "Tu sesion expiro. Inicia sesion de nuevo.",
+    "forbidden": "No tienes acceso a esta seccion.",
+    "notFoundApi": "No encontramos lo que buscabas.",
+    "serverError": "Algo fallo de nuestro lado. Intentalo de nuevo en un momento.",
+    "frequency": {
+      "BIWEEKLY": "Cada quincena",
+      "MONTHLY": "Cada mes",
+      "BIMONTHLY": "Cada dos meses",
+      "ANNUAL": "Una vez al ano",
+      "ONE_TIME": "Una sola vez"
+    }
+  },
+  "layout": {
+    "openMenu": "Abrir menu",
+    "themeToLight": "Cambiar a tema claro",
+    "themeToDark": "Cambiar a tema oscuro",
+    "changeTheme": "Cambiar tema",
+    "logout": "Cerrar sesion",
+    "version": "Version {{version}}",
+    "nav": {
+      "dashboard": "Resumen",
+      "current-cycle": "Este ciclo",
+      "incomes": "Ingresos",
+      "expenses": "Gastos",
+      "savings": "Ahorros",
+      "settings": "Ajustes"
+    }
+  },
+  "state": {
+    "errorTitle": "No pudimos cargar esta seccion",
+    "errorDefault": "Algo fallo. Intentalo de nuevo en un momento.",
+    "errorReference": "Referencia: {{traceId}}",
+    "retry": "Reintentar"
+  },
+  "ads": {
+    "placeholder": "Espacio publicitario"
+  },
+  "notFound": {
+    "title": "No encontramos esta pagina",
+    "heading": "La direccion no existe",
+    "description": "Puede que el enlace este mal escrito o que la seccion todavia no exista.",
+    "goToDashboard": "Ir al resumen"
+  },
+  "auth": {
+    "login": {
+      "title": "Bienvenido de vuelta",
+      "subtitle": "Entra para ver como va tu ciclo. Te mantenemos dentro en este dispositivo.",
+      "forgotPassword": "Olvidaste tu contrasena?",
+      "noAccount": "Todavia no tienes cuenta?",
+      "createOne": "Crear una",
+      "submit": "Entrar"
+    },
+    "register": {
+      "title": "Empecemos",
+      "subtitle": "Crea tu cuenta y arma tu primer presupuesto.",
+      "haveAccount": "Ya tienes cuenta?",
+      "enter": "Entrar",
+      "submit": "Crear cuenta",
+      "nameLabel": "Como te llamas",
+      "passwordHelp": "Al menos 8 caracteres"
+    },
+    "fields": {
+      "email": "Correo",
+      "password": "Contrasena",
+      "currentPassword": "Contrasena actual",
+      "newPassword": "Contrasena nueva",
+      "confirmPasswordFull": "Confirma la contrasena nueva",
+      "confirmPasswordShort": "Confirma la contrasena"
+    },
+    "forgotPassword": {
+      "title": "Recupera tu acceso",
+      "subtitle": "Te enviamos un enlace para elegir una contrasena nueva.",
+      "backToLogin": "Volver a iniciar sesion",
+      "submit": "Enviar enlace",
+      "sentTitle": "Revisa tu correo",
+      "sentSubtitle": "Si existe una cuenta con ese correo, ya va en camino un enlace para recuperarla.",
+      "sentTo": "Enviado a",
+      "expiry": "El enlace vence en una hora y sirve una sola vez. Si no llega en unos minutos, revisa la carpeta de correo no deseado."
+    },
+    "resetPassword": {
+      "title": "Elige una contrasena nueva",
+      "subtitle": "Al guardarla se cerraran todas las sesiones abiertas de tu cuenta.",
+      "submit": "Guardar contrasena",
+      "mismatch": "Las contrasenas no coinciden",
+      "invalidTitle": "Este enlace no sirve",
+      "invalidSubtitle": "Le falta el codigo de recuperacion, o ya se uso.",
+      "invalidMessage": "Los enlaces de recuperacion vencen en una hora y sirven una sola vez.",
+      "requestNew": "Pedir un enlace nuevo",
+      "successNotice": "Tu contrasena quedo lista. Entra con la nueva."
+    },
+    "changePassword": {
+      "title": "Contrasena",
+      "description": "Al cambiarla se cerraran todas tus sesiones, incluida esta, y tendras que entrar de nuevo.",
+      "submit": "Cambiar contrasena",
+      "mismatch": "Las contrasenas no coinciden",
+      "successNotice": "Cambiamos tu contrasena. Entra con la nueva."
+    }
+  },
+  "settings": {
+    "eyebrow": "Tu cuenta",
+    "title": "Ajustes",
+    "description": "Tu cuenta, tu ciclo presupuestal y la apariencia de la aplicacion.",
+    "account": {
+      "title": "Tu cuenta",
+      "name": "Nombre",
+      "email": "Correo"
+    },
+    "theme": {
+      "title": "Apariencia",
+      "description": "Esta preferencia se guarda en este navegador.",
+      "light": "Claro",
+      "dark": "Oscuro",
+      "system": "Como el sistema"
+    },
+    "tour": {
+      "title": "Tour guiado",
+      "description": "El recorrido de bienvenida que explica las pantallas principales.",
+      "restart": "Volver a tomar el tour"
+    },
+    "language": {
+      "title": "Idioma",
+      "description": "El idioma de la interfaz. Se recuerda en tu cuenta, incluso en otro dispositivo.",
+      "es": "Espanol",
+      "en": "English"
+    },
+    "cycle": {
+      "title": "Tu ciclo presupuestal",
+      "description": "El periodo que presupuestas de una vez. El cambio aplica a tu siguiente ciclo: el que este abierto conserva sus fechas.",
+      "typeLabel": "Cada cuanto",
+      "dayLabel": "Dia en que empieza",
+      "dayHelp": "En los meses cortos, un 31 cae el ultimo dia.",
+      "submit": "Guardar",
+      "types": {
+        "BIWEEKLY": "Cada quincena",
+        "MONTHLY": "Cada mes",
+        "BIMONTHLY": "Cada dos meses"
+      },
+      "help": {
+        "BIWEEKLY": "Lo mas comun si cobras los dias 15 y 30.",
+        "MONTHLY": "Un presupuesto por mes, de principio a fin.",
+        "BIMONTHLY": "Util si tus ingresos llegan cada dos meses."
+      },
+      "saved": "Listo. El cambio aplica a tu siguiente ciclo."
+    },
+    "system": {
+      "title": "Estado del sistema",
+      "responding": "Respondiendo",
+      "version": "Version",
+      "profile": "Perfil",
+      "defaultProfile": "default",
+      "serverTime": "Hora del servidor"
+    }
+  },
+  "tour": {
+    "progress": "Paso {{current}} de {{total}}",
+    "skip": "Omitir",
+    "prev": "Anterior",
+    "next": "Siguiente",
+    "finish": "Entendido",
+    "steps": {
+      "welcome": {
+        "title": "Bienvenido a LUMA",
+        "description": "Un recorrido rapido por las pantallas principales. Se puede omitir en cualquier momento, y se puede volver a tomar despues desde Ajustes."
+      },
+      "dashboard": {
+        "title": "Resumen",
+        "description": "Cuanto dinero te queda este ciclo, y por que."
+      },
+      "current-cycle": {
+        "title": "Este ciclo",
+        "description": "Los pagos que vienen y los que ya vencieron. Aqui confirmas las cifras reales de lo que gastaste."
+      },
+      "incomes": {
+        "title": "Ingresos",
+        "description": "Lo que entra cada ciclo: tu sueldo y cualquier otro ingreso recurrente."
+      },
+      "expenses": {
+        "title": "Gastos",
+        "description": "Tus gastos fijos y variables, con su categoria y su fecha de vencimiento."
+      },
+      "savings": {
+        "title": "Ahorros",
+        "description": "Tus metas de ahorro y cuanto llevas de cada una."
+      },
+      "settings": {
+        "title": "Ajustes",
+        "description": "Tu cuenta, tu tipo de ciclo, el idioma y la apariencia. Este tour tambien vive aqui, por si lo quieres repetir."
+      },
+      "closing": {
+        "title": "Listo",
+        "description": "Eso es todo. Ya puedes empezar a usar LUMA."
+      }
+    }
+  },
+  "notifications": {
+    "alerts": "Alertas",
+    "markAllRead": "Marcar todas como leidas",
+    "empty": "Sin alertas por ahora.",
+    "dueSoon": "Vence pronto: {{item}}",
+    "overdue": "Vencido: {{item}}",
+    "overdueSince": "Debia pagarse el {{date}} · {{amount}}",
+    "dueSoonDetail": "{{date}} · {{amount}}",
+    "deficitTitle": "Tu ciclo no alcanza",
+    "deficitBody": "Falta {{amount}} para cerrarlo"
+  },
+  "dashboard": {
+    "eyebrow": "Tu dinero",
+    "greeting": "Hola, {{name}}",
+    "greetingPlain": "Hola",
+    "noSummaryYet": "Aqui va a vivir el resumen de tu ciclo en curso.",
+    "cycleRange": "Del {{start}} al {{end}}",
+    "noCycle": {
+      "title": "Todavia no tienes un ciclo abierto",
+      "description": "Un ciclo es la quincena o el mes que estas presupuestando. Al abrirlo, tus ingresos, gastos y metas entran como renglones y aparece tu balance.",
+      "opening": "Abriendo...",
+      "open": "Abrir mi primer ciclo"
+    },
+    "hero": {
+      "cycleBalance": "Balance del ciclo",
+      "available": "Te queda disponible",
+      "estimateReview": "Revisar",
+      "estimateNoticeOne": "Un gasto todavia no tiene monto confirmado, asi que esta cifra es una estimacion.",
+      "estimateNoticeMany": "{{count}} gastos todavia no tienen monto confirmado, asi que esta cifra es una estimacion.",
+      "deficitDetail": "Tus gastos y tu ahorro suman mas de lo que entra este ciclo. Abajo esta de donde podria salir la diferencia.",
+      "balancedDetail": "Lo que entra alcanza justo para lo que planeaste. No hay margen, pero tampoco falta.",
+      "surplusWithSavingsDetail": "Ya esta contemplado tu ahorro de este ciclo: esto es lo que queda libre despues de apartarlo.",
+      "surplusNoSavingsDetail": "Este es tu margen del ciclo. Si quieres, parte de esto puede ir a una meta de ahorro.",
+      "state": {
+        "SURPLUS": "Te alcanza",
+        "BALANCED": "Justo",
+        "DEFICIT": "Te falta para cerrar"
+      }
+    },
+    "composition": {
+      "title": "En que se reparte",
+      "subtitle": "De {{income}} que entran este ciclo.",
+      "fixed": "Gastos fijos",
+      "variable": "Gastos que cambian",
+      "savings": "Ahorro",
+      "overflow": "Lo que no cabe",
+      "available": "Disponible",
+      "savingsRate": "Estas apartando el {{percent}}% de lo que entra."
+    },
+    "cycleActions": {
+      "close": "Cerrar este ciclo",
+      "confirmTitle": "Cerrar este ciclo",
+      "confirmLabel": "Cerrar el ciclo",
+      "confirmWithPending": "Al cerrarlo, sus {{total}} renglones quedan como registro y ya no se pueden cambiar. Todavia hay {{pending}} sin confirmar: van a quedarse asi para siempre, y el ciclo cerrado es lo que despues explica tu historial.",
+      "confirmAllSettled": "Al cerrarlo, sus {{total}} renglones quedan como registro y ya no se pueden cambiar. Todo esta confirmado, asi que no vas a perder nada."
+    },
+    "advice": {
+      "title": "De donde podria salir",
+      "subtitle": "Faltan {{amount}}. Esto es lo que se puede mover, de lo que menos cuesta a lo que mas.",
+      "noOptions": "No encontramos nada que se pueda mover sin tocar tus gastos criticos. Tendrias que ajustar un ingreso o revisar si algun gasto critico de verdad lo es.",
+      "shortfall": "Aun moviendo todo esto ({{covered}}) no alcanza a cubrir lo que falta. Sirve para acercarte, no para cerrar el ciclo.",
+      "savingChip": "Ahorro",
+      "estimatedChip": "Estimado",
+      "savingNote": "Si no lo apartas este ciclo, la meta lo retoma en el siguiente.",
+      "expenseNote": "Quitarlo de este ciclo no borra el gasto ni lo desactiva.",
+      "skip": "Quitar del ciclo"
+    },
+    "trend": {
+      "title": "Comparado con el ciclo pasado",
+      "emptyTitle": "Todavia no hay con que comparar",
+      "emptyDescription": "Cuando cierres tu primer ciclo, aqui vas a poder ver si vas mejor o peor que la vez pasada.",
+      "previousOutflow": "El ciclo que empezo el {{date}} salio en {{amount}}.",
+      "same": "Estas gastando practicamente lo mismo que el ciclo pasado.",
+      "up": "Estas gastando {{amount}} mas que el ciclo pasado.",
+      "down": "Estas gastando {{amount}} menos que el ciclo pasado.",
+      "seriesLabel": "Lo que te quedo"
+    },
+    "upcoming": {
+      "title": "Lo que sigue",
+      "emptyTitle": "Nada pendiente",
+      "emptyDescription": "Ya no queda nada por pagar en este ciclo.",
+      "overdueChip": "Vencido",
+      "overdueLabel": "Vencio el",
+      "dueLabel": "Vence el",
+      "settle": "Ya lo pague"
+    },
+    "insights": {
+      "title": "Analisis financiero",
+      "deficitCause": "\"{{category}}\" es lo que mas subio este ciclo: de {{previous}} a {{current}} (+{{increase}}).",
+      "deficitCauseNote": "No es la unica razon posible del deficit, pero es la que mas cambio respecto al ciclo anterior.",
+      "surplusIntro": "Te sobran {{amount}} este ciclo.",
+      "surplusSharesIntro": "Esto es a donde alcanzaria, si sigues el orden de tus metas:",
+      "surplusNoGoals": "No tienes ninguna meta activa a la que asignarlo. Crea una en Ahorros si quieres aprovecharlo.",
+      "growthIntro": "Categorias con una racha al alza:",
+      "growthCycles": "{{first}} → {{last}} ({{cycles}} ciclos)"
+    }
+  },
+  "incomes": {
+    "eyebrow": "Tu dinero",
+    "title": "Ingresos",
+    "description": "De donde viene el dinero con el que armas cada ciclo.",
+    "create": "Capturar ingreso",
+    "captureFirst": "Capturar el primero",
+    "table": {
+      "name": "Nombre",
+      "type": "Tipo",
+      "schedule": "Cada cuando",
+      "amount": "Monto"
+    },
+    "schedule": {
+      "withDay": "{{frequency}}, dia {{day}}"
+    },
+    "inactiveChip": "Sin contar",
+    "reviewChip": "Pide revision",
+    "actionsFor": "Acciones de {{name}}",
+    "menu": {
+      "edit": "Editar",
+      "activate": "Volver a contarlo",
+      "deactivate": "Dejar de contarlo",
+      "delete": "Eliminar"
+    },
+    "filters": {
+      "type": "Tipo",
+      "status": "Estado",
+      "sort": "Ordenar por",
+      "active": "Cuentan",
+      "inactive": "Sin contar"
+    },
+    "sort": {
+      "NEWEST": "Mas reciente",
+      "NAME": "Nombre",
+      "AMOUNT_DESC": "Mayor monto",
+      "AMOUNT_ASC": "Menor monto",
+      "START_DATE": "Fecha de inicio"
+    },
+    "types": {
+      "RECURRENT": "Sueldo o ingreso fijo",
+      "VARIABLE": "Monto variable",
+      "BONUS": "Bono",
+      "AGUINALDO": "Aguinaldo",
+      "SALE": "Venta",
+      "OTHER": "Otro"
+    },
+    "empty": {
+      "filteredTitle": "Nada con esos filtros",
+      "filteredDescription": "Prueba quitando alguno para ver el resto.",
+      "title": "Todavia no capturas ningun ingreso",
+      "description": "Empieza por tu sueldo. Si ya tienes un ciclo abierto, aparecera ahi de inmediato."
+    },
+    "pagination": {
+      "perPage": "Por pagina",
+      "displayedRows": "{{from}}-{{to}} de {{count}}"
+    },
+    "deleteConfirm": {
+      "title": "Eliminar \"{{name}}\"",
+      "description": "Deja de aparecer en tus listas y no se puede recuperar. Los ciclos que ya lo tenian no cambian. Si solo quieres que deje de contar, usa \"Dejar de contarlo\"."
+    },
+    "form": {
+      "editing": "Editar",
+      "new": "Nuevo",
+      "editTitleFallback": "Ingreso",
+      "newTitle": "Capturar un ingreso",
+      "name": "Nombre",
+      "nameHelp": "Como lo reconoces: Sueldo, Comisiones, Renta del local",
+      "type": "Tipo",
+      "reviewNotice": "Como el monto cambia, cada ciclo te va a pedir confirmar cuanto fue antes de darlo por seguro.",
+      "amount": "Monto",
+      "amountHelp": "Hasta dos decimales, sin signos ni comas",
+      "frequency": "Cada cuanto",
+      "expectedDay": "Dia del mes",
+      "expectedDayHelp": "Si pones 31, en los meses cortos cae el ultimo dia",
+      "startDate": "Desde",
+      "endDate": "Hasta (opcional)",
+      "endDateHelp": "Dejalo vacio si no tiene fecha de termino",
+      "notes": "Notas (opcional)",
+      "editNotice": "Los cambios aplican desde el siguiente ciclo. El ciclo en curso conserva lo que ya tenia.",
+      "submitNew": "Capturar ingreso",
+      "submitEdit": "Guardar cambios"
+    },
+    "toast": {
+      "created": "Ingreso \"{{name}}\" capturado.",
+      "updated": "Ingreso \"{{name}}\" actualizado. Aplica desde el siguiente ciclo.",
+      "activated": "\"{{name}}\" vuelve a contar en tus ciclos.",
+      "deactivated": "\"{{name}}\" deja de contar en los ciclos siguientes.",
+      "deleted": "Ingreso \"{{name}}\" eliminado."
+    }
+  },
+  "expenses": {
+    "eyebrow": "Tu dinero",
+    "title": "Gastos",
+    "description": "Lo que sale cada ciclo: lo que siempre cuesta igual y lo que cambia.",
+    "create": "Capturar gasto",
+    "captureFirst": "Capturar el primero",
+    "table": {
+      "name": "Nombre",
+      "category": "Categoria",
+      "schedule": "Cuando",
+      "amount": "Monto"
+    },
+    "schedule": {
+      "withDay": "{{frequency}}, dia {{day}}"
+    },
+    "noCategory": "Sin categoria",
+    "inactiveChip": "Sin contar",
+    "reviewChip": "Pide revision",
+    "actionsFor": "Acciones de {{name}}",
+    "menu": {
+      "edit": "Editar",
+      "activate": "Volver a contarlo",
+      "deactivate": "Dejar de contarlo",
+      "delete": "Eliminar"
+    },
+    "filters": {
+      "kind": "El monto",
+      "category": "Categoria",
+      "allCategories": "Todas",
+      "status": "Estado",
+      "sort": "Ordenar por",
+      "active": "Cuentan",
+      "inactive": "Sin contar"
+    },
+    "sort": {
+      "NEWEST": "Mas reciente",
+      "NAME": "Nombre",
+      "AMOUNT_DESC": "Mayor monto",
+      "AMOUNT_ASC": "Menor monto",
+      "DUE_DAY": "Dia de pago"
+    },
+    "kinds": {
+      "FIXED": "Monto estable",
+      "VARIABLE": "Monto que cambia"
+    },
+    "flexibility": {
+      "CRITICAL": "No se puede mover",
+      "IMPORTANT": "Se puede mover con consecuencias",
+      "FLEXIBLE": "Se puede posponer o recortar"
+    },
+    "flexibilityShort": {
+      "CRITICAL": "Critico",
+      "IMPORTANT": "Importante",
+      "FLEXIBLE": "Flexible"
+    },
+    "empty": {
+      "filteredTitle": "Nada con esos filtros",
+      "filteredDescription": "Prueba quitando alguno para ver el resto.",
+      "title": "Todavia no capturas ningun gasto",
+      "description": "Empieza por los que no fallan: renta, servicios, despensa. Si ya tienes un ciclo abierto, apareceran ahi de inmediato."
+    },
+    "pagination": {
+      "perPage": "Por pagina",
+      "displayedRows": "{{from}}-{{to}} de {{count}}"
+    },
+    "deleteConfirm": {
+      "title": "Eliminar \"{{name}}\"",
+      "description": "Deja de aparecer en tus listas y no se puede recuperar. Los ciclos que ya lo tenian no cambian. Si solo quieres que deje de contar, usa \"Dejar de contarlo\"."
+    },
+    "form": {
+      "editing": "Editar",
+      "new": "Nuevo",
+      "editTitleFallback": "Gasto",
+      "newTitle": "Capturar un gasto",
+      "name": "Nombre",
+      "nameHelp": "Renta, Luz, Despensa, Tarjeta...",
+      "category": "Categoria",
+      "categoryHelp": "Opcional, pero ayuda al analisis mas adelante",
+      "noCategory": "Sin categoria",
+      "kind": "El monto",
+      "variableNotice": "Cada ciclo te va a pedir confirmar cuanto fue antes de darlo por seguro. El monto que pongas aqui es solo una estimacion.",
+      "amount": "Monto",
+      "estimatedAmount": "Monto estimado",
+      "amountHelp": "Hasta dos decimales, sin signos ni comas",
+      "flexibility": "Que tanto se puede mover",
+      "criticalNotice": "LUMA nunca te va a sugerir retrasar este pago, aunque te falte dinero en el ciclo.",
+      "frequency": "Cada cuanto",
+      "dueDay": "Dia de pago",
+      "dueDayHelp": "Si pones 31, en los meses cortos cae el ultimo dia",
+      "startDate": "Desde",
+      "endDate": "Hasta (opcional)",
+      "endDateHelp": "Dejalo vacio si no tiene fecha de termino",
+      "notes": "Notas (opcional)",
+      "editNotice": "Los cambios aplican desde el siguiente ciclo. El ciclo en curso conserva lo que ya tenia.",
+      "submitNew": "Capturar gasto",
+      "submitEdit": "Guardar cambios"
+    },
+    "toast": {
+      "created": "Gasto \"{{name}}\" capturado.",
+      "updated": "Gasto \"{{name}}\" actualizado. Aplica desde el siguiente ciclo.",
+      "activated": "\"{{name}}\" vuelve a contar en tus ciclos.",
+      "deactivated": "\"{{name}}\" deja de contar en los ciclos siguientes.",
+      "deleted": "Gasto \"{{name}}\" eliminado."
+    }
+  },
+  "savings": {
+    "eyebrow": "Tu dinero",
+    "title": "Ahorros",
+    "description": "Tus metas en orden de prioridad: cuanto llevas y cuanto se aparta en cada ciclo.",
+    "create": "Crear meta",
+    "createFirst": "Crear la primera",
+    "clearFilter": "Quitar el filtro",
+    "filters": {
+      "status": "Estado",
+      "all": "Todas"
+    },
+    "goalStatus": {
+      "ACTIVE": "En marcha",
+      "COMPLETED": "Alcanzada",
+      "PAUSED": "Pausada",
+      "CANCELED": "Cancelada"
+    },
+    "contributionMode": {
+      "AUTO_BY_TARGET_DATE": "Calcularlo por mi, segun la fecha",
+      "FIXED_PER_CYCLE": "Un monto fijo cada ciclo",
+      "MANUAL": "Aporto cuando puedo"
+    },
+    "contributionModeHelp": {
+      "AUTO_BY_TARGET_DATE": "LUMA reparte lo que falta entre los ciclos que quedan hasta tu fecha objetivo.",
+      "FIXED_PER_CYCLE": "Tu decides cuanto apartar en cada ciclo.",
+      "MANUAL": "No resta de tu presupuesto. Registras los aportes cuando los hagas."
+    },
+    "movementType": {
+      "PLANNED": "Del ciclo",
+      "EXTRA": "Aportacion extra",
+      "WITHDRAWAL": "Retiro"
+    },
+    "empty": {
+      "filteredTitle": "Nada con ese estado",
+      "filteredDescription": "Prueba con otro estado para ver el resto.",
+      "title": "Todavia no tienes ninguna meta",
+      "description": "Empieza por un fondo de emergencia. Si la meta resta de tu presupuesto, su aporte entra a tu ciclo en curso de inmediato."
+    },
+    "priorityNotice": "El orden es la prioridad: cuando sobre dinero en un ciclo, se reparte de arriba hacia abajo. Arrastra una tarjeta o usa las flechas para cambiarlo.",
+    "raisePriority": "Subir la prioridad de {{name}}",
+    "lowerPriority": "Bajar la prioridad de {{name}}",
+    "actionsFor": "Acciones de {{name}}",
+    "progressOf": "Progreso de {{name}}",
+    "savedOf": "de {{target}}",
+    "remaining": "Te faltan {{amount}}",
+    "perCycle": "{{amount}} por ciclo",
+    "targetOn": "Para el {{date}}",
+    "menu": {
+      "contribute": "Registrar aportacion",
+      "withdraw": "Registrar retiro",
+      "movements": "Ver movimientos",
+      "edit": "Editar",
+      "pause": "Pausar",
+      "resume": "Reanudar",
+      "delete": "Eliminar"
+    },
+    "manualNotice": "Esta meta no resta de tu presupuesto. No va a aparecer como renglon en tus ciclos: registras los aportes cuando los hagas.",
+    "deleteConfirm": {
+      "title": "Eliminar \"{{name}}\"",
+      "description": "La meta desaparece de tus listas y deja de restar de tus ciclos. Lo que ya habias apartado se conserva en el historial, pero la meta no se puede recuperar. Si solo quieres detenerla un rato, usa \"Pausar\"."
+    },
+    "form": {
+      "editing": "Editar",
+      "new": "Nueva",
+      "editTitleFallback": "Meta",
+      "newTitle": "Crear una meta",
+      "name": "Para que es",
+      "nameHelp": "Fondo de emergencia, vacaciones, enganche...",
+      "target": "Cuanto quieres juntar",
+      "targetHelp": "Hasta dos decimales, sin signos ni comas",
+      "mode": "Como vas a apartar",
+      "targetDate": "Para cuando",
+      "targetDateHelp": "Sin fecha no hay entre cuantos ciclos repartir lo que falta.",
+      "perCycle": "Cuanto por ciclo",
+      "perCycleHelp": "Se aparta en cada ciclo, aunque la meta tarde mas en llegar.",
+      "editNotice": "Los cambios aplican desde el siguiente ciclo. El ciclo en curso conserva lo que ya tenia.",
+      "submitNew": "Crear meta",
+      "submitEdit": "Guardar cambios"
+    },
+    "movement": {
+      "titleContribution": "Registrar una aportacion",
+      "titleWithdrawal": "Registrar un retiro",
+      "summary": "{{name}}: llevas {{saved}} de {{target}}.",
+      "amount": "Monto",
+      "amountHelpWithdrawal": "En positivo. No puede pasar de lo que llevas juntado.",
+      "amountHelpContribution": "En positivo, hasta dos decimales.",
+      "when": "Cuando",
+      "notes": "Notas (opcional)",
+      "notesHelpWithdrawal": "De donde salio y para que, para acordarte despues.",
+      "submitContribution": "Registrar aportacion",
+      "submitWithdrawal": "Registrar retiro"
+    },
+    "movements": {
+      "eyebrow": "Movimientos",
+      "goalFallback": "Meta",
+      "summary": "Llevas {{saved}} de {{target}}.",
+      "emptyTitle": "Todavia no hay movimientos",
+      "emptyDescription": "Aqui van a aparecer los aportes que confirmes en tus ciclos y los que registres por tu cuenta.",
+      "fromCycle": "Entro al confirmar el ciclo"
+    },
+    "toast": {
+      "created": "Meta \"{{name}}\" creada.",
+      "updated": "Meta \"{{name}}\" actualizada.",
+      "withdrawal": "Retiro registrado. Llevas {{saved}} de {{target}}.",
+      "contributionCompleted": "Aportacion registrada. Alcanzaste \"{{name}}\".",
+      "contribution": "Aportacion registrada en \"{{name}}\".",
+      "reordered": "Orden de prioridad guardado.",
+      "paused": "\"{{name}}\" deja de restar de tus ciclos.",
+      "resumed": "\"{{name}}\" vuelve a contar en tus ciclos.",
+      "deleted": "Meta \"{{name}}\" eliminada."
+    }
+  },
+  "review": {
+    "eyebrow": "Tu dinero",
+    "title": "Este ciclo",
+    "description": "Lo que falta por definir antes de que el balance signifique algo.",
+    "cycleRange": "Del {{start}} al {{end}}",
+    "noCycle": {
+      "title": "Todavia no tienes un ciclo abierto",
+      "description": "Un ciclo es la quincena o el mes que estas presupuestando. Cuando abras el primero, aqui va a aparecer lo que falte por revisar.",
+      "startWithExpenses": "Empezar por mis gastos"
+    },
+    "noneToReview": {
+      "title": "No falta nada por revisar",
+      "description": "Todos los gastos de este ciclo ya tienen monto. Cuando captures uno nuevo de monto variable, va a aparecer aqui."
+    },
+    "banner": "Estos gastos cambian de monto cada ciclo. Hasta que digas cuanto fueron, el balance los trata como una estimacion y no como un dato.",
+    "invalidAmount": "Un numero con hasta dos decimales",
+    "pendingCountOne": "gasto por revisar",
+    "pendingCountMany": "gastos por revisar",
+    "confirmAll": "Confirmar todo",
+    "list": {
+      "plannedAmount": "Estimaste {{amount}}",
+      "dueDate": " · vence el {{date}}",
+      "suggestion": "El ciclo del {{date}} fueron {{amount}}",
+      "useSuggestion": "Usar ese monto",
+      "amountLabel": "Cuanto fue",
+      "amountAriaLabel": "Monto de {{name}}",
+      "viewHistory": "Ver los ciclos anteriores",
+      "historyFor": "Historial de {{name}}"
+    },
+    "history": {
+      "firstTime": {
+        "title": "Es la primera vez",
+        "description": "Cuando confirmes este gasto un par de ciclos, aqui vas a poder ver como se mueve."
+      },
+      "averageOne": "En los ultimos {{cycles}} ciclo te costo {{amount}} en promedio.",
+      "averageMany": "En los ultimos {{cycles}} ciclos te costo {{amount}} en promedio.",
+      "estimatedWas": "Habias estimado {{amount}}"
+    },
+    "savingsSection": {
+      "title": "Tus metas de este ciclo",
+      "description": "Cuando apartes el dinero, registralo aqui y sube el progreso de la meta.",
+      "overdueChip": "Ya vencio",
+      "settle": "Registrar aporte"
+    },
+    "settle": {
+      "title": "Registrar el aporte",
+      "summary": "{{name}}: este ciclo planeaste apartar {{amount}}.",
+      "amountLabel": "Cuanto apartaste",
+      "amountHelp": "Si fue menos, el renglon queda parcial.",
+      "when": "Cuando",
+      "skipGoal": "No registrarlo en la meta",
+      "skipGoalHelp": "El gasto queda en el ciclo, pero el progreso de la meta no se mueve.",
+      "submit": "Registrar"
+    },
+    "toast": {
+      "confirmedOne": "Listo: \"{{name}}\" queda en {{amount}}.",
+      "confirmedMany": "Listo: {{count}} gastos confirmados.",
+      "settledNoGoal": "\"{{name}}\" registrado. No se sumo a la meta.",
+      "settledWithGoal": "\"{{name}}\" registrado y sumado a tu meta."
+    }
+  },
+  "onboarding": {
+    "titles": {
+      "CYCLE": "Empecemos por tu calendario",
+      "INCOMES": "Que entra a tu bolsillo",
+      "EXPENSES": "Que se te va cada mes",
+      "SAVINGS": "Que quieres juntar",
+      "SUMMARY": "Todo listo"
+    },
+    "stepLabels": {
+      "CYCLE": "Tu ciclo",
+      "INCOMES": "Lo que entra",
+      "EXPENSES": "Lo que sale",
+      "SAVINGS": "Tus metas",
+      "SUMMARY": "Listo"
+    },
+    "stepIndicator": "Paso {{current}} de {{total}} · {{label}}",
+    "incomesRequired": "Agrega al menos un ingreso para seguir. Sin el no hay presupuesto que calcular.",
+    "skipAll": "Hacerlo despues",
+    "back": "Atras",
+    "skipStep": "Saltar",
+    "finish": "Empezar",
+    "finishing": "Abriendo tu ciclo...",
+    "continue": "Continuar",
+    "genericError": "Algo fallo. Intentalo de nuevo.",
+    "cycle": {
+      "intro": "Un ciclo es el periodo que presupuestas de una vez. Casi siempre coincide con cada cuanto te pagan.",
+      "typeLabel": "Cada cuanto presupuestas",
+      "dayLabel": "Dia en que empieza",
+      "dayHelp": "Si pones 31, en los meses cortos cae el ultimo dia.",
+      "preview": "Esto lo puedes cambiar despues. El ciclo que este abierto conserva sus fechas y el cambio aplica al siguiente."
+    },
+    "incomes": {
+      "intro": "Tu sueldo, una pension, lo que te deje un negocio. Con al menos uno ya podemos calcular tu presupuesto.",
+      "name": "Nombre",
+      "nameHelp": "Sueldo, renta que cobro, comisiones...",
+      "amount": "Monto",
+      "amountHelp": "Lo que recibes cada vez",
+      "type": "Tipo",
+      "frequency": "Cada cuanto",
+      "day": "Dia",
+      "add": "Agregar ingreso",
+      "remove": "Quitar {{name}}"
+    },
+    "expenses": {
+      "intro": "Elige los que reconozcas y pon cuanto te cuestan. Puedes saltarte este paso y capturarlos con calma despues.",
+      "name": "Que gasto es",
+      "nameHelpWithCategory": "Va a quedar en {{category}}, con monto {{kind}}",
+      "nameHelpWithoutCategory": "Elige una categoria arriba o escribe uno que no este en la lista",
+      "amount": "Cuanto",
+      "amountHelp": "Al mes",
+      "add": "Agregar gasto",
+      "clear": "Limpiar",
+      "noCategory": "Sin categoria",
+      "variableSuffix": " · el monto cambia",
+      "remove": "Quitar {{name}}"
+    },
+    "savings": {
+      "intro": "Un fondo de emergencia, un viaje, un enganche. Lo que apartes se resta de tu presupuesto en cada ciclo, para que no lo gastes sin darte cuenta.",
+      "name": "Para que es",
+      "nameHelp": "Fondo de emergencia, vacaciones...",
+      "target": "Cuanto quieres juntar",
+      "perCycle": "Cuanto por ciclo",
+      "perCycleHelp": "Lo puedes cambiar cuando quieras",
+      "add": "Agregar meta",
+      "perCycleSuffix": "por ciclo",
+      "remove": "Quitar {{name}}"
+    },
+    "summary": {
+      "intro": "Con esto ya podemos abrir tu primer ciclo y decirte cuanto te queda.",
+      "cycleLine": "Cada cuanto presupuestas",
+      "cycleValue": "{{type}}, desde el dia {{day}}",
+      "incomesLine": "Ingresos",
+      "expensesLine": "Gastos",
+      "goalsLine": "Metas de ahorro",
+      "none": "Ninguno por ahora",
+      "countIncomes": "{{count}} ingreso",
+      "countIncomesPlural": "{{count}} ingresos",
+      "countExpenses": "{{count}} gasto",
+      "countExpensesPlural": "{{count}} gastos",
+      "countGoals": "{{count}} meta",
+      "countGoalsPlural": "{{count}} metas",
+      "noExpensesNotice": "No capturaste gastos. Puedes empezar asi y agregarlos desde la seccion de Gastos; tu ciclo en curso los va a tomar en cuanto existan.",
+      "footer": "Al empezar se abre tu primer ciclo con estos renglones ya puestos. Todo esto se puede cambiar despues desde cada seccion."
+    },
+    "toast": {
+      "completed": "Tu primer ciclo esta listo."
+    }
+  }
+}

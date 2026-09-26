@@ -2,6 +2,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { testIds } from '@/lib/testids';
 import { palette } from '@/theme/tokens';
@@ -42,6 +43,7 @@ function cargarScriptDeAdSense(clientId: string) {
  * nada que desbloquear ni ocultar segun el usuario.
  */
 export function AdSlot() {
+  const { t } = useTranslation();
   const theme = useTheme();
   const c = palette[theme.palette.mode];
   const solicitado = useRef(false);
@@ -79,7 +81,7 @@ export function AdSlot() {
         }}
       >
         <Typography variant="caption" sx={{ color: c.faint }}>
-          Espacio publicitario
+          {t('ads.placeholder')}
         </Typography>
       </Box>
     );

@@ -1,3 +1,4 @@
+import i18n from '@/i18n';
 import type { MoneyValue } from '@/lib/money';
 
 import type { CycleItem, CyclePeriod } from '../review/types';
@@ -97,13 +98,11 @@ export interface DeficitAdvice {
  *
  * La API devuelve un codigo estable —DEFICIT, BALANCED, SURPLUS— y la traduccion
  * vive aqui a proposito: lo que una persona necesita leer cambia con el producto,
- * el contrato de la API no.
+ * el contrato de la API no. Sigue el idioma de la interfaz desde la Fase 15.
  */
-export const STATE_HEADLINE: Record<BudgetState, string> = {
-  SURPLUS: 'Te alcanza',
-  BALANCED: 'Justo',
-  DEFICIT: 'Te falta para cerrar',
-};
+export function stateHeadline(state: BudgetState): string {
+  return i18n.t(`dashboard.hero.state.${state}`);
+}
 
 export const STATE_TONE: Record<BudgetState, 'positive' | 'neutral' | 'negative'> = {
   SURPLUS: 'positive',

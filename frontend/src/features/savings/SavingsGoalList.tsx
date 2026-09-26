@@ -12,14 +12,15 @@ import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState, type DragEvent, type MouseEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { formatDay } from '@/lib/date';
 import { formatMoney, isPositive } from '@/lib/money';
 import { testIds } from '@/lib/testids';
 
 import {
-  CONTRIBUTION_MODE_LABELS,
-  GOAL_STATUS_LABELS,
+  contributionModeLabel,
+  goalStatusLabel,
   progressPercent,
   type SavingsGoal,
 } from './types';
@@ -68,6 +69,7 @@ export function SavingsGoalList({
   onDelete,
   onReorder,
 }: SavingsGoalListProps) {
+  const { t } = useTranslation();
   // Copia local para que la lista se reacomode al instante mientras arrastras,
   // sin esperar la respuesta del servidor.
   const [orden, setOrden] = useState(goals);
@@ -170,12 +172,12 @@ export function SavingsGoalList({
                           <Chip
                             size="small"
                             color={alcanzada ? 'success' : 'default'}
-                            label={GOAL_STATUS_LABELS[goal.status]}
+                            label={goalStatusLabel(goal.status)}
                             data-testid={testIds.savings.cardStatus}
                           />
                         )}
                         <Typography variant="caption" color="text.disabled">
-                          {CONTRIBUTION_MODE_LABELS[goal.contributionMode]}
+                          {contributionModeLabel(goal.contributionMode)}
                         </Typography>
                       </Stack>
                     </Stack>
@@ -183,7 +185,7 @@ export function SavingsGoalList({
                     <Stack direction="row" spacing={1} sx={{ flexShrink: 0 }}>
                       <IconButton
                         size="small"
-                        aria-label={`Subir la prioridad de ${goal.name}`}
+                        aria-label={t('savings.raisePriority', { name: goal.name })}
                         disabled={index === 0}
                         onClick={() => moverA(index, index - 1)}
                         data-testid={testIds.savings.moveUp}
@@ -192,7 +194,7 @@ export function SavingsGoalList({
                       </IconButton>
                       <IconButton
                         size="small"
-                        aria-label={`Bajar la prioridad de ${goal.name}`}
+                        aria-label={t('savings.lowerPriority', { name: goal.name })}
                         disabled={index === orden.length - 1}
                         onClick={() => moverA(index, index + 1)}
                         data-testid={testIds.savings.moveDown}
@@ -201,7 +203,7 @@ export function SavingsGoalList({
                       </IconButton>
                       <IconButton
                         size="small"
-                        aria-label={`Acciones de ${goal.name}`}
+                        aria-label={t('savings.actionsFor', { name: goal.name })}
                         onClick={(event) => abrirMenu(event, goal)}
                         data-testid={testIds.savings.cardMenu}
                       >
@@ -224,7 +226,7 @@ export function SavingsGoalList({
                         {formatMoney(goal.saved)}
                         <Typography component="span" variant="body2" color="text.secondary">
                           {' '}
-                          de {formatMoney(goal.target)}
+                          {t('savings.savedOf', { target: formatMoney(goal.target) })}
                         </Typography>
                       </Typography>
 
@@ -242,7 +244,7 @@ export function SavingsGoalList({
                       variant="determinate"
                       value={porcentaje}
                       data-testid={testIds.savings.cardProgressBar}
-                      aria-label={`Progreso de ${goal.name}`}
+                      aria-label={t('savings.progressOf', { name: goal.name })}
                       sx={{ height: 8, borderRadius: 999 }}
                     />
 
@@ -252,7 +254,7 @@ export function SavingsGoalList({
                         color="text.secondary"
                         data-testid={testIds.savings.cardRemaining}
                       >
-                        Te faltan {formatMoney(goal.remaining)}
+                        {t('savings.remaining', { amount: formatMoney(goal.remaining) })}
                       </Typography>
 
                       {(aporteFijo || conFecha) && (
@@ -262,8 +264,8 @@ export function SavingsGoalList({
                           data-testid={testIds.savings.cardPerCycle}
                         >
                           {aporteFijo
-                            ? `${formatMoney(goal.plannedPerCycle)} por ciclo`
-                            : `Para el ${formatDay(goal.targetDate as string)}`}
+                            ? t('savings.perCycle', { amount: formatMoney(goal.plannedPerCycle) })
+                            : t('savings.targetOn', { date: formatDay(goal.targetDate as string) })}
                         </Typography>
                       )}
                     </Stack>
@@ -280,25 +282,25 @@ export function SavingsGoalList({
           onClick={() => ejecutar(onContribute)}
           data-testid={testIds.savings.contributeAction}
         >
-          Registrar aportacion
+          {t('savings.menu.contribute')}
         </MenuItem>
         <MenuItem onClick={() => ejecutar(onWithdraw)} data-testid={testIds.savings.withdrawAction}>
-          Registrar retiro
+          {t('savings.menu.withdraw')}
         </MenuItem>
         <MenuItem
           onClick={() => ejecutar(onShowMovements)}
           data-testid={testIds.savings.movementsAction}
         >
-          Ver movimientos
+          {t('savings.menu.movements')}
         </MenuItem>
         <MenuItem onClick={() => ejecutar(onEdit)} data-testid={testIds.savings.editAction}>
-          Editar
+          {t('savings.menu.edit')}
         </MenuItem>
         <MenuItem onClick={() => ejecutar(onTogglePause)} data-testid={testIds.savings.pauseAction}>
-          {seleccionada?.status === 'PAUSED' ? 'Reanudar' : 'Pausar'}
+          {seleccionada?.status === 'PAUSED' ? t('savings.menu.resume') : t('savings.menu.pause')}
         </MenuItem>
         <MenuItem onClick={() => ejecutar(onDelete)} data-testid={testIds.savings.deleteAction}>
-          Eliminar
+          {t('savings.menu.delete')}
         </MenuItem>
       </Menu>
     </>

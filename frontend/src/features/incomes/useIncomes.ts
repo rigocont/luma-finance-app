@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import i18n from '@/i18n';
 import { showToast } from '@/store/toastStore';
 
 import {
@@ -48,17 +49,16 @@ function useIncomeMutation<TVariables, TResult>(
 export function useCreateIncome() {
   return useIncomeMutation(
     (payload: IncomePayload) => createIncome(payload),
-    (payload) =>
-      // El aviso confirma en los mismos terminos que el boton, y avisa del
-      // efecto que la persona no pidio explicitamente pero si ocurrio.
-      `Ingreso "${payload.name}" capturado.`,
+    // El aviso confirma en los mismos terminos que el boton, y avisa del
+    // efecto que la persona no pidio explicitamente pero si ocurrio.
+    (payload) => i18n.t('incomes.toast.created', { name: payload.name }),
   );
 }
 
 export function useUpdateIncome() {
   return useIncomeMutation(
     ({ id, payload }: { id: string; payload: IncomePayload }) => updateIncome(id, payload),
-    ({ payload }) => `Ingreso "${payload.name}" actualizado. Aplica desde el siguiente ciclo.`,
+    ({ payload }) => i18n.t('incomes.toast.updated', { name: payload.name }),
   );
 }
 
@@ -67,14 +67,14 @@ export function useSetIncomeActive() {
     ({ id, active }: { id: string; active: boolean }) => setIncomeActive(id, active),
     ({ active }, result) =>
       active
-        ? `"${result.name}" vuelve a contar en tus ciclos.`
-        : `"${result.name}" deja de contar en los ciclos siguientes.`,
+        ? i18n.t('incomes.toast.activated', { name: result.name })
+        : i18n.t('incomes.toast.deactivated', { name: result.name }),
   );
 }
 
 export function useDeleteIncome() {
   return useIncomeMutation(
     ({ id }: { id: string; name: string }) => deleteIncome(id),
-    ({ name }) => `Ingreso "${name}" eliminado.`,
+    ({ name }) => i18n.t('incomes.toast.deleted', { name }),
   );
 }

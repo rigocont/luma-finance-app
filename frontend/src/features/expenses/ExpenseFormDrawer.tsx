@@ -8,17 +8,18 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState, type FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { ApiError } from '@/lib/api/types';
 import { testIds } from '@/lib/testids';
 
 import {
   EXPENSE_KINDS,
-  EXPENSE_KIND_LABELS,
+  expenseKindLabel,
   FLEXIBILITIES,
-  FLEXIBILITY_LABELS,
+  flexibilityLabel,
   FREQUENCIES,
-  FREQUENCY_LABELS,
+  frequencyLabel,
   needsDueDay,
   type Expense,
   type ExpenseCategory,
@@ -100,6 +101,7 @@ export function ExpenseFormDrawer({
   onSubmit,
   onClose,
 }: ExpenseFormDrawerProps) {
+  const { t } = useTranslation();
   const [values, setValues] = useState<FormValues>(() => valoresIniciales(expense));
 
   useEffect(() => {
@@ -165,10 +167,12 @@ export function ExpenseFormDrawer({
         <Stack spacing={5}>
           <Stack spacing={1}>
             <Typography variant="overline" color="text.disabled">
-              {editando ? 'Editar' : 'Nuevo'}
+              {editando ? t('expenses.form.editing') : t('expenses.form.new')}
             </Typography>
             <Typography variant="h3" data-testid={testIds.expenses.drawerTitle}>
-              {editando ? values.name || 'Gasto' : 'Capturar un gasto'}
+              {editando
+                ? values.name || t('expenses.form.editTitleFallback')
+                : t('expenses.form.newTitle')}
             </Typography>
           </Stack>
 
@@ -179,11 +183,11 @@ export function ExpenseFormDrawer({
           )}
 
           <TextField
-            label="Nombre"
+            label={t('expenses.form.name')}
             value={values.name}
             onChange={(event) => set('name', event.target.value)}
             error={Boolean(fieldErrors.name)}
-            helperText={fieldErrors.name ?? 'Renta, Luz, Despensa, Tarjeta...'}
+            helperText={fieldErrors.name ?? t('expenses.form.nameHelp')}
             disabled={pending}
             fullWidth
             autoFocus
@@ -192,16 +196,16 @@ export function ExpenseFormDrawer({
 
           <TextField
             select
-            label="Categoria"
+            label={t('expenses.form.category')}
             value={values.categoryId}
             onChange={(event) => elegirCategoria(event.target.value)}
             error={Boolean(fieldErrors.categoryId)}
-            helperText={fieldErrors.categoryId ?? 'Opcional, pero ayuda al analisis mas adelante'}
+            helperText={fieldErrors.categoryId ?? t('expenses.form.categoryHelp')}
             disabled={pending}
             fullWidth
             data-testid={testIds.expenses.categoryInput}
           >
-            <MenuItem value="">Sin categoria</MenuItem>
+            <MenuItem value="">{t('expenses.form.noCategory')}</MenuItem>
             {categories.map((category) => (
               <MenuItem key={category.id} value={category.id}>
                 {category.name}
@@ -211,7 +215,7 @@ export function ExpenseFormDrawer({
 
           <TextField
             select
-            label="El monto"
+            label={t('expenses.form.kind')}
             value={values.kind}
             onChange={(event) => set('kind', event.target.value as ExpenseKind)}
             error={Boolean(fieldErrors.kind)}
@@ -222,24 +226,23 @@ export function ExpenseFormDrawer({
           >
             {EXPENSE_KINDS.map((kind) => (
               <MenuItem key={kind} value={kind}>
-                {EXPENSE_KIND_LABELS[kind]}
+                {expenseKindLabel(kind)}
               </MenuItem>
             ))}
           </TextField>
 
           {values.kind === 'VARIABLE' && (
             <Alert severity="info" data-testid={testIds.expenses.reviewNotice}>
-              Cada ciclo te va a pedir confirmar cuanto fue antes de darlo por seguro. El monto que
-              pongas aqui es solo una estimacion.
+              {t('expenses.form.variableNotice')}
             </Alert>
           )}
 
           <TextField
-            label={values.kind === 'VARIABLE' ? 'Monto estimado' : 'Monto'}
+            label={values.kind === 'VARIABLE' ? t('expenses.form.estimatedAmount') : t('expenses.form.amount')}
             value={values.amount}
             onChange={(event) => set('amount', event.target.value)}
             error={Boolean(fieldErrors.amount)}
-            helperText={fieldErrors.amount ?? 'Hasta dos decimales, sin signos ni comas'}
+            helperText={fieldErrors.amount ?? t('expenses.form.amountHelp')}
             disabled={pending}
             fullWidth
             slotProps={{
@@ -255,7 +258,7 @@ export function ExpenseFormDrawer({
 
           <TextField
             select
-            label="Que tanto se puede mover"
+            label={t('expenses.form.flexibility')}
             value={values.flexibility}
             onChange={(event) => set('flexibility', event.target.value as Flexibility)}
             error={Boolean(fieldErrors.flexibility)}
@@ -266,20 +269,20 @@ export function ExpenseFormDrawer({
           >
             {FLEXIBILITIES.map((flexibility) => (
               <MenuItem key={flexibility} value={flexibility}>
-                {FLEXIBILITY_LABELS[flexibility]}
+                {flexibilityLabel(flexibility)}
               </MenuItem>
             ))}
           </TextField>
 
           {values.flexibility === 'CRITICAL' && (
             <Alert severity="info" data-testid={testIds.expenses.criticalNotice}>
-              LUMA nunca te va a sugerir retrasar este pago, aunque te falte dinero en el ciclo.
+              {t('expenses.form.criticalNotice')}
             </Alert>
           )}
 
           <TextField
             select
-            label="Cada cuanto"
+            label={t('expenses.form.frequency')}
             value={values.frequency}
             onChange={(event) => set('frequency', event.target.value as Frequency)}
             error={Boolean(fieldErrors.frequency)}
@@ -290,21 +293,19 @@ export function ExpenseFormDrawer({
           >
             {FREQUENCIES.map((frequency) => (
               <MenuItem key={frequency} value={frequency}>
-                {FREQUENCY_LABELS[frequency]}
+                {frequencyLabel(frequency)}
               </MenuItem>
             ))}
           </TextField>
 
           {pideDia && (
             <TextField
-              label="Dia de pago"
+              label={t('expenses.form.dueDay')}
               type="number"
               value={values.dueDay}
               onChange={(event) => set('dueDay', event.target.value)}
               error={Boolean(fieldErrors.dueDay)}
-              helperText={
-                fieldErrors.dueDay ?? 'Si pones 31, en los meses cortos cae el ultimo dia'
-              }
+              helperText={fieldErrors.dueDay ?? t('expenses.form.dueDayHelp')}
               disabled={pending}
               fullWidth
               slotProps={{
@@ -314,7 +315,7 @@ export function ExpenseFormDrawer({
           )}
 
           <TextField
-            label="Desde"
+            label={t('expenses.form.startDate')}
             type="date"
             value={values.startDate}
             onChange={(event) => set('startDate', event.target.value)}
@@ -329,12 +330,12 @@ export function ExpenseFormDrawer({
           />
 
           <TextField
-            label="Hasta (opcional)"
+            label={t('expenses.form.endDate')}
             type="date"
             value={values.endDate}
             onChange={(event) => set('endDate', event.target.value)}
             error={Boolean(fieldErrors.endDate)}
-            helperText={fieldErrors.endDate ?? 'Dejalo vacio si no tiene fecha de termino'}
+            helperText={fieldErrors.endDate ?? t('expenses.form.endDateHelp')}
             disabled={pending}
             fullWidth
             slotProps={{
@@ -344,7 +345,7 @@ export function ExpenseFormDrawer({
           />
 
           <TextField
-            label="Notas (opcional)"
+            label={t('expenses.form.notes')}
             value={values.notes}
             onChange={(event) => set('notes', event.target.value)}
             error={Boolean(fieldErrors.notes)}
@@ -360,8 +361,7 @@ export function ExpenseFormDrawer({
 
           {editando && (
             <Typography variant="body2" color="text.secondary">
-              Los cambios aplican desde el siguiente ciclo. El ciclo en curso conserva lo que ya
-              tenia.
+              {t('expenses.form.editNotice')}
             </Typography>
           )}
 
@@ -371,7 +371,7 @@ export function ExpenseFormDrawer({
               disabled={pending}
               data-testid={testIds.expenses.cancelButton}
             >
-              Cancelar
+              {t('common.cancel')}
             </Button>
             <Button
               type="submit"
@@ -379,7 +379,11 @@ export function ExpenseFormDrawer({
               disabled={pending}
               data-testid={testIds.expenses.submitButton}
             >
-              {pending ? 'Un momento...' : editando ? 'Guardar cambios' : 'Capturar gasto'}
+              {pending
+                ? t('common.oneMoment')
+                : editando
+                  ? t('expenses.form.submitEdit')
+                  : t('expenses.form.submitNew')}
             </Button>
           </Stack>
         </Stack>

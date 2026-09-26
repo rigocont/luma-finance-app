@@ -4,6 +4,7 @@ import Toolbar from '@mui/material/Toolbar';
 import { Outlet } from 'react-router';
 
 import { AdSlot } from '@/features/ads/AdSlot';
+import { useLanguageSync } from '@/features/preferences/usePreferences';
 import { GuidedTour } from '@/features/tour/GuidedTour';
 import { testIds } from '@/lib/testids';
 import { useUiStore } from '@/store/uiStore';
@@ -22,6 +23,11 @@ const SIDEBAR_WIDTH = 248;
 export function AppShell() {
   const sidebarOpen = useUiStore((state) => state.sidebarOpen);
   const setSidebarOpen = useUiStore((state) => state.setSidebarOpen);
+
+  // Este shell solo se monta con sesion iniciada y alta terminada (ver
+  // routes/router.tsx), asi que es el lugar correcto para traer el idioma
+  // guardado en la cuenta (Fase 15) sin arriesgar una peticion anonima.
+  useLanguageSync();
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }} data-testid={testIds.layout.appShell}>

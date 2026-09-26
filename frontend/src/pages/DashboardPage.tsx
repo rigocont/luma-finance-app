@@ -2,6 +2,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
 import { PageHeader } from '@/components/layout/PageHeader';
@@ -42,6 +43,7 @@ import { paths } from '@/routes/paths';
  * el unico lugar donde se suma dinero en este producto.
  */
 export function DashboardPage() {
+  const { t } = useTranslation();
   const user = useCurrentUser();
   const navigate = useNavigate();
 
@@ -66,9 +68,9 @@ export function DashboardPage() {
   return (
     <Stack data-testid={testIds.dashboard.page}>
       <PageHeader
-        eyebrow="Tu dinero"
-        title={user ? `Hola, ${user.name.split(' ')[0]}` : 'Hola'}
-        description={resumen.data ? undefined : 'Aqui va a vivir el resumen de tu ciclo en curso.'}
+        eyebrow={t('dashboard.eyebrow')}
+        title={user ? t('dashboard.greeting', { name: user.name.split(' ')[0] }) : t('dashboard.greetingPlain')}
+        description={resumen.data ? undefined : t('dashboard.noSummaryYet')}
         action={
           resumen.data && balance ? (
             <CycleActions
@@ -84,8 +86,8 @@ export function DashboardPage() {
 
       {sinCiclo && (
         <EmptyState
-          title="Todavia no tienes un ciclo abierto"
-          description="Un ciclo es la quincena o el mes que estas presupuestando. Al abrirlo, tus ingresos, gastos y metas entran como renglones y aparece tu balance."
+          title={t('dashboard.noCycle.title')}
+          description={t('dashboard.noCycle.description')}
           action={
             <Button
               variant="contained"
@@ -93,7 +95,7 @@ export function DashboardPage() {
               disabled={abrir.isPending}
               data-testid={testIds.dashboard.openCycleButton}
             >
-              {abrir.isPending ? 'Abriendo...' : 'Abrir mi primer ciclo'}
+              {abrir.isPending ? t('dashboard.noCycle.opening') : t('dashboard.noCycle.open')}
             </Button>
           }
         />
@@ -110,8 +112,10 @@ export function DashboardPage() {
             color="text.secondary"
             data-testid={testIds.dashboard.cycleRange}
           >
-            Del {formatDay(resumen.data.cycle.period.start)} al{' '}
-            {formatDay(resumen.data.cycle.period.end)}
+            {t('dashboard.cycleRange', {
+              start: formatDay(resumen.data.cycle.period.start),
+              end: formatDay(resumen.data.cycle.period.end),
+            })}
           </Typography>
 
           <BalanceHero balance={balance} onReviewClick={() => navigate(paths.currentCycle)} />

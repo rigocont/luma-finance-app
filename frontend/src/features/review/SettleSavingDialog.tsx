@@ -11,6 +11,7 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState, type FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { ApiError } from '@/lib/api/types';
 import { formatMoney } from '@/lib/money';
@@ -48,6 +49,7 @@ export function SettleSavingDialog({
   onSubmit,
   onClose,
 }: SettleSavingDialogProps) {
+  const { t } = useTranslation();
   const [amount, setAmount] = useState('');
   const [date, setDate] = useState(hoy());
   const [skipGoal, setSkipGoal] = useState(false);
@@ -82,13 +84,16 @@ export function SettleSavingDialog({
       data-testid={testIds.review.settleDialog}
     >
       <Box component="form" onSubmit={handleSubmit} noValidate>
-        <DialogTitle id="review-settle-title">Registrar el aporte</DialogTitle>
+        <DialogTitle id="review-settle-title">{t('review.settle.title')}</DialogTitle>
 
         <DialogContent>
           <Stack spacing={5} sx={{ pt: 2 }}>
             {item && (
               <Typography variant="body2" color="text.secondary">
-                {item.name}: este ciclo planeaste apartar {formatMoney(item.plannedAmount)}.
+                {t('review.settle.summary', {
+                  name: item.name,
+                  amount: formatMoney(item.plannedAmount),
+                })}
               </Typography>
             )}
 
@@ -99,11 +104,11 @@ export function SettleSavingDialog({
             )}
 
             <TextField
-              label="Cuanto apartaste"
+              label={t('review.settle.amountLabel')}
               value={amount}
               onChange={(event) => setAmount(event.target.value)}
               error={Boolean(fieldErrors.actualAmount)}
-              helperText={fieldErrors.actualAmount ?? 'Si fue menos, el renglon queda parcial.'}
+              helperText={fieldErrors.actualAmount ?? t('review.settle.amountHelp')}
               disabled={pending}
               fullWidth
               autoFocus
@@ -117,7 +122,7 @@ export function SettleSavingDialog({
             />
 
             <TextField
-              label="Cuando"
+              label={t('review.settle.when')}
               type="date"
               value={date}
               onChange={(event) => setDate(event.target.value)}
@@ -142,9 +147,9 @@ export function SettleSavingDialog({
               }
               label={
                 <Stack spacing={0.5}>
-                  <Typography variant="body2">No registrarlo en la meta</Typography>
+                  <Typography variant="body2">{t('review.settle.skipGoal')}</Typography>
                   <Typography variant="caption" color="text.disabled">
-                    El gasto queda en el ciclo, pero el progreso de la meta no se mueve.
+                    {t('review.settle.skipGoalHelp')}
                   </Typography>
                 </Stack>
               }
@@ -155,7 +160,7 @@ export function SettleSavingDialog({
 
         <DialogActions>
           <Button onClick={onClose} disabled={pending}>
-            Cancelar
+            {t('common.cancel')}
           </Button>
           <Button
             type="submit"
@@ -163,7 +168,7 @@ export function SettleSavingDialog({
             disabled={pending}
             data-testid={testIds.review.settleSubmit}
           >
-            {pending ? 'Un momento...' : 'Registrar'}
+            {pending ? t('common.oneMoment') : t('review.settle.submit')}
           </Button>
         </DialogActions>
       </Box>

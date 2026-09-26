@@ -1,5 +1,4 @@
 import { act } from 'react';
-
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it } from 'vitest';
 
@@ -7,7 +6,7 @@ import { testIds } from '@/lib/testids';
 import { useTourStore } from '@/store/tourStore';
 
 import { GuidedTour } from './GuidedTour';
-import { tourSteps } from './tourSteps';
+import { tourStepTitle, tourSteps } from './tourSteps';
 
 function resetTour() {
   localStorage.clear();
@@ -21,7 +20,7 @@ describe('GuidedTour', () => {
     render(<GuidedTour />);
 
     expect(screen.getByTestId(testIds.tour.root)).toBeInTheDocument();
-    expect(screen.getByTestId(testIds.tour.title)).toHaveTextContent(tourSteps[0]!.title);
+    expect(screen.getByTestId(testIds.tour.title)).toHaveTextContent(tourStepTitle(tourSteps[0]!));
   });
 
   it('no arranca solo si ya se completo antes', () => {
@@ -36,10 +35,10 @@ describe('GuidedTour', () => {
     render(<GuidedTour />);
 
     fireEvent.click(screen.getByTestId(testIds.tour.nextButton));
-    expect(screen.getByTestId(testIds.tour.title)).toHaveTextContent(tourSteps[1]!.title);
+    expect(screen.getByTestId(testIds.tour.title)).toHaveTextContent(tourStepTitle(tourSteps[1]!));
 
     fireEvent.click(screen.getByTestId(testIds.tour.prevButton));
-    expect(screen.getByTestId(testIds.tour.title)).toHaveTextContent(tourSteps[0]!.title);
+    expect(screen.getByTestId(testIds.tour.title)).toHaveTextContent(tourStepTitle(tourSteps[0]!));
   });
 
   it('omitir en cualquier paso cierra el tour, lo marca completado y no reaparece solo', () => {
@@ -64,7 +63,7 @@ describe('GuidedTour', () => {
     }
 
     expect(screen.getByTestId(testIds.tour.title)).toHaveTextContent(
-      tourSteps[tourSteps.length - 1]!.title,
+      tourStepTitle(tourSteps[tourSteps.length - 1]!),
     );
 
     fireEvent.click(screen.getByTestId(testIds.tour.finishButton));
@@ -83,6 +82,6 @@ describe('GuidedTour', () => {
     });
 
     expect(screen.getByTestId(testIds.tour.root)).toBeInTheDocument();
-    expect(screen.getByTestId(testIds.tour.title)).toHaveTextContent(tourSteps[0]!.title);
+    expect(screen.getByTestId(testIds.tour.title)).toHaveTextContent(tourStepTitle(tourSteps[0]!));
   });
 });

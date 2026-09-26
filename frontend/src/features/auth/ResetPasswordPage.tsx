@@ -5,6 +5,8 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { Link as RouterLink, useNavigate, useSearchParams } from 'react-router';
 
 import { testIds } from '@/lib/testids';
@@ -14,25 +16,28 @@ import { AuthForm, type FieldSpec } from './AuthForm';
 import { AuthLayout } from './AuthLayout';
 import { resetPassword } from './passwordApi';
 
-const FIELDS: FieldSpec[] = [
-  {
-    name: 'newPassword',
-    label: 'Contrasena nueva',
-    type: 'password',
-    autoComplete: 'new-password',
-    testId: testIds.auth.newPasswordInput,
-    helperText: 'Al menos 8 caracteres',
-  },
-  {
-    name: 'confirmPassword',
-    label: 'Confirma la contrasena',
-    type: 'password',
-    autoComplete: 'new-password',
-    testId: testIds.auth.confirmPasswordInput,
-  },
-];
+function getFields(t: TFunction): FieldSpec[] {
+  return [
+    {
+      name: 'newPassword',
+      label: t('auth.fields.newPassword'),
+      type: 'password',
+      autoComplete: 'new-password',
+      testId: testIds.auth.newPasswordInput,
+      helperText: t('auth.register.passwordHelp'),
+    },
+    {
+      name: 'confirmPassword',
+      label: t('auth.fields.confirmPasswordShort'),
+      type: 'password',
+      autoComplete: 'new-password',
+      testId: testIds.auth.confirmPasswordInput,
+    },
+  ];
+}
 
 export function ResetPasswordPage() {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
   const navigate = useNavigate();
@@ -50,7 +55,7 @@ export function ResetPasswordPage() {
       // camino posible es volver a entrar.
       navigate(paths.login, {
         replace: true,
-        state: { notice: 'Tu contrasena quedo lista. Entra con la nueva.' },
+        state: { notice: t('auth.resetPassword.successNotice') },
       });
     },
   });
@@ -61,7 +66,7 @@ export function ResetPasswordPage() {
 
   function handleSubmit() {
     if (values.newPassword !== values.confirmPassword) {
-      setLocalErrors({ confirmPassword: 'Las contrasenas no coinciden' });
+      setLocalErrors({ confirmPassword: t('auth.resetPassword.mismatch') });
       return;
     }
     setLocalErrors({});
@@ -69,17 +74,14 @@ export function ResetPasswordPage() {
   }
 
   return (
-    <AuthLayout
-      title="Elige una contrasena nueva"
-      subtitle="Al guardarla se cerraran todas las sesiones abiertas de tu cuenta."
-    >
+    <AuthLayout title={t('auth.resetPassword.title')} subtitle={t('auth.resetPassword.subtitle')}>
       <div data-testid={testIds.auth.resetPasswordPage}>
         <AuthForm
-          fields={FIELDS}
+          fields={getFields(t)}
           values={values}
           onChange={(name, value) => setValues((prev) => ({ ...prev, [name]: value }))}
           onSubmit={handleSubmit}
-          submitLabel="Guardar contrasena"
+          submitLabel={t('auth.resetPassword.submit')}
           submitTestId={testIds.auth.submitButton}
           pending={isPending}
           error={error}
@@ -93,16 +95,13 @@ export function ResetPasswordPage() {
 
 /** El enlace llego sin codigo, o alguien abrio la ruta a mano. */
 function InvalidLink() {
+  const { t } = useTranslation();
+
   return (
-    <AuthLayout
-      title="Este enlace no sirve"
-      subtitle="Le falta el codigo de recuperacion, o ya se uso."
-    >
+    <AuthLayout title={t('auth.resetPassword.invalidTitle')} subtitle={t('auth.resetPassword.invalidSubtitle')}>
       <Stack spacing={5} data-testid={testIds.auth.invalidResetLink}>
         <Alert severity="error" icon={false}>
-          <Typography variant="body2">
-            Los enlaces de recuperacion vencen en una hora y sirven una sola vez.
-          </Typography>
+          <Typography variant="body2">{t('auth.resetPassword.invalidMessage')}</Typography>
         </Alert>
 
         <Button
@@ -112,12 +111,12 @@ function InvalidLink() {
           size="large"
           data-testid={testIds.auth.requestNewLink}
         >
-          Pedir un enlace nuevo
+          {t('auth.resetPassword.requestNew')}
         </Button>
 
         <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
           <Link component={RouterLink} to={paths.login} underline="hover">
-            Volver a iniciar sesion
+            {t('auth.forgotPassword.backToLogin')}
           </Link>
         </Typography>
       </Stack>

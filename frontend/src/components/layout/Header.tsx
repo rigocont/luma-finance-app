@@ -8,6 +8,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 import { useCurrentUser, useLogout } from '@/features/auth/useAuth';
 import { NotificationBell } from '@/features/notifications/NotificationBell';
@@ -20,6 +21,7 @@ interface HeaderProps {
 }
 
 export function Header({ onOpenSidebar, sidebarWidth }: HeaderProps) {
+  const { t } = useTranslation();
   const theme = useTheme();
   const setThemePreference = useUiStore((state) => state.setThemePreference);
   const isDark = theme.palette.mode === 'dark';
@@ -38,7 +40,7 @@ export function Header({ onOpenSidebar, sidebarWidth }: HeaderProps) {
       <Toolbar sx={{ gap: 2, minHeight: 64 }}>
         <IconButton
           edge="start"
-          aria-label="Abrir menu"
+          aria-label={t('layout.openMenu')}
           data-testid={testIds.layout.sidebarToggle}
           onClick={onOpenSidebar}
           sx={{ display: { md: 'none' } }}
@@ -61,9 +63,9 @@ export function Header({ onOpenSidebar, sidebarWidth }: HeaderProps) {
 
         <NotificationBell />
 
-        <Tooltip title={isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}>
+        <Tooltip title={isDark ? t('layout.themeToLight') : t('layout.themeToDark')}>
           <IconButton
-            aria-label="Cambiar tema"
+            aria-label={t('layout.changeTheme')}
             data-testid={testIds.layout.themeToggle}
             onClick={() => setThemePreference(isDark ? 'light' : 'dark')}
           >
@@ -71,9 +73,9 @@ export function Header({ onOpenSidebar, sidebarWidth }: HeaderProps) {
           </IconButton>
         </Tooltip>
 
-        <Tooltip title="Cerrar sesion">
+        <Tooltip title={t('layout.logout')}>
           <IconButton
-            aria-label="Cerrar sesion"
+            aria-label={t('layout.logout')}
             data-testid={testIds.auth.logoutButton}
             onClick={() => void logout()}
           >

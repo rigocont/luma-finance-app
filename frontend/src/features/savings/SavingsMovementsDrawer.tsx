@@ -4,6 +4,7 @@ import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { useTranslation } from 'react-i18next';
 
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorState } from '@/components/ui/ErrorState';
@@ -12,7 +13,7 @@ import { formatDay } from '@/lib/date';
 import { formatMoney, isNegative } from '@/lib/money';
 import { testIds } from '@/lib/testids';
 
-import { MOVEMENT_TYPE_LABELS, type SavingsGoal, type SavingsMovement } from './types';
+import { movementTypeLabel, type SavingsGoal, type SavingsMovement } from './types';
 
 interface SavingsMovementsDrawerProps {
   open: boolean;
@@ -40,6 +41,8 @@ export function SavingsMovementsDrawer({
   onRetry,
   onClose,
 }: SavingsMovementsDrawerProps) {
+  const { t } = useTranslation();
+
   return (
     <Drawer
       anchor="right"
@@ -52,12 +55,15 @@ export function SavingsMovementsDrawer({
         <Stack spacing={5}>
           <Stack spacing={1}>
             <Typography variant="overline" color="text.disabled">
-              Movimientos
+              {t('savings.movements.eyebrow')}
             </Typography>
-            <Typography variant="h3">{goal?.name ?? 'Meta'}</Typography>
+            <Typography variant="h3">{goal?.name ?? t('savings.movements.goalFallback')}</Typography>
             {goal && (
               <Typography variant="body2" color="text.secondary">
-                Llevas {formatMoney(goal.saved)} de {formatMoney(goal.target)}.
+                {t('savings.movements.summary', {
+                  saved: formatMoney(goal.saved),
+                  target: formatMoney(goal.target),
+                })}
               </Typography>
             )}
           </Stack>
@@ -69,8 +75,8 @@ export function SavingsMovementsDrawer({
           {movements && movements.length === 0 && (
             <Box data-testid={testIds.savings.movementsEmpty}>
               <EmptyState
-                title="Todavia no hay movimientos"
-                description="Aqui van a aparecer los aportes que confirmes en tus ciclos y los que registres por tu cuenta."
+                title={t('savings.movements.emptyTitle')}
+                description={t('savings.movements.emptyDescription')}
               />
             </Box>
           )}
@@ -114,11 +120,11 @@ export function SavingsMovementsDrawer({
                       <Chip
                         size="small"
                         variant="outlined"
-                        label={MOVEMENT_TYPE_LABELS[movement.type]}
+                        label={movementTypeLabel(movement.type)}
                       />
                       {movement.fromCycle && (
                         <Typography variant="caption" color="text.disabled">
-                          Entro al confirmar el ciclo
+                          {t('savings.movements.fromCycle')}
                         </Typography>
                       )}
                     </Stack>

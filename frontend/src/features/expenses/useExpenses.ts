@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import i18n from '@/i18n';
 import { showToast } from '@/store/toastStore';
 
 import {
@@ -54,14 +55,14 @@ function useExpenseMutation<TVariables, TResult>(
 export function useCreateExpense() {
   return useExpenseMutation(
     (payload: ExpensePayload) => createExpense(payload),
-    (payload) => `Gasto "${payload.name}" capturado.`,
+    (payload) => i18n.t('expenses.toast.created', { name: payload.name }),
   );
 }
 
 export function useUpdateExpense() {
   return useExpenseMutation(
     ({ id, payload }: { id: string; payload: ExpensePayload }) => updateExpense(id, payload),
-    ({ payload }) => `Gasto "${payload.name}" actualizado. Aplica desde el siguiente ciclo.`,
+    ({ payload }) => i18n.t('expenses.toast.updated', { name: payload.name }),
   );
 }
 
@@ -70,14 +71,14 @@ export function useSetExpenseActive() {
     ({ id, active }: { id: string; active: boolean }) => setExpenseActive(id, active),
     ({ active }, result) =>
       active
-        ? `"${result.name}" vuelve a contar en tus ciclos.`
-        : `"${result.name}" deja de contar en los ciclos siguientes.`,
+        ? i18n.t('expenses.toast.activated', { name: result.name })
+        : i18n.t('expenses.toast.deactivated', { name: result.name }),
   );
 }
 
 export function useDeleteExpense() {
   return useExpenseMutation(
     ({ id }: { id: string; name: string }) => deleteExpense(id),
-    ({ name }) => `Gasto "${name}" eliminado.`,
+    ({ name }) => i18n.t('expenses.toast.deleted', { name }),
   );
 }

@@ -102,4 +102,25 @@ public class UserPreferencesService {
             preferences.save(current);
         });
     }
+
+    /**
+     * Cambia el idioma de la interfaz.
+     *
+     * <p>ESCRIBE, y a proposito crea la fila si no existia (a diferencia de
+     * {@link #changeCycle}, que tambien la crea): elegir un idioma es una
+     * accion explicita de la persona, nunca un efecto secundario de una
+     * lectura.
+     */
+    @Transactional
+    public UserPreferences changeUiLanguage(Long userId, String uiLanguage) {
+        UserPreferences current = getOrCreate(userId);
+
+        try {
+            current.changeUiLanguage(uiLanguage);
+        } catch (IllegalArgumentException invalido) {
+            throw new BusinessRuleException(invalido.getMessage());
+        }
+
+        return preferences.save(current);
+    }
 }

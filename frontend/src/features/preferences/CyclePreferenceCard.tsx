@@ -8,12 +8,13 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState, type FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { LoadingState } from '@/components/ui/LoadingState';
 import { ApiError } from '@/lib/api/types';
 import { testIds } from '@/lib/testids';
 
-import { CYCLE_TYPES, CYCLE_TYPE_HELP, CYCLE_TYPE_LABELS, type CycleType } from './types';
+import { CYCLE_TYPES, cycleTypeHelp, cycleTypeLabel, type CycleType } from './types';
 import { useCyclePreferences, useUpdateCyclePreference } from './usePreferences';
 
 /**
@@ -24,6 +25,7 @@ import { useCyclePreferences, useUpdateCyclePreference } from './usePreferences'
  * quedaba congelada en la primera decision.
  */
 export function CyclePreferenceCard() {
+  const { t } = useTranslation();
   const preferencias = useCyclePreferences();
   const guardar = useUpdateCyclePreference({ notify: true });
 
@@ -57,10 +59,9 @@ export function CyclePreferenceCard() {
         <Box component="form" onSubmit={handleSubmit} noValidate>
           <Stack spacing={4}>
             <Stack spacing={1.5}>
-              <Typography variant="h3">Tu ciclo presupuestal</Typography>
+              <Typography variant="h3">{t('settings.cycle.title')}</Typography>
               <Typography variant="body2" color="text.secondary">
-                El periodo que presupuestas de una vez. El cambio aplica a tu siguiente ciclo: el
-                que este abierto conserva sus fechas.
+                {t('settings.cycle.description')}
               </Typography>
             </Stack>
 
@@ -77,30 +78,28 @@ export function CyclePreferenceCard() {
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
                   <TextField
                     select
-                    label="Cada cuanto"
+                    label={t('settings.cycle.typeLabel')}
                     value={tipo}
                     onChange={(event) => setTipo(event.target.value as CycleType)}
-                    helperText={CYCLE_TYPE_HELP[tipo]}
+                    helperText={cycleTypeHelp(tipo)}
                     disabled={guardar.isPending}
                     fullWidth
                     data-testid={testIds.settings.cycleType}
                   >
                     {CYCLE_TYPES.map((value) => (
                       <MenuItem key={value} value={value}>
-                        {CYCLE_TYPE_LABELS[value]}
+                        {cycleTypeLabel(value)}
                       </MenuItem>
                     ))}
                   </TextField>
 
                   <TextField
-                    label="Dia en que empieza"
+                    label={t('settings.cycle.dayLabel')}
                     type="number"
                     value={dia}
                     onChange={(event) => setDia(event.target.value)}
                     error={Boolean(fieldErrors.anchorDay)}
-                    helperText={
-                      fieldErrors.anchorDay ?? 'En los meses cortos, un 31 cae el ultimo dia.'
-                    }
+                    helperText={fieldErrors.anchorDay ?? t('settings.cycle.dayHelp')}
                     disabled={guardar.isPending}
                     sx={{ width: { xs: '100%', sm: 200 } }}
                     slotProps={{
@@ -120,7 +119,7 @@ export function CyclePreferenceCard() {
                     disabled={guardar.isPending || sinCambios}
                     data-testid={testIds.settings.cycleSubmit}
                   >
-                    {guardar.isPending ? 'Un momento...' : 'Guardar'}
+                    {guardar.isPending ? t('common.oneMoment') : t('settings.cycle.submit')}
                   </Button>
                 </Box>
               </>

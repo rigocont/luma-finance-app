@@ -6,6 +6,7 @@ import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { useTranslation } from 'react-i18next';
 
 import { LoadingState } from '@/components/ui/LoadingState';
 import { formatMoney } from '@/lib/money';
@@ -38,16 +39,17 @@ export function DeficitAdviceCard({
   pendingItemId,
   onSkip,
 }: DeficitAdviceCardProps) {
+  const { t } = useTranslation();
+
   return (
     <Card data-testid={testIds.dashboard.advice}>
       <CardContent>
         <Stack spacing={4}>
           <Stack spacing={1}>
-            <Typography variant="h3">De donde podria salir</Typography>
+            <Typography variant="h3">{t('dashboard.advice.title')}</Typography>
             {advice && (
               <Typography variant="body2" color="text.secondary">
-                Faltan {formatMoney(advice.missing)}. Esto es lo que se puede mover, de lo que menos
-                cuesta a lo que mas.
+                {t('dashboard.advice.subtitle', { amount: formatMoney(advice.missing) })}
               </Typography>
             )}
           </Stack>
@@ -56,8 +58,7 @@ export function DeficitAdviceCard({
 
           {advice && advice.cuts.length === 0 && (
             <Alert severity="warning" data-testid={testIds.dashboard.adviceShortfall}>
-              No encontramos nada que se pueda mover sin tocar tus gastos criticos. Tendrias que
-              ajustar un ingreso o revisar si algun gasto critico de verdad lo es.
+              {t('dashboard.advice.noOptions')}
             </Alert>
           )}
 
@@ -65,8 +66,7 @@ export function DeficitAdviceCard({
             <>
               {!advice.coversTheGap && (
                 <Alert severity="warning" data-testid={testIds.dashboard.adviceShortfall}>
-                  Aun moviendo todo esto ({formatMoney(advice.covered)}) no alcanza a cubrir lo que
-                  falta. Sirve para acercarte, no para cerrar el ciclo.
+                  {t('dashboard.advice.shortfall', { covered: formatMoney(advice.covered) })}
                 </Alert>
               )}
 
@@ -87,14 +87,16 @@ export function DeficitAdviceCard({
                       >
                         <Typography variant="body1">{cut.name}</Typography>
                         {cut.itemType === 'SAVING' && (
-                          <Chip size="small" variant="outlined" label="Ahorro" />
+                          <Chip size="small" variant="outlined" label={t('dashboard.advice.savingChip')} />
                         )}
-                        {cut.estimated && <Chip size="small" variant="outlined" label="Estimado" />}
+                        {cut.estimated && (
+                          <Chip size="small" variant="outlined" label={t('dashboard.advice.estimatedChip')} />
+                        )}
                       </Stack>
                       <Typography variant="caption" color="text.secondary">
                         {cut.itemType === 'SAVING'
-                          ? 'Si no lo apartas este ciclo, la meta lo retoma en el siguiente.'
-                          : 'Quitarlo de este ciclo no borra el gasto ni lo desactiva.'}
+                          ? t('dashboard.advice.savingNote')
+                          : t('dashboard.advice.expenseNote')}
                       </Typography>
                     </Stack>
 
@@ -111,7 +113,7 @@ export function DeficitAdviceCard({
                         onClick={() => onSkip(cut)}
                         data-testid={testIds.dashboard.adviceSkipAction}
                       >
-                        {pendingItemId === cut.itemId ? 'Un momento...' : 'Quitar del ciclo'}
+                        {pendingItemId === cut.itemId ? t('common.oneMoment') : t('dashboard.advice.skip')}
                       </Button>
                     </Stack>
                   </Stack>

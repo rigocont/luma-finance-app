@@ -5,6 +5,7 @@ import Stack from '@mui/material/Stack';
 import TablePagination from '@mui/material/TablePagination';
 import TextField from '@mui/material/TextField';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { PageHeader } from '@/components/layout/PageHeader';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
@@ -17,9 +18,9 @@ import { ExpenseFormDrawer } from './ExpenseFormDrawer';
 import { ExpenseList } from './ExpenseList';
 import {
   EXPENSE_KINDS,
-  EXPENSE_KIND_LABELS,
+  expenseKindLabel,
   EXPENSE_SORTS,
-  EXPENSE_SORT_LABELS,
+  expenseSortLabel,
   type Expense,
   type ExpenseFilters,
   type ExpenseKind,
@@ -40,6 +41,7 @@ const FILTROS_INICIALES: ExpenseFilters = { sort: 'NEWEST', page: 0, size: 20 };
 const TAMANOS_DE_PAGINA = [10, 20, 50];
 
 export function ExpensesPage() {
+  const { t } = useTranslation();
   const [filters, setFilters] = useState<ExpenseFilters>(FILTROS_INICIALES);
   const [enEdicion, setEnEdicion] = useState<Expense | null>(null);
   const [cajonAbierto, setCajonAbierto] = useState(false);
@@ -97,9 +99,9 @@ export function ExpensesPage() {
   return (
     <Stack data-testid={testIds.expenses.page}>
       <PageHeader
-        eyebrow="Tu dinero"
-        title="Gastos"
-        description="Lo que sale cada ciclo: lo que siempre cuesta igual y lo que cambia."
+        eyebrow={t('expenses.eyebrow')}
+        title={t('expenses.title')}
+        description={t('expenses.description')}
         action={
           <Button
             variant="contained"
@@ -107,7 +109,7 @@ export function ExpensesPage() {
             onClick={abrirNuevo}
             data-testid={testIds.expenses.createButton}
           >
-            Capturar gasto
+            {t('expenses.create')}
           </Button>
         }
       />
@@ -116,7 +118,7 @@ export function ExpensesPage() {
         <TextField
           select
           size="small"
-          label="El monto"
+          label={t('expenses.filters.kind')}
           value={filters.kind ?? ''}
           onChange={(event) =>
             cambiarFiltro({ kind: (event.target.value || undefined) as ExpenseKind | undefined })
@@ -124,10 +126,10 @@ export function ExpensesPage() {
           sx={{ minWidth: 190 }}
           data-testid={testIds.expenses.filterKind}
         >
-          <MenuItem value="">Todos</MenuItem>
+          <MenuItem value="">{t('common.all')}</MenuItem>
           {EXPENSE_KINDS.map((kind) => (
             <MenuItem key={kind} value={kind}>
-              {EXPENSE_KIND_LABELS[kind]}
+              {expenseKindLabel(kind)}
             </MenuItem>
           ))}
         </TextField>
@@ -135,13 +137,13 @@ export function ExpensesPage() {
         <TextField
           select
           size="small"
-          label="Categoria"
+          label={t('expenses.filters.category')}
           value={filters.categoryId ?? ''}
           onChange={(event) => cambiarFiltro({ categoryId: event.target.value || undefined })}
           sx={{ minWidth: 190 }}
           data-testid={testIds.expenses.filterCategory}
         >
-          <MenuItem value="">Todas</MenuItem>
+          <MenuItem value="">{t('expenses.filters.allCategories')}</MenuItem>
           {(categorias.data ?? []).map((category) => (
             <MenuItem key={category.id} value={category.id}>
               {category.name}
@@ -152,7 +154,7 @@ export function ExpensesPage() {
         <TextField
           select
           size="small"
-          label="Estado"
+          label={t('expenses.filters.status')}
           value={filters.active === undefined ? '' : String(filters.active)}
           onChange={(event) =>
             cambiarFiltro({
@@ -162,15 +164,15 @@ export function ExpensesPage() {
           sx={{ minWidth: 160 }}
           data-testid={testIds.expenses.filterActive}
         >
-          <MenuItem value="">Todos</MenuItem>
-          <MenuItem value="true">Cuentan</MenuItem>
-          <MenuItem value="false">Sin contar</MenuItem>
+          <MenuItem value="">{t('common.all')}</MenuItem>
+          <MenuItem value="true">{t('expenses.filters.active')}</MenuItem>
+          <MenuItem value="false">{t('expenses.filters.inactive')}</MenuItem>
         </TextField>
 
         <TextField
           select
           size="small"
-          label="Ordenar por"
+          label={t('expenses.filters.sort')}
           value={filters.sort}
           onChange={(event) => cambiarFiltro({ sort: event.target.value as ExpenseSort })}
           sx={{ minWidth: 170 }}
@@ -178,7 +180,7 @@ export function ExpensesPage() {
         >
           {EXPENSE_SORTS.map((sort) => (
             <MenuItem key={sort} value={sort}>
-              {EXPENSE_SORT_LABELS[sort]}
+              {expenseSortLabel(sort)}
             </MenuItem>
           ))}
         </TextField>
@@ -190,18 +192,18 @@ export function ExpensesPage() {
 
       {pagina && pagina.content.length === 0 && (
         <EmptyState
-          title={hayFiltros ? 'Nada con esos filtros' : 'Todavia no capturas ningun gasto'}
+          title={hayFiltros ? t('expenses.empty.filteredTitle') : t('expenses.empty.title')}
           description={
-            hayFiltros
-              ? 'Prueba quitando alguno para ver el resto.'
-              : 'Empieza por los que no fallan: renta, servicios, despensa. Si ya tienes un ciclo abierto, apareceran ahi de inmediato.'
+            hayFiltros ? t('expenses.empty.filteredDescription') : t('expenses.empty.description')
           }
           action={
             hayFiltros ? (
-              <Button onClick={() => setFilters(FILTROS_INICIALES)}>Quitar filtros</Button>
+              <Button onClick={() => setFilters(FILTROS_INICIALES)}>
+                {t('common.clearFilters')}
+              </Button>
             ) : (
               <Button variant="contained" onClick={abrirNuevo}>
-                Capturar el primero
+                {t('expenses.captureFirst')}
               </Button>
             )
           }
@@ -227,8 +229,10 @@ export function ExpensesPage() {
             rowsPerPageOptions={TAMANOS_DE_PAGINA}
             onPageChange={(_event, page) => setFilters((previos) => ({ ...previos, page }))}
             onRowsPerPageChange={(event) => cambiarFiltro({ size: Number(event.target.value) })}
-            labelRowsPerPage="Por pagina"
-            labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count}`}
+            labelRowsPerPage={t('expenses.pagination.perPage')}
+            labelDisplayedRows={({ from, to, count }) =>
+              t('expenses.pagination.displayedRows', { from, to, count })
+            }
             data-testid={testIds.expenses.pagination}
           />
         </Stack>
@@ -246,13 +250,9 @@ export function ExpensesPage() {
 
       <ConfirmDialog
         open={porEliminar !== null}
-        title={`Eliminar "${porEliminar?.name ?? ''}"`}
-        description={
-          'Deja de aparecer en tus listas y no se puede recuperar. Los ciclos ' +
-          'que ya lo tenian no cambian. Si solo quieres que deje de contar, ' +
-          'usa "Dejar de contarlo".'
-        }
-        confirmLabel="Eliminar"
+        title={t('expenses.deleteConfirm.title', { name: porEliminar?.name ?? '' })}
+        description={t('expenses.deleteConfirm.description')}
+        confirmLabel={t('common.delete')}
         destructive
         pending={eliminar.isPending}
         onConfirm={confirmarEliminacion}
