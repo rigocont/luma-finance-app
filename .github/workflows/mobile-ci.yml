@@ -1,0 +1,62 @@
+name: Mobile CI
+
+# Formato, estilo y tipos de la app movil (Expo/React Native). Ver
+# docs/roadmap-mobile.md.
+#
+# No hay build nativo (iOS/Android) ni pruebas todavia: M0 es solo el
+# scaffold, la navegacion base y el wiring de autenticacion. Un build nativo
+# real llega con EAS Build mas adelante en el roadmap movil, no antes de que
+# haya pantallas que valga la pena empaquetar.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'mobile/**'
+      - '.github/workflows/mobile-ci.yml'
+  pull_request:
+    paths:
+      - 'mobile/**'
+      - '.github/workflows/mobile-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mobile-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Verificar
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: mobile
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Instalar dependencias
+        # El .npmrc del proyecto fija legacy-peer-deps=true: el grafo de
+        # dependencias de Expo/React Native todavia no resuelve limpio con el
+        # algoritmo estricto de npm 7+ (ver mobile/.npmrc).
+        run: npm ci --no-audit --no-fund
+
+      - name: Formato
+        run: npm run format:check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Tipos
+        run: npm run typecheck

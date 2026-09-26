@@ -42,6 +42,8 @@ LUMA no es un registro de gastos. Organiza el dinero en **ciclos presupuestales*
 
 El plan completo esta en [`docs/00-arquitectura-fase-0.md`](docs/00-arquitectura-fase-0.md).
 El plan de las apps moviles (iOS/Android) esta en [`docs/roadmap-mobile.md`](docs/roadmap-mobile.md).
+La app vive en [`mobile/`](mobile/README.md) (Expo/React Native); **M0 completada**: scaffold,
+navegacion base y wiring de autenticacion.
 
 > **Para retomar el proyecto:** empieza por
 > [`docs/PUNTO-DE-RETORNO.md`](docs/PUNTO-DE-RETORNO.md). Trae el estado, las

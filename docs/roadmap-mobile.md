@@ -63,14 +63,14 @@ que ya consume el frontend web.
 
 ## 3. Fases
 
-| Fase | Contenido | Nota |
-|---|---|---|
-| M0 | Scaffold de Expo, navegacion base, wiring de autenticacion (`X-Client-Type: mobile`, secure storage del refresh token, cliente HTTP compartido de forma conceptual con el frontend web) | Sin esto no hay nada mas que construir |
-| M1 | Paridad de solo lectura: login, «Este ciclo» y el resumen financiero en modo lectura | Primer build que se siente como LUMA en el telefono |
-| M2 | Pantallas CRUD nucleo: ingresos, gastos, metas de ahorro | Mismo alcance funcional que el frontend web, adaptado a movil |
-| M3 | Revision por ciclo, alertas internas, y notificaciones push nativas via APNs | Las notificaciones push son una ventaja real de movil sobre web: un pago vencido puede avisar sin abrir la app |
-| M4 | Beta cerrada por TestFlight | Iteracion con uso real en el iPhone de la persona antes de publicar |
-| M5 | Puerto a Android sobre el mismo codigo RN, beta interna en Play Store | Se hace despues de validar iOS, no en paralelo |
+| Fase | Contenido | Nota | Estado |
+|---|---|---|---|
+| M0 | Scaffold de Expo, navegacion base, wiring de autenticacion (`X-Client-Type: mobile`, secure storage del refresh token, cliente HTTP compartido de forma conceptual con el frontend web) | Sin esto no hay nada mas que construir | Completada |
+| M1 | Paridad de solo lectura: login, «Este ciclo» y el resumen financiero en modo lectura | Primer build que se siente como LUMA en el telefono | Pendiente |
+| M2 | Pantallas CRUD nucleo: ingresos, gastos, metas de ahorro | Mismo alcance funcional que el frontend web, adaptado a movil | Pendiente |
+| M3 | Revision por ciclo, alertas internas, y notificaciones push nativas via APNs | Las notificaciones push son una ventaja real de movil sobre web: un pago vencido puede avisar sin abrir la app | Pendiente |
+| M4 | Beta cerrada por TestFlight | Iteracion con uso real en el iPhone de la persona antes de publicar | Pendiente |
+| M5 | Puerto a Android sobre el mismo codigo RN, beta interna en Play Store | Se hace despues de validar iOS, no en paralelo | Pendiente |
 
 No hay fecha objetivo todavia; el orden es lo que importa, no el calendario.
 
@@ -80,6 +80,10 @@ No se agrega un workflow de CI para `mobile/` (por ejemplo
 `.github/workflows/mobile-ci.yml`) hasta que exista codigo real que probar.
 Un job de CI apuntando a una carpeta vacia solo queda permanentemente en rojo
 o vacio sin avisar nada; se crea junto con el primer commit de M0.
+
+**Hecho en M0:** `.github/workflows/mobile-ci.yml` corre formato, lint y tipos
+sobre `mobile/`. Sin build nativo ni pruebas todavia: llegan cuando haya
+pantallas reales (M1+) y un build por EAS que valga la pena empaquetar.
 
 ## 5. Que decide esta version del documento
 
@@ -93,3 +97,17 @@ nombre exacto de la app en las tiendas, cuenta de desarrollador de Apple a
 usar, y si el diseno visual de movil replica 1:1 los tokens de
 `docs/design-system.md` o adapta algunos (los patrones tactiles de iOS no
 siempre coinciden con los de una SPA de escritorio/web).
+
+## 6. Que quedo en M0
+
+- `mobile/` con Expo SDK 57, TypeScript estricto y expo-router (rutas en `src/app/`).
+- Navegacion base: grupo `(auth)` (login, registro) y grupo `(app)` (placeholder de
+  inicio con cierre de sesion), protegidos con `Stack.Protected` segun el estado de la sesion.
+- Cliente HTTP (`src/lib/api/client.ts`) con `X-Client-Type: mobile`, renovacion de un
+  solo vuelo y el mismo error normalizado (`ApiError`) que el frontend web.
+- Refresh token en `expo-secure-store`; access token solo en memoria. Al abrir la app
+  se intenta renovar la sesion antes de decidir entre login y la app.
+- Verificado: `tsc`, ESLint y Prettier limpios, `npm ci` desde el lockfile, y un bundle
+  de iOS completo con `expo export --platform ios`.
+- Pendiente para M1: textos de la app todavia en espanol fijo (sin i18n propio) y sin
+  pruebas automatizadas.
