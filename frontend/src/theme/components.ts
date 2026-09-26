@@ -94,6 +94,12 @@ export function buildComponents(c: LumaColors, s: ShadowSet, theme: Theme): Comp
           fontWeight: 600,
           fontSize: '0.75rem',
         },
+        // La miel destaca en foco/identidad; en un chip destacado (color="warning")
+        // se ve como una gradiente sutil de dos tonos en vez de un relleno flat.
+        colorWarning: {
+          background: c.honeyGradient,
+          color: c.onInk,
+        },
       },
     },
 
@@ -114,6 +120,12 @@ export function buildComponents(c: LumaColors, s: ShadowSet, theme: Theme): Comp
           '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
             borderColor: c.honey,
             borderWidth: 2,
+          },
+          // El borde del fieldset es un trazo SVG (notch para el label): no admite
+          // una gradiente literal. El acento de foco se resuelve con un resplandor
+          // que mezcla los dos tonos de la miel, en el mismo espiritu de la gradiente.
+          '&.Mui-focused': {
+            boxShadow: `0 0 0 3px ${theme.alpha(c.honeyFill, 0.28)}, 0 0 10px 1px ${theme.alpha(c.honey, 0.22)}`,
           },
         },
       },

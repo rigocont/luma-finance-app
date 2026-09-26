@@ -23,6 +23,7 @@ export const palette = {
     honey: '#C98A2B',
     honeyFill: '#E8AE4C',
     honeyWash: '#FBF0DC',
+    honeyGradient: 'linear-gradient(135deg, #E8AE4C 0%, #C98A2B 100%)',
 
     positive: '#2E7D52',
     positiveWash: '#E4F2E9',
@@ -47,6 +48,7 @@ export const palette = {
     honey: '#EFB959',
     honeyFill: '#D99930',
     honeyWash: '#33291A',
+    honeyGradient: 'linear-gradient(135deg, #EFB959 0%, #D99930 100%)',
 
     positive: '#6ABE8E',
     positiveWash: '#1E3128',

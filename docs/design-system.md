@@ -60,6 +60,7 @@ Eso **elimina un color semántico completo del sistema** y libera la miel para s
 | `--luma-honey` | `#C98A2B` | Marca sobre claro, foco, % de metas |
 | `--luma-honey-fill` | `#E8AE4C` | Rellenos, barras de progreso |
 | `--luma-honey-wash` | `#FBF0DC` | Fondos de acento |
+| `--luma-honey-gradient` | `linear-gradient(135deg, #E8AE4C 0%, #C98A2B 100%)` | Chips destacados (`color="warning"`), resplandor de foco |
 | `--luma-positive` | `#2E7D52` | Te alcanza · pagado |
 | `--luma-positive-wash` | `#E4F2E9` | Fondo positivo |
 | `--luma-negative` | `#B3402F` | Déficit · vencido |
@@ -82,6 +83,7 @@ Eso **elimina un color semántico completo del sistema** y libera la miel para s
 | `--luma-honey` | `#EFB959` |
 | `--luma-honey-fill` | `#D99930` |
 | `--luma-honey-wash` | `#33291A` |
+| `--luma-honey-gradient` | `linear-gradient(135deg, #EFB959 0%, #D99930 100%)` |
 | `--luma-positive` | `#6ABE8E` |
 | `--luma-positive-wash` | `#1E3128` |
 | `--luma-negative` | `#E8806C` |
@@ -89,6 +91,37 @@ Eso **elimina un color semántico completo del sistema** y libera la miel para s
 | `--luma-on-ink` | `#1A1815` |
 
 > El tema oscuro es **cálido**, no gris neutro. Los fondos conservan el sesgo hacia la miel.
+
+### 3.4 Gradiente de marca (miel)
+
+La miel plana funciona para foco y progreso, pero en superficies de marca se ve
+chata. Donde la miel es protagonista —no un simple indicador— se usa una
+gradiente lineal sutil de dos tonos (135°, del tono más claro al más oscuro de
+la misma miel) en vez de un relleno flat:
+
+```css
+background: var(--luma-honey-gradient);
+/* claro:  linear-gradient(135deg, #E8AE4C 0%, #C98A2B 100%) */
+/* oscuro: linear-gradient(135deg, #EFB959 0%, #D99930 100%) */
+```
+
+**Dónde sí:**
+- El isotipo de LUMA (`LumaMark`), que ya usaba su propia gradiente radial de
+  tres paradas (`honeyFill → honey → ink`) desde antes de esta decisión.
+- Chips destacados con `color="warning"` (p. ej. "Ya venció", categorías con
+  alerta) — override centralizado en `MuiChip.styleOverrides.colorWarning`.
+- El resplandor de foco en campos de texto (`MuiOutlinedInput`): el trazo del
+  fieldset es un `<path>` SVG con muesca para el label flotante y no admite una
+  gradiente de borde literal, así que el acento de foco se resuelve con un
+  `box-shadow` que mezcla `honey` y `honey-fill` — mismo espíritu, técnica
+  distinta.
+
+**Dónde no** (deliberado, no un olvido): la barra de `LinearProgress` y los
+segmentos de la tarjeta de composición del ciclo siguen en miel plana. Ahí la
+miel es una señal cuantitativa (cuánto llevas, cuánto pesa cada categoría) y
+una gradiente introduciría una variación de valor que podría leerse como parte
+del dato. La regla se mantiene: **la miel para identidad y foco puede ser
+gradiente; la miel para medir sigue siendo plana.**
 
 ---
 
