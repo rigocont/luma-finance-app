@@ -137,6 +137,8 @@ distinguirlos es exactamente lo que una prueba necesita verificar:
 | Tarjeta de contrasena | `settings-change-password-card` |
 | Boton de cambiar contrasena | `settings-change-password-submit` |
 | Error del formulario | `settings-change-password-error` |
+| Tarjeta del tour guiado | `settings-tour-card` |
+| Volver a tomar el tour | `settings-tour-restart` |
 
 Los errores por campo NO tienen `data-testid` propio: aparecen como texto de
 ayuda del input correspondiente, asi que se leen desde el campo.
@@ -156,6 +158,24 @@ ayuda del input correspondiente, asi que se leen desde el campo.
 
 Claves de navegacion: `dashboard`, `current-cycle`, `incomes`, `expenses`,
 `savings`, `settings`.
+
+### Tour guiado
+
+| Elemento | `data-testid` |
+|---|---|
+| Contenedor del paso activo | `tour-root` |
+| Tarjeta del paso | `tour-card` |
+| Titulo del paso | `tour-title` |
+| Descripcion del paso | `tour-description` |
+| "Paso X de N" | `tour-progress` |
+| Omitir | `tour-skip` |
+| Anterior | `tour-prev` |
+| Siguiente | `tour-next` |
+| Entendido (ultimo paso) | `tour-finish` |
+
+El tour no navega entre rutas: cada paso senala un `layout-nav-<key>` de la
+barra lateral, que esta siempre montada. Por eso no hace falta un
+`data-testid` propio por pantalla -el que ya existe alcanza-.
 
 La insignia solo existe cuando hay algo pendiente, y hoy solo la lleva
 `current-cycle`. Un escenario que la busque con la bandeja vacia no la va a

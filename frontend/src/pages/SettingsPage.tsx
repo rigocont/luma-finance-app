@@ -10,6 +10,7 @@ import { useCurrentUser } from '@/features/auth/useAuth';
 import { CyclePreferenceCard } from '@/features/preferences/CyclePreferenceCard';
 import { SystemStatusCard } from '@/features/preferences/SystemStatusCard';
 import { testIds } from '@/lib/testids';
+import { useTourStore } from '@/store/tourStore';
 import { useUiStore, type ThemePreference } from '@/store/uiStore';
 
 const THEME_OPTIONS: { value: ThemePreference; label: string }[] = [
@@ -46,6 +47,8 @@ export function SettingsPage() {
 
         <ThemeCard />
 
+        <TourCard />
+
         <ChangePasswordCard />
 
         <SystemStatusCard />
@@ -80,6 +83,31 @@ function ThemeCard() {
                 {option.label}
               </Button>
             ))}
+          </Stack>
+        </Stack>
+      </CardContent>
+    </Card>
+  );
+}
+
+function TourCard() {
+  const start = useTourStore((state) => state.start);
+
+  return (
+    <Card data-testid={testIds.settings.tourCard}>
+      <CardContent>
+        <Stack spacing={4}>
+          <Stack spacing={1.5}>
+            <Typography variant="h3">Tour guiado</Typography>
+            <Typography variant="body2" color="text.secondary">
+              El recorrido de bienvenida que explica las pantallas principales.
+            </Typography>
+          </Stack>
+
+          <Stack direction="row">
+            <Button variant="outlined" onClick={start} data-testid={testIds.settings.tourRestart}>
+              Volver a tomar el tour
+            </Button>
           </Stack>
         </Stack>
       </CardContent>

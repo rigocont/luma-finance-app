@@ -4,6 +4,7 @@ import Toolbar from '@mui/material/Toolbar';
 import { Outlet } from 'react-router';
 
 import { AdSlot } from '@/features/ads/AdSlot';
+import { GuidedTour } from '@/features/tour/GuidedTour';
 import { testIds } from '@/lib/testids';
 import { useUiStore } from '@/store/uiStore';
 
@@ -70,6 +71,8 @@ export function AppShell() {
             que esta a punto de terminar el contenido. */}
         <AdSlot />
       </Box>
+
+      <GuidedTour />
     </Box>
   );
 }

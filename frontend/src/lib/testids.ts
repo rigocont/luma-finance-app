@@ -85,6 +85,20 @@ export const testIds = {
     changePasswordCard: 'settings-change-password-card',
     changePasswordSubmit: 'settings-change-password-submit',
     changePasswordError: 'settings-change-password-error',
+    tourCard: 'settings-tour-card',
+    tourRestart: 'settings-tour-restart',
+  },
+
+  tour: {
+    root: 'tour-root',
+    card: 'tour-card',
+    title: 'tour-title',
+    description: 'tour-description',
+    progress: 'tour-progress',
+    skipButton: 'tour-skip',
+    prevButton: 'tour-prev',
+    nextButton: 'tour-next',
+    finishButton: 'tour-finish',
   },
 
   incomes: {

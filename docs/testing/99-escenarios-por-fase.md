@@ -24,28 +24,7 @@ mismo formato que los anteriores.
 | 11 — Alertas | [`13-alertas.md`](13-alertas.md) |
 | 12 — Anuncios | [`14-anuncios.md`](14-anuncios.md) |
 | 13 — Analisis financiero (parte determinista) | [`15-analisis-financiero.md`](15-analisis-financiero.md) |
-
----
-
-## Fase 14
-
-```gherkin
-# language: es
-
-@pendiente @fase-14 @tour
-Característica: Tour guiado de bienvenida
-
-  Escenario: Una cuenta nueva ve el tour al entrar por primera vez
-  Escenario: El tour se puede omitir en cualquier paso
-  Escenario: Omitir el tour no lo vuelve a mostrar solo en la siguiente sesión
-  Escenario: Desde Ajustes se puede volver a tomar el tour completo
-  Escenario: El tour explica cada pantalla principal, un paso a la vez
-```
-
-Es estético y de aprendizaje, no de negocio: no calcula ni guarda nada del
-presupuesto. Vive casi enteramente en el frontend, como una preferencia más de
-la cuenta -si ya lo vio, se guarda para no repetírselo solo la siguiente vez
-que inicie sesión-.
+| 14 — Tour guiado de bienvenida | [`16-tour-guiado.md`](16-tour-guiado.md) |
 
 ---
 
