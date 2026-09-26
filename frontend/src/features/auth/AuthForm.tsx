@@ -58,8 +58,7 @@ export function AuthForm({
 
   // Si el error trae campos, cada uno se muestra en su input. El mensaje general
   // solo aparece cuando el problema no es de un campo concreto.
-  const generalMessage =
-    apiError && apiError.fieldErrors.length === 0 ? apiError.message : null;
+  const generalMessage = apiError && apiError.fieldErrors.length === 0 ? apiError.message : null;
   const hasLocalErrors = Object.keys(localFieldErrors ?? {}).length > 0;
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {

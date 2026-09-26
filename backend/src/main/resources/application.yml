@@ -116,3 +116,11 @@ luma:
   password-reset:
     ttl: ${LUMA_PASSWORD_RESET_TTL:1h}
     resend-cooldown: ${LUMA_PASSWORD_RESET_COOLDOWN:2m}
+  onboarding:
+    # Cuanto se espera antes de invalidar lo capturado en un alta que nadie
+    # termino. Se cuenta desde la ULTIMA captura, no desde el registro: quien
+    # empezo hoy no se toca aunque lleve meses con la cuenta abierta.
+    #
+    # Una semana da margen para retomarlo el fin de semana siguiente sin dejar
+    # datos a medias acumulandose. En cero se apaga la limpieza.
+    abandon-after: ${LUMA_ONBOARDING_ABANDON_AFTER:7d}

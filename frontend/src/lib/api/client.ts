@@ -1,6 +1,11 @@
 import axios, { AxiosError, type AxiosInstance, type InternalAxiosRequestConfig } from 'axios';
 
-import { clearSession, getAccessToken, isAuthenticated, setSession } from '@/features/auth/authStore';
+import {
+  clearSession,
+  getAccessToken,
+  isAuthenticated,
+  setSession,
+} from '@/features/auth/authStore';
 import type { AuthResponse } from '@/features/auth/types';
 
 import { ApiError, type ApiProblem, type ErrorCode } from './types';

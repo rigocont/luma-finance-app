@@ -141,8 +141,12 @@ public class CycleMaterializer {
      *
      * <p>Con fecha objetivo, lo calcula el sistema a partir de lo que falta y los
      * ciclos restantes. Con monto fijo, es lo que decidio la persona.
+     *
+     * <p>Es publico porque lo necesitan dos caminos: abrir un ciclo completo y
+     * meter una meta recien creada al ciclo que ya estaba abierto. Tener dos
+     * copias de esta formula seria pedir que se separaran.
      */
-    private Money plannedContribution(
+    public Money plannedContribution(
             SavingsGoal goal, String currency, BudgetPeriod period, CyclePlanner planner) {
 
         if (goal.getContributionMode() == ContributionMode.FIXED_PER_CYCLE) {

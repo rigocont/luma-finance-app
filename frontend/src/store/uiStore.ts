@@ -33,7 +33,10 @@ export const useUiStore = create<UiState>()(
 );
 
 /** Resuelve la preferencia a un modo concreto usando el ajuste del sistema. */
-export function resolveThemeMode(preference: ThemePreference, systemPrefersDark: boolean): ThemeMode {
+export function resolveThemeMode(
+  preference: ThemePreference,
+  systemPrefersDark: boolean,
+): ThemeMode {
   if (preference === 'system') {
     return systemPrefersDark ? 'dark' : 'light';
   }

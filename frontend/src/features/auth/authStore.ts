@@ -16,6 +16,14 @@ interface AuthState {
   user: AuthenticatedUser | null;
   setSession: (accessToken: string, user: AuthenticatedUser) => void;
   clearSession: () => void;
+  /**
+   * Marca el alta como terminada sin volver a pedir la sesion.
+   *
+   * El dato vive en el token de la sesion, y renovarla entera para cambiar un
+   * booleano seria una vuelta al servidor por algo que ya sabemos: el servidor
+   * acaba de confirmarlo al responder.
+   */
+  markOnboardingCompleted: () => void;
 }
 
 /**
@@ -37,6 +45,8 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   setSession: (accessToken, user) => set({ status: 'authenticated', accessToken, user }),
   clearSession: () => set({ status: 'anonymous', accessToken: null, user: null }),
+  markOnboardingCompleted: () =>
+    set((state) => (state.user ? { user: { ...state.user, onboardingCompleted: true } } : state)),
 }));
 
 /* Accesos fuera de React, para el cliente HTTP. */
@@ -55,4 +65,8 @@ export function clearSession(): void {
 
 export function isAuthenticated(): boolean {
   return useAuthStore.getState().status === 'authenticated';
+}
+
+export function markOnboardingCompleted(): void {
+  useAuthStore.getState().markOnboardingCompleted();
 }

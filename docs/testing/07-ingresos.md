@@ -4,8 +4,7 @@ Capturar de dónde viene el dinero. Es la primera de las cuatro fases de captura
 (ingresos, gastos fijos, gastos variables, ahorros) y la que libera al resto de
 la suite de depender de filas insertadas por SQL.
 
-**Estado:** API implementada en la Fase 5a. La pantalla llega en la 5b, y hasta
-entonces los escenarios `@ui` están `@pendiente`.
+**Estado:** API en la Fase 5a, pantalla en la 5b. Todo automatizable hoy.
 
 ---
 
@@ -353,40 +352,137 @@ Característica: Cada quien ve solo sus ingresos
 
 ## La pantalla
 
-Llega en la Fase 5b. Se listan aquí para que se construya sabiendo qué tiene que
-demostrar.
-
 ```gherkin
 # language: es
 
 @ui @ingresos
 Característica: Pantalla de ingresos
+  Como persona que acaba de crear su cuenta
+  Quiero capturar de dónde viene mi dinero
+  Para que el presupuesto deje de estar vacío
 
-  @pendiente @fase-5b
+  @listo @smoke @critico
   Escenario: La lista vacía invita a capturar el primero
-  @pendiente @fase-5b
-  Escenario: Capturar un ingreso desde el formulario
-  @pendiente @fase-5b
-  Escenario: El formulario avisa que un tipo variable pedirá confirmación
-  @pendiente @fase-5b
-  Escenario: Editar un ingreso desde la lista
-  @pendiente @fase-5b
-  Escenario: Eliminar pide confirmación
-  @pendiente @fase-5b
-  Escenario: Cancelar la confirmación no elimina nada
-  @pendiente @fase-5b
-  Escenario: Desactivar y reactivar desde la lista
-  @pendiente @fase-5b
-  Escenario: Los montos se muestran en formato es-MX
-  @pendiente @fase-5b
-  Escenario: Los errores de validación se muestran junto a su campo
-  @pendiente @fase-5b
-  Escenario: La lista muestra estado de carga y de error
-  @pendiente @fase-5b @responsive
-  Escenario: La lista se adapta a pantalla de teléfono
-```
+    Dado que no tengo ingresos
+    Cuando entro a Ingresos
+    Entonces veo un estado vacío
+    Y un botón para capturar el primero
 
----
+  @listo @smoke @critico
+  Escenario: Capturar un ingreso desde el cajón
+    Cuando presiono "Capturar ingreso"
+    Entonces se abre el cajón del formulario
+    Cuando lleno nombre, tipo, monto, frecuencia y día
+    Y guardo
+    Entonces el cajón se cierra
+    Y aparece un aviso de que el ingreso quedó capturado
+    Y el ingreso aparece en la tabla
+
+  @listo @critico
+  Escenario: Elegir un tipo de monto variable avisa que pedirá confirmación
+    Dado que abrí el formulario
+    Cuando elijo el tipo "Monto variable"
+    Entonces aparece un aviso explicando que cada ciclo pedirá confirmar el monto
+
+  @listo
+  Escenario: Las frecuencias anual y de una sola vez no piden día del mes
+    Dado que abrí el formulario
+    Cuando elijo la frecuencia "Una vez al año"
+    Entonces el campo de día del mes desaparece
+
+  @listo @critico
+  Escenario: Un error de validación se muestra junto a su campo
+    Dado que abrí el formulario
+    Cuando guardo con el monto en blanco
+    Entonces el cajón sigue abierto
+    Y el mensaje aparece debajo del campo de monto
+    Y no se pierde lo que ya había capturado
+
+  @listo
+  Escenario: Cancelar cierra el cajón sin guardar
+    Dado que abrí el formulario y escribí un nombre
+    Cuando presiono Cancelar
+    Entonces el cajón se cierra
+    Y la tabla no cambia
+
+  @listo @critico
+  Escenario: Editar un ingreso desde la lista
+    Dado que tengo un ingreso en la tabla
+    Cuando abro su menú y elijo Editar
+    Entonces el cajón se abre con sus datos
+    Y el cajón advierte que el cambio aplica desde el siguiente ciclo
+
+  @listo @critico
+  Escenario: Eliminar pide confirmación
+    Cuando abro el menú de un ingreso y elijo Eliminar
+    Entonces aparece un diálogo con el nombre del ingreso
+    Y el diálogo advierte que no se puede recuperar
+    Y ofrece "Dejar de contarlo" como alternativa
+
+  @listo @critico
+  Escenario: Cancelar la confirmación no elimina nada
+    Dado que abrí el diálogo de eliminación
+    Cuando presiono Cancelar
+    Entonces el ingreso sigue en la tabla
+
+  @listo
+  Escenario: Confirmar la eliminación lo saca de la tabla
+    Dado que abrí el diálogo de eliminación
+    Cuando confirmo
+    Entonces el ingreso desaparece de la tabla
+    Y aparece un aviso de que quedó eliminado
+
+  @listo
+  Escenario: Dejar de contar un ingreso lo marca sin quitarlo
+    Cuando abro el menú de un ingreso y elijo "Dejar de contarlo"
+    Entonces la fila se marca como "Sin contar"
+    Y sigue en la tabla
+
+  @listo
+  Escenario: Un ingreso sin contar se puede volver a contar
+    Dado que tengo un ingreso marcado como "Sin contar"
+    Cuando abro su menú y elijo "Volver a contarlo"
+    Entonces la marca desaparece
+
+  @listo
+  Escenario: Un ingreso de monto variable se señala en la tabla
+    Dado que tengo un ingreso de tipo variable
+    Cuando veo la tabla
+    Entonces su fila muestra la marca "Pide revisión"
+
+  @listo
+  Escenario: Filtrar por tipo vuelve a la primera página
+    Dado que estoy en la segunda página
+    Cuando filtro por un tipo
+    Entonces vuelvo a la primera página
+
+  @listo
+  Escenario: Con filtros y sin resultados se ofrece quitarlos
+    Cuando filtro por un tipo del que no tengo ingresos
+    Entonces el estado vacío ofrece quitar los filtros
+
+  @listo
+  Escenario: Los montos se muestran en formato es-MX
+    Entonces un monto de 12500 se muestra como $12,500.00
+
+  @listo
+  Escenario: La lista muestra estado de carga
+    Cuando entro a Ingresos
+    Entonces veo esqueletos mientras llegan los datos
+
+  @listo
+  Escenario: Un fallo de la API muestra el estado de error con reintento
+    Dado que la API responde con error
+    Cuando entro a Ingresos
+    Entonces veo el estado de error
+    Y un botón para reintentar
+
+  @listo @responsive
+  Escenario: En teléfono el cajón ocupa el ancho completo
+    Dado un viewport de teléfono
+    Cuando abro el formulario
+    Entonces el cajón ocupa todo el ancho
+```
 
 ## Cobertura automatizada hoy
 

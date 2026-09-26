@@ -25,22 +25,34 @@ LUMA no es un registro de gastos. Organiza el dinero en **ciclos presupuestales*
 | 3 | Sistema de diseno (tokens y tema, adelantados en la Fase 1) | Completada |
 | 4a | Motor presupuestal: dominio puro y calculo | Completada |
 | 4b | Ciclos: persistencia, materializacion y endpoints | Completada |
-| 5a | **Ingresos: CRUD y sincronizacion con el ciclo abierto** | **Completada** |
-| 5b | Ingresos: pantalla | Siguiente |
-| 6-8 | Gastos fijos, gastos variables, ahorros | Pendiente |
-| 9 | Onboarding | Pendiente |
-| 10 | Dashboard del presupuesto | Pendiente -> **MVP** |
+| 5a | Ingresos: CRUD y sincronizacion con el ciclo abierto | Completada |
+| 5b | Ingresos: pantalla | Completada |
+| 6 | Gastos fijos y variables: API y pantalla | Completada |
+| 8a | Ahorros: metas, movimientos y aporte por ciclo | Completada |
+| 8b | Ahorros: pantalla | Completada |
+| 7 | Revision por ciclo: «Este ciclo», API y pantalla | Completada |
+| 9 | Alta guiada: asistente inicial y limpieza de altas abandonadas | Completada |
+| 10 | **Resumen financiero: balance, consejo de deficit y comparacion** | **Completada -> MVP** |
 
 El plan completo esta en [`docs/00-arquitectura-fase-0.md`](docs/00-arquitectura-fase-0.md).
+
+> **Para retomar el proyecto:** empieza por
+> [`docs/PUNTO-DE-RETORNO.md`](docs/PUNTO-DE-RETORNO.md). Trae el estado, las
+> decisiones que sostienen el producto, como verificar, la deuda pendiente y los
+> siguientes pasos.
 
 **Lo que ya funciona:** la pila completa se levanta con un comando. Autenticacion
 con sesion persistente y recuperacion de contrasena. El motor presupuestal calcula
 ciclos quincenales, mensuales y bimestrales, materializa los renglones de un ciclo
-a partir de ingresos, gastos y metas, y responde el balance por API.
+a partir de ingresos, gastos y metas, y responde el balance por API. Ingresos,
+gastos y metas de ahorro tienen pantalla propia, «Este ciclo» junta lo que falta
+por definir antes de que el balance signifique algo, y el resumen responde la
+pregunta con la que uno abre la aplicacion: cuanto me queda.
 
-**Lo que todavia no:** los gastos y las metas se crean por SQL mientras llegan
-las fases 6 a 8. Ingresos y ciclos se operan por Swagger: la pantalla de ingresos
-es la Fase 5b y la del presupuesto la Fase 10.
+**El MVP esta completo.** Una cuenta nueva se configura con el asistente, abre
+su ciclo, captura lo que entra y lo que sale, revisa lo que cambia, sigue sus
+metas y ve en el resumen cuanto le queda — y, si no cierra, de donde podria
+salir la diferencia. Todo desde la interfaz, sin Swagger.
 
 ---
 

@@ -102,6 +102,13 @@ Todo cambio estructural pasa por Flyway. No hay excepciones.
   vacio, error y con datos. Existen componentes para los tres primeros.
 - **Selectores:** cada elemento con el que se va a interactuar lleva
   `data-testid` tomado de `lib/testids.ts`. Ver `docs/testids.md`.
+- **Rutas:** cada pagina entra al enrutador con `React.lazy`, no con un import
+  directo. Asi cada seccion viaja en su propio trozo y quien abre el login no
+  descarga tambien los ahorros. Un import directo de una pagina en
+  `routes/router.tsx` la devuelve al archivo principal sin que nada falle, que
+  es justo lo que lo hace facil de romper sin notarlo.
+- **La version se lee de `package.json`**, inyectada como `__APP_VERSION__` en
+  `vite.config.ts`. No se escribe a mano en ningun componente.
 
 ## Comandos
 

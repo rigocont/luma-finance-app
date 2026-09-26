@@ -26,6 +26,14 @@ public interface IncomeRepository extends JpaRepository<Income, Long> {
     Optional<Income> findByPublicIdAndUserIdAndDeletedAtIsNull(String publicId, Long userId);
 
     /**
+     * Todos los del usuario, cuenten o no en el presupuesto.
+     *
+     * <p>Lo usa la limpieza de altas abandonadas, que tiene que barrer TODO lo
+     * capturado y no solo lo que estaba activo.
+     */
+    List<Income> findByUserIdAndDeletedAtIsNull(Long userId);
+
+    /**
      * Listado con filtros opcionales.
      *
      * <p>Los dos filtros llegan nulos cuando no se piden. Se resuelve con

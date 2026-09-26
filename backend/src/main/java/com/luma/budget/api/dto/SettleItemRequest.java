@@ -17,4 +17,21 @@ public record SettleItemRequest(
                         regexp = "^\\d{1,13}(\\.\\d{1,2})?$",
                         message = "El monto debe ser un numero con hasta dos decimales")
                 String actualAmount,
-        LocalDate settledOn) {}
+        LocalDate settledOn,
+
+        /*
+         * Solo aplica a los renglones de ahorro. Cuando es cierto, el monto se
+         * registra tambien como aporte a la meta y sube su progreso.
+         *
+         * Se usa Boolean y no boolean para distinguir "no lo mandaste" de
+         * "dijiste que no": omitirlo registra el aporte, que es lo que quiere
+         * quien confirma un ahorro. Un boolean primitivo llegaria como false y
+         * el comportamiento por omision seria el contrario del esperado.
+         */
+        Boolean registerInGoal) {
+
+    /** Por omision si: apartar el dinero y registrarlo son la misma accion. */
+    public boolean shouldRegisterInGoal() {
+        return registerInGoal == null || registerInGoal;
+    }
+}

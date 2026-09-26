@@ -1,5 +1,7 @@
 package com.luma.users.application;
 
+import com.luma.budget.domain.CycleType;
+import com.luma.common.error.BusinessRuleException;
 import com.luma.users.domain.UserPreferences;
 import com.luma.users.infrastructure.UserPreferencesRepository;
 import java.util.Optional;
@@ -65,5 +67,39 @@ public class UserPreferencesService {
         return preferences
                 .findByUserId(userId)
                 .orElseGet(() -> preferences.save(UserPreferences.defaultsFor(userId)));
+    }
+
+    /**
+     * Cambia el tipo de ciclo y su dia de anclaje.
+     *
+     * <p>ESCRIBE. No toca los ciclos que ya existen: un ciclo abierto conserva
+     * su periodo, y el tipo nuevo empieza a regir en el siguiente. Reescribir un
+     * ciclo en curso cambiaria las fechas de un presupuesto que la persona ya
+     * esta usando.
+     */
+    @Transactional
+    public UserPreferences changeCycle(Long userId, CycleType cycleType, int anchorDay) {
+        UserPreferences current = getOrCreate(userId);
+
+        try {
+            current.changeCycle(cycleType, anchorDay);
+        } catch (IllegalArgumentException invalido) {
+            // El dominio lanza IllegalArgumentException, que saldria como 500.
+            // Un dia fuera de rango es una regla de negocio, no una falla: se
+            // traduce para que responda 422 con su mensaje.
+            throw new BusinessRuleException(invalido.getMessage());
+        }
+
+        return preferences.save(current);
+    }
+
+    /** Marca la fila como reiniciada a los valores por omision. */
+    @Transactional
+    public void resetCycleToDefaults(Long userId) {
+        find(userId).ifPresent(current -> {
+            UserPreferences defaults = UserPreferences.defaultsFor(userId);
+            current.changeCycle(defaults.getBudgetCycleType(), defaults.getCycleAnchorDay());
+            preferences.save(current);
+        });
     }
 }

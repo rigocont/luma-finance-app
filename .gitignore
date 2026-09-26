@@ -34,3 +34,13 @@ Thumbs.db
 # ---- Logs ----
 *.log
 npm-debug.log*
+
+# ---- Salida de scripts/verify.ps1 ----
+# El reporte que Claude lee por el puente. Es un artefacto de cada corrida, no
+# codigo: versionarlo produce un conflicto en cada verificacion.
+# build-full.log ya lo cubre *.log de arriba.
+build-report.txt
+
+# Carpeta de entrega temporal de archivos hacia el chat. Lo que sirve de ahi ya
+# vive en su lugar del repositorio.
+Claude outputs/

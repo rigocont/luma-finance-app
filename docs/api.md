@@ -323,3 +323,366 @@ y la fecha de inicio.
 `START_DATE`. No es un nombre de campo libre: un valor desconocido responde
 **400 / `VALIDATION_ERROR`**, y ningun nombre de columna sale al contrato
 publico.
+
+---
+
+## Gastos
+
+### Fijos y variables son un solo recurso
+
+`/api/v1/expenses` los cubre a ambos. Lo unico que los distingue es `kind`
+(`FIXED` o `VARIABLE`), y separarlos en dos rutas duplicaria el contrato entero
+por un campo. Ver `docs/00-arquitectura-fase-0.md` seccion 1.3.
+
+La diferencia esta en como se materializan:
+
+| | `FIXED` | `VARIABLE` |
+|---|---|---|
+| Estado del renglon al entrar al ciclo | `PENDING` | `NEEDS_REVIEW` |
+| El balance lo da por seguro | Si | No, hasta que la persona confirme |
+
+### La flexibilidad no es decorativa
+
+`flexibility` es obligatoria: `CRITICAL`, `IMPORTANT` o `FLEXIBLE`. Es lo que
+permitira al modulo de analisis (Fase 13) distinguir la renta de una suscripcion
+de musica, y **nunca sugerir retrasar un pago critico**.
+
+El renglon del ciclo guarda su propia copia. Es deliberado: el analisis mira el
+ciclo, y la plantilla pudo cambiar despues de cerrarlo.
+
+### La categoria es opcional y se referencia por su UUID
+
+`categoryId` acepta el identificador publico de una categoria del catalogo, o
+nulo. Exigirla siempre solo lograria que la gente eligiera "Otros" para salir
+del paso, que es peor dato que ninguno.
+
+Una categoria que no existe, o que pertenece a otra persona, responde **404**:
+un gasto con una categoria invalida ensucia el analisis sin que nadie se entere.
+
+El catalogo se consulta en `GET /api/v1/expense-categories` y trae las del
+sistema mas las propias. No se pagina: son pocas y el cliente las necesita todas
+para pintar un desplegable. Hoy es de solo lectura.
+
+### Quitar la categoria necesita una bandera
+
+En `PATCH`, "no mande el campo" y "quiero quitarsela" llegan los dos como nulo y
+significan lo contrario. Por eso existe `clearCategory`:
+
+```json
+{ "clearCategory": true }
+```
+
+Sin esa bandera, un `categoryId` nulo se ignora y la categoria se queda como
+estaba.
+
+### Orden de la lista
+
+`?sort=` acepta `NEWEST` (por omision), `NAME`, `AMOUNT_DESC`, `AMOUNT_ASC` o
+`DUE_DAY`. Misma regla que en ingresos: lista cerrada, y un valor desconocido
+responde 400.
+
+---
+
+## Resumen financiero
+
+### Ninguna cifra se deriva en el cliente, y eso moldea el contrato
+
+`outflowChange` en `/budget-cycles/trends` llega con la **dirección separada de
+la magnitud**:
+
+```json
+{ "direction": "UP", "amount": { "amount": "800.00", "currency": "MXN" } }
+```
+
+`direction` es `UP`, `DOWN` o `SAME`; `amount` viaja **siempre en positivo**. Si
+llegara un solo número con signo, el cliente tendría que restar y sacarle el
+valor absoluto para escribir «gastaste $800 más» — aritmética de dinero en el
+lugar equivocado.
+
+Por la misma razón, con déficit el balance llega **negativo**. La interfaz lo
+muestra con su signo; no existe un campo con el valor absoluto porque no hace
+falta inventarlo.
+
+### El consejo de déficit propone, no ejecuta
+
+`GET /budget-cycles/{cycleId}/advice` no modifica nada. Devuelve los renglones de
+los que se puede recortar, en el orden en que conviene mirarlos:
+
+1. **Gastos flexibles.** «Flexible» significa que se puede mover.
+2. **Ahorros, del menos prioritario al más.** No apartar este ciclo no le cuesta
+   nada a nadie hoy, y el siguiente lo retoma. La prioridad de las metas sirve
+   exactamente para esto.
+3. **Gastos importantes.** Al final, porque retrasarlos sí tiene consecuencia.
+
+Dentro de cada grupo, primero el monto más grande: así se llega a la cifra con la
+menor cantidad de renuncias.
+
+**Los gastos `CRITICAL` no aparecen nunca.** No es una heurística ajustable: es
+lo que la aplicación promete al capturarlos, y hay una prueba que falla si
+alguien lo cambia.
+
+Tampoco se proponen los renglones ya confirmados —el dinero ya salió— ni los
+ingresos, que recortarlos empeoraría el déficit.
+
+`coversTheGap: false` significa que **aun moviendo todo lo propuesto no
+alcanza**. La interfaz tiene que decirlo: una lista presentada como solución sin
+serlo es peor que no dar ninguna.
+
+Sin déficit responde `missing: 0` y la lista vacía. No es 404: preguntar «qué
+hago» con el ciclo en orden tiene respuesta, y es «nada».
+
+### La comparación se lee como línea de tiempo
+
+`GET /budget-cycles/trends?cycles=6` responde del **más antiguo al más
+reciente**, al revés que el historial. Un historial es una lista —lo último
+primero—; una comparación es una línea de tiempo, y si llegara invertida la
+gráfica saldría al revés. Invertirla en el cliente sería pedirle que sepa para
+qué va a usar el dato.
+
+Tope de 12 ciclos: un año de mensuales o medio de quincenales. Más no cabe
+legible en una gráfica.
+
+El primero de la lista no trae `outflowChange`: no tiene con qué compararse.
+
+---
+
+## Alta guiada
+
+### El asistente no tiene API propia para capturar
+
+Los ingresos, los gastos y las metas se crean con **sus propios endpoints**, los
+mismos que usa el resto de la aplicación. `/onboarding` solo tiene tres
+operaciones y ninguna recibe datos del presupuesto:
+
+| Endpoint | Qué hace |
+|---|---|
+| `GET /onboarding/state` | Cuánto lleva la cuenta y si ya puede terminar |
+| `POST /onboarding/complete` | Marca el alta y abre el primer ciclo |
+| `POST /onboarding/skip` | Marca el alta sin abrir ciclo |
+
+No hay borrador. Capturar un ingreso en el asistente **crea el ingreso**. Así no
+existen dos formas de crear la misma cosa que puedan validar distinto, y volver
+después no necesita recordar nada: el servidor ya sabe qué hay.
+
+### `resumeStep` se deduce, no se guarda
+
+Sin ingresos devuelve `INCOMES`; con al menos uno, `SUMMARY`. Es una **sugerencia
+para quien vuelve**, no una reja: desde el asistente se puede ir a cualquier
+paso.
+
+Un número de paso guardado mentiría en cuanto la persona borrara algo desde otra
+pantalla, y costaría una columna para un dato que se puede calcular.
+
+### Terminar exige un ingreso y abre el ciclo en la misma transacción
+
+`POST /onboarding/complete` responde **422** sin ingresos activos: sin ellos el
+resumen diría «te quedan $0» y eso no es información.
+
+La marca y la apertura del ciclo van juntas a propósito. Una cuenta marcada como
+configurada pero sin ciclo llegaría al resumen sin nada que mostrar y sin forma
+de volver al asistente.
+
+Repetirlo responde 422: un segundo `complete` abriría un ciclo de más.
+
+`POST /onboarding/skip` es lo contrario en todo — no exige nada, no abre ciclo y
+es idempotente. Lo capturado se conserva: es de la persona.
+
+### Lo capturado en un alta abandonada se invalida
+
+Un trabajo diario recorre las cuentas con `onboarding_completed_at` nulo y borra
+lógicamente sus ingresos, gastos y metas cuando la última captura es más vieja
+que `LUMA_ONBOARDING_ABANDON_AFTER` (una semana por omisión; `0` lo apaga).
+
+Tres cosas que conviene saber si se consume esta API:
+
+- **Invalida, no borra.** Las filas siguen existiendo con `deleted_at`, así que
+  dejan de salir en cualquier consulta del producto pero se pueden auditar.
+- **Se mide desde la última captura**, no desde el registro. Quien se registró
+  hace un mes y empezó hoy no se toca.
+- **Una cuenta que pospuso el alta nunca se limpia**, porque `skip` ya la marcó
+  como terminada.
+
+No hizo falta una columna para distinguir «esto vino del alta»: el asistente es
+obligatorio, así que una cuenta sin esa fecha no tiene otra forma de haber
+creado nada. La ausencia de la fecha es la marca.
+
+### Preferencias del ciclo
+
+`GET` y `PATCH /users/me/preferences` — la ruta dice `me` y no un identificador
+porque no existe forma de nombrar a otra persona.
+
+`PATCH /users/me/preferences/cycle` aplica al **siguiente** ciclo. El que esté
+abierto conserva su periodo: reescribirlo cambiaría las fechas de un presupuesto
+que ya se está usando.
+
+Un día de anclaje fuera de 1–31 responde 422.
+
+---
+
+## Revision del ciclo
+
+### Confirmar el monto y registrar el pago son dos cosas
+
+| | `POST .../items/confirm-amounts` | `POST .../items/{id}/settle` |
+|---|---|---|
+| Qué afirma | cuánto es este ciclo | que ya ocurrió |
+| Campo que cambia | `plannedAmount` | `actualAmount`, `settledOn` |
+| Estado resultante | `PENDING` | `PAID` o `PARTIAL` |
+| En lote | sí | no |
+
+Un gasto variable nace en `NEEDS_REVIEW` porque no se sabe cuánto es. Saberlo no
+es haberlo pagado, y un endpoint que hiciera las dos cosas dejaría el balance
+dando por pagado lo que nadie pagó.
+
+### La revisión es solo del ciclo en curso
+
+`GET /budget-cycles/current/review`. No hay versión por `{cycleId}` a propósito:
+un ciclo cerrado es inmutable, así que no hay nada que revisar en él.
+
+Sin ciclo abierto responde **404**, igual que `/current`. No es lo mismo que una
+lista vacía —«no tienes ciclo» y «no te falta nada» son estados distintos— y
+colapsarlos obligaría al cliente a adivinar cuál de los dos mostrar.
+
+### La sugerencia es el ciclo anterior, y solo lo confirmado
+
+`suggestedAmount` es lo que se **confirmó** del mismo gasto en el ciclo
+inmediatamente anterior, con `suggestedFromStart` diciendo de cuándo es.
+
+Es nulo cuando no hay ciclo anterior, cuando ese ciclo no tuvo ese gasto, o
+cuando lo tuvo y nadie lo confirmó. Un monto planeado sin confirmar es un plan:
+sugerirlo propagaría la misma estimación de ciclo en ciclo hasta hacerla parecer
+un dato.
+
+No es un promedio. Un promedio de seis ciclos diluye justo el salto que importa
+cuando un recibo acaba de subir; el promedio está en el historial, junto a las
+cifras de las que sale.
+
+### El historial trae su promedio calculado
+
+`GET /budget-cycles/{cycleId}/items/{itemId}/history` responde `cycles`,
+`average` y `entries` — hasta seis ciclos, del más reciente al más antiguo, y
+solo los confirmados.
+
+`average` viene del servidor aunque sea una cifra de lectura: es dinero, y
+ninguna cifra de dinero se deriva en el cliente. Dos formas de redondear el
+mismo número es como empiezan las cuentas que no cuadran. Es nulo cuando no hay
+historia.
+
+Cada entrada trae el planeado **y** el real: la diferencia entre ambos es lo que
+revela que un gasto lleva ciclos costando más de lo presupuestado.
+
+### El lote es todo o nada
+
+`POST /budget-cycles/{cycleId}/items/confirm-amounts` aplica los montos en una
+sola transacción. Si un renglón falla, no se confirma ninguno: una confirmación
+a medias dejaría a la persona sin saber cuáles quedaron.
+
+Un `itemId` repetido en el lote responde **422** en vez de quedarse con el
+último en silencio — dos montos para el mismo renglón significa que el cliente
+armó mal la petición, y elegir uno por él se vería como un monto perdido.
+
+Tope de 200 renglones. No es una defensa del servidor: un lote más grande no
+sale de una pantalla de revisión.
+
+---
+
+## Ahorros
+
+### El modo de aporte decide qué campos son obligatorios
+
+`mode` no es una preferencia: determina si la meta resta del presupuesto y quién
+calcula cuánto.
+
+| `mode` | Obligatorio | ¿Resta del presupuesto? |
+|---|---|---|
+| `AUTO_BY_TARGET_DATE` | `targetDate` | Sí |
+| `FIXED_PER_CYCLE` | `plannedPerCycle` | Sí |
+| `MANUAL` | — | No |
+
+Faltar el campo del modo elegido responde **422**, no 400: no es un dato mal
+escrito sino una combinación que no se sostiene.
+
+### `plannedPerCycle` solo está guardado cuando la persona lo fijó
+
+Con `AUTO_BY_TARGET_DATE` el aporte se recalcula en cada ciclo —depende de
+cuánto falta hoy y de cuántos ciclos quedan—, así que el recurso responde
+`0.00`. El monto real de este ciclo está en el renglón `SAVING` del ciclo, no
+aquí.
+
+El cliente no debe derivarlo: `GET /budget-cycles/{id}/items` ya trae la cifra
+que el motor calculó.
+
+### El progreso viaja como número; los importes, como cadena
+
+`progress` va de 0 a 1 con cuatro decimales y es un **número** JSON. Es la única
+excepción a la regla de [Importes](#importes), y no la contradice: una
+proporción de cuatro decimales no pierde precisión en el tipo numérico de
+JavaScript, un importe grande sí.
+
+Viene **recortado a 1**. Pasarse de la meta no produce 1.3: la barra se llena y
+`remaining` es `0.00`.
+
+### El signo lo decide el tipo, no quien llama
+
+En `POST /savings-goals/{id}/movements`, `amount` va siempre **positivo** y
+`type` decide qué significa:
+
+| `type` | Efecto |
+|---|---|
+| `EXTRA` | Suma al progreso |
+| `WITHDRAWAL` | Resta del progreso; se guarda en negativo |
+
+`PLANNED` no se acepta aquí: esos movimientos nacen de confirmar el renglón del
+ciclo. Aceptar montos negativos permitiría registrar un retiro disfrazado de
+aportación.
+
+Un retiro que dejaría el progreso en negativo responde 422.
+
+### Confirmar el renglón de ahorro no puede contar dos veces
+
+`POST /budget-cycles/{cycleId}/items/{itemId}/settle` sobre un renglón `SAVING`
+registra el aporte en la meta. El movimiento guarda de qué renglón salió, y un
+segundo `settle` sobre el mismo renglón **no vuelve a sumar**: no falla, no hace
+nada. Confirmar es idempotente a propósito — quien confirma quiere que quede
+confirmado, no enterarse de que ya lo estaba.
+
+`registerInGoal: false` confirma el renglón sin tocar la meta. Es para cuando el
+dinero salió del presupuesto pero no llegó al ahorro.
+
+Si la meta se eliminó después de abrir el ciclo, el `settle` responde 200 igual:
+el renglón sigue siendo válido para el presupuesto, solo que no hay meta a la
+cual sumarle.
+
+### El orden se manda completo
+
+`PUT /savings-goals/order` recibe la lista **completa** de identificadores, de
+mayor a menor prioridad, y no «mueve esta al lugar N». Así el resultado no
+depende de en qué estado creía el cliente que estaban las metas: con dos
+pestañas abiertas, la última en guardar gana de forma predecible en vez de
+dejarlas intercaladas.
+
+Una lista incompleta, o con un identificador repetido, responde 422.
+
+### Quitar la fecha objetivo necesita una bandera
+
+Misma regla que la categoría de un gasto: en `PATCH`, «no mandé el campo» y
+«quítasela» llegan los dos como nulo.
+
+```json
+{ "clearTargetDate": true }
+```
+
+Lo mismo aplica al resto de la edición parcial: cambiar de modo **sin** mandar
+`plannedPerCycle` conserva el que ya había, y mandar `icon` sin `color` no borra
+el color.
+
+### No se pagina
+
+Una persona tiene metas, no cientos, y reordenarlas por prioridad exige tenerlas
+todas a la vista. `GET /savings-goals` responde un arreglo, no una página.
+Acepta `?status=` para filtrar por `ACTIVE`, `COMPLETED`, `PAUSED` o `CANCELED`.
+
+### Eliminar es borrado lógico
+
+`DELETE` responde 204 y la meta desaparece de las listas, pero se conserva: los
+ciclos anteriores que tienen su renglón siguen teniendo explicación.

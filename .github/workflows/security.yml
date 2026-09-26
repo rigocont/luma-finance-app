@@ -42,15 +42,21 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Trivy
-        # PENDIENTE DE FIJAR: `@master` significa que cada corrida ejecuta lo
-        # que haya hoy en esa rama. Para una accion de terceros con permiso de
-        # escritura sobre security-events, eso es una via de suministro abierta.
-        # Cuando veas una corrida verde, sustituye `master` por el SHA completo
-        # del commit que uso (aparece en el registro del paso) o por una
-        # etiqueta de version publicada. No se fijo aqui una version concreta
-        # porque no se pudo verificar cual existe, y un numero inventado rompe
-        # el flujo entero.
-        uses: aquasecurity/trivy-action@master
+        # Fijada por SHA, no por rama ni por etiqueta.
+        #
+        # Antes decia `@master`, que significa "ejecuta lo que haya hoy en esa
+        # rama". Para una accion de terceros que corre con permiso de escritura
+        # sobre security-events, eso es una via de suministro abierta: quien
+        # controle ese repositorio controla lo que corre aqui.
+        #
+        # Una etiqueta tampoco basta. `@v0.36.0` se puede reapuntar a otro
+        # commit sin cambiar de nombre; un SHA no, porque ES el contenido.
+        #
+        # Para subir de version: busca la etiqueta nueva en
+        # https://github.com/aquasecurity/trivy-action/tags, copia su SHA
+        # completo y actualiza el comentario de al lado. El SHA sin el
+        # comentario es ilegible dentro de seis meses.
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           scan-type: fs
           scan-ref: .
@@ -77,7 +83,25 @@ jobs:
           fetch-depth: 0
 
       - name: Gitleaks
-        # Mismo caso que Trivy: conviene fijar la version por SHA.
-        uses: gitleaks/gitleaks-action@v2
+        # A MEDIAS, y conviene saber por que.
+        #
+        # Antes decia `@v2`: una etiqueta de version MAYOR, que avanza sola con
+        # cada release. Ahora apunta a una version concreta, asi que ya no se
+        # mueve por si misma al salir una nueva.
+        #
+        # Pero sigue siendo una etiqueta, y una etiqueta se puede reapuntar. La
+        # forma correcta es el SHA completo, como en Trivy. No se puso porque no
+        # se pudo verificar cual es, y un SHA inventado no falla con un mensaje
+        # claro: falla con "reference not found" y deja el flujo entero roto.
+        #
+        # Para cerrarlo: abre
+        # https://github.com/gitleaks/gitleaks-action/tags, copia el SHA de
+        # v2.3.9 y sustituyelo aqui dejando la version en el comentario.
+        #
+        # Nota aparte: gitleaks-action exige GITLEAKS_LICENSE en cuentas de
+        # organizacion. En un repositorio personal es gratis. Si algun dia este
+        # proyecto se muda a una organizacion, este paso va a empezar a fallar
+        # pidiendo esa licencia.
+        uses: gitleaks/gitleaks-action@v2.3.9
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

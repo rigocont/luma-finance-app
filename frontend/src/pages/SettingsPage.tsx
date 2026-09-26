@@ -7,6 +7,8 @@ import Typography from '@mui/material/Typography';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { ChangePasswordCard } from '@/features/auth/ChangePasswordCard';
 import { useCurrentUser } from '@/features/auth/useAuth';
+import { CyclePreferenceCard } from '@/features/preferences/CyclePreferenceCard';
+import { SystemStatusCard } from '@/features/preferences/SystemStatusCard';
 import { testIds } from '@/lib/testids';
 import { useUiStore, type ThemePreference } from '@/store/uiStore';
 
@@ -22,9 +24,9 @@ export function SettingsPage() {
   return (
     <div data-testid={testIds.settings.page}>
       <PageHeader
-        eyebrow="Fase 2"
+        eyebrow="Tu cuenta"
         title="Ajustes"
-        description="Tu cuenta y la apariencia de la aplicacion. El ciclo presupuestal, la moneda y la zona horaria llegan con el motor presupuestal."
+        description="Tu cuenta, tu ciclo presupuestal y la apariencia de la aplicacion."
       />
 
       <Stack spacing={6}>
@@ -40,9 +42,13 @@ export function SettingsPage() {
           </CardContent>
         </Card>
 
+        <CyclePreferenceCard />
+
         <ThemeCard />
 
         <ChangePasswordCard />
+
+        <SystemStatusCard />
       </Stack>
     </div>
   );

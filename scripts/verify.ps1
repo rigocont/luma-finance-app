@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Compila y prueba LUMA, y deja un reporte corto que Claude puede leer solo.
 
@@ -136,12 +136,20 @@ if ($Target -in @('backend', 'all')) {
 }
 
 if ($Target -in @('frontend', 'all')) {
-    $code = Invoke-Step 'FRONTEND (tsc + build)' @(
+    # El volumen anonimo sobre /app/node_modules NO es opcional.
+    #
+    # La carpeta frontend esta montada desde Windows, asi que sin esta linea el
+    # `npm ci` de adentro instalaria binarios nativos de Linux ENCIMA de los de
+    # Windows y te dejaria `npm run dev` roto hasta reinstalar. Con ella, el
+    # contenedor usa sus propias dependencias y las tuyas quedan intactas.
+    $code = Invoke-Step 'FRONTEND (formato, lint, tipos, pruebas y build)' @(
         'run', '--rm',
         '-v', "${root}\frontend:/app",
+        '-v', '/app/node_modules',
         '-w', '/app',
         $nodeImage,
-        'sh', '-c', 'npm ci --no-audit --no-fund && npm run build'
+        'sh', '-c',
+        'npm ci --no-audit --no-fund && npm run format:check && npm run lint && npm run build && npm run test'
     )
     if ($code -ne 0) { $exitCode = $code }
 }
@@ -152,18 +160,32 @@ if ($Target -in @('frontend', 'all')) {
 # Se filtra a proposito: el log completo trae cientos de lineas de descarga que
 # no dicen nada. Lo que importa son los errores de compilacion, las pruebas que
 # fallaron y el veredicto.
+# Los del backend salen de Maven; los del frontend, de prettier, eslint, vite y
+# vitest. Se evitan los simbolos (marcas de exito, cruces) a proposito: la
+# consola de Windows los escribe con otra codificacion y no harian match.
 $patterns = @(
+    # --- Backend
     '^\[ERROR\]',
     '^\[FATAL\]',
     'Tests run:',
     'BUILD SUCCESS',
     'BUILD FAILURE',
     '^\s+at com\.luma\.',
-    'error TS\d+',
-    '^===== ',
     'COMPILATION ERROR',
     'Caused by:',
-    'npm ERR!'
+    # --- Frontend
+    'error TS\d+',
+    'Prettier code style',
+    'Code style issues',
+    'problems \(',
+    'built in ',
+    'Test Files',
+    '^\s*Tests\s+\d+',
+    'Some chunks are larger',
+    'npm warn deprecated',
+    'npm ERR!',
+    # --- Secciones del propio script
+    '^===== '
 )
 
 $lines = Select-String -Path $log -Pattern ($patterns -join '|') |

@@ -88,8 +88,8 @@ function ResetLinkSent({ email }: { email: string }) {
         </Alert>
 
         <Typography variant="body2" color="text.secondary">
-          El enlace vence en una hora y sirve una sola vez. Si no llega en unos
-          minutos, revisa la carpeta de correo no deseado.
+          El enlace vence en una hora y sirve una sola vez. Si no llega en unos minutos, revisa la
+          carpeta de correo no deseado.
         </Typography>
 
         <Button

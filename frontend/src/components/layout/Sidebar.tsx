@@ -1,4 +1,5 @@
 import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -7,6 +8,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useLocation, useNavigate } from 'react-router';
 
+import { usePendingReviewCount } from '@/features/review/useReview';
 import { testIds } from '@/lib/testids';
 
 import { LumaMark } from './LumaMark';
@@ -19,6 +21,10 @@ interface SidebarProps {
 export function Sidebar({ onNavigate }: SidebarProps) {
   const location = useLocation();
   const navigate = useNavigate();
+
+  // La insignia comparte consulta con la pantalla de revision, asi que verla
+  // desde cualquier seccion no cuesta una peticion extra.
+  const porRevisar = usePendingReviewCount();
 
   return (
     <Box
@@ -69,6 +75,16 @@ export function Sidebar({ onNavigate }: SidebarProps) {
                   </Typography>
                 }
               />
+
+              {item.showsPendingCount && porRevisar > 0 && (
+                <Chip
+                  size="small"
+                  color="primary"
+                  label={porRevisar}
+                  data-testid={testIds.layout.navBadge(item.key)}
+                  aria-label={`${porRevisar} por revisar`}
+                />
+              )}
             </ListItemButton>
           );
         })}
@@ -77,7 +93,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
       <Box sx={{ flex: 1 }} />
 
       <Typography variant="caption" color="text.disabled" sx={{ px: 6, pb: 5 }}>
-        Version 0.1.0 &middot; Fase 1
+        Version {__APP_VERSION__}
       </Typography>
     </Box>
   );

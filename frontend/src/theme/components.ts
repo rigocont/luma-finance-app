@@ -10,11 +10,7 @@ type ShadowSet = { level1: string; level2: string };
  * Las dos reglas que gobiernan casi todo: separar con borde antes que con sombra,
  * y que la accion primaria sea siempre tinta.
  */
-export function buildComponents(
-  c: LumaColors,
-  s: ShadowSet,
-  theme: Theme,
-): Components<Theme> {
+export function buildComponents(c: LumaColors, s: ShadowSet, theme: Theme): Components<Theme> {
   return {
     MuiCssBaseline: {
       styleOverrides: {

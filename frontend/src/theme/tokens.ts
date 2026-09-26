@@ -57,6 +57,53 @@ export const palette = {
   },
 } as const;
 
+/**
+ * Paleta de las graficas. VERIFICADA, no elegida a ojo.
+ *
+ * Los colores de arriba estan afinados para texto y acentos; los rellenos de una
+ * grafica tienen otras exigencias, y no son las mismas en claro que en oscuro.
+ * Estos valores salieron de correr el validador de la guia de visualizacion
+ * —banda de luminosidad, piso de croma, separacion para daltonismo y contraste
+ * contra la superficie— y son los que pasaron las cinco comprobaciones.
+ *
+ * Dos cosas que el validador obligo a cambiar, y conviene no deshacerlas:
+ *
+ * 1. El modo oscuro NO es el claro aclarado. `honey` y `positive` del tema
+ *    oscuro (#EFB959, #6ABE8E) quedan por encima del techo de luminosidad para
+ *    un relleno (L 0.82 y 0.74 contra un maximo de 0.67): como texto funcionan,
+ *    como area grande brillan. De ahi estos pasos propios.
+ *
+ * 2. "Disponible" no es un color, es el hueco. Se intento como cuarto segmento
+ *    gris y fallo dos comprobaciones: un gris no alcanza el piso de croma, y
+ *    contra el verde del ahorro daba una separacion de 2.4 en vision deutan
+ *    —indistinguibles—. La barra se dibuja sobre una pista y lo que sobra se
+ *    queda sin llenar. Es mejor diseno y ademas pasa.
+ *
+ * La separacion gasto/ahorro cae en la banda 6-8 en vision protan, que solo es
+ * admisible con una segunda codificacion. La hay, y por eso no se puede quitar:
+ * cada segmento lleva su etiqueta visible, hay 2px de superficie entre
+ * segmentos, y los gastos variables van con trama diagonal.
+ */
+export const chartPalette = {
+  light: {
+    /** Gastos. El mismo tono de la marca. */
+    expense: '#C98A2B',
+    /** Ahorro: dinero que se queda. */
+    saving: '#2E7D52',
+    /** La pista sobre la que se dibuja. Lo que sobra es lo disponible. */
+    track: '#EFE7DA',
+    /** Solo para lo que se pasa del ingreso. */
+    over: '#B3402F',
+  },
+
+  dark: {
+    expense: '#C3862A',
+    saving: '#2A7A50',
+    track: '#2F2A24',
+    over: '#BE5239',
+  },
+} as const;
+
 export type ThemeMode = 'light' | 'dark';
 /** Ancho a `string` a proposito: `palette.light` y `palette.dark` tienen
  *  literales distintos y `palette[mode]` debe encajar en ambos. */

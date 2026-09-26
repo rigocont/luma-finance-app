@@ -4,9 +4,12 @@ import com.luma.budget.api.dto.BudgetBalanceResponse;
 import com.luma.budget.api.dto.BudgetCycleResponse;
 import com.luma.budget.api.dto.CycleItemResponse;
 import com.luma.budget.api.dto.CycleSummaryResponse;
+import com.luma.budget.api.dto.CycleTrendResponse;
+import com.luma.budget.api.dto.DeficitAdviceResponse;
 import com.luma.budget.api.dto.SettleItemRequest;
 import com.luma.budget.api.dto.UpdateItemRequest;
 import com.luma.budget.application.BudgetCycleService;
+import com.luma.budget.application.DeficitAdviceService;
 import com.luma.budget.domain.BudgetCycle;
 import com.luma.budget.domain.CycleItemType;
 import com.luma.budget.domain.ItemStatus;
@@ -51,11 +54,25 @@ public class BudgetCycleController {
     /** Tope de pagina. Sin tope, un cliente puede pedir toda la tabla de una vez. */
     private static final int MAX_PAGE_SIZE = 100;
 
+    /**
+     * Cuantos ciclos se pueden comparar de una vez.
+     *
+     * <p>Doce: un ano de ciclos mensuales o medio ano de quincenales. Mas que eso
+     * no cabe legible en una grafica, y el tope evita que un cliente pida el
+     * historial entero por accidente.
+     */
+    private static final int MAX_TREND_CYCLES = 12;
+
     private final BudgetCycleService service;
+    private final DeficitAdviceService deficitAdvice;
     private final CurrentUserService currentUser;
 
-    public BudgetCycleController(BudgetCycleService service, CurrentUserService currentUser) {
+    public BudgetCycleController(
+            BudgetCycleService service,
+            DeficitAdviceService deficitAdvice,
+            CurrentUserService currentUser) {
         this.service = service;
+        this.deficitAdvice = deficitAdvice;
         this.currentUser = currentUser;
     }
 
@@ -141,6 +158,56 @@ public class BudgetCycleController {
                 service.balanceOf(cycle, service.currencyOf(userId)));
     }
 
+    @GetMapping("/{cycleId}/advice")
+    @Operation(
+            summary = "De donde podria salir lo que falta",
+            description = """
+                    Con el ciclo en deficit, los renglones de los que se puede
+                    recortar, en el orden en que conviene mirarlos: primero los
+                    gastos flexibles, luego los ahorros del menos prioritario al
+                    mas, y al final los importantes.
+
+                    Los gastos CRITICOS no aparecen nunca. No es una heuristica:
+                    es lo que la aplicacion promete al capturarlos.
+
+                    Sin deficit responde `missing: 0` y la lista vacia. No
+                    modifica nada: quien decide es la persona.
+                    """)
+    public DeficitAdviceResponse advice(
+            @AuthenticationPrincipal Jwt jwt, @PathVariable String cycleId) {
+
+        Long userId = currentUser.requireId(jwt.getSubject());
+        String currency = service.currencyOf(userId);
+        BudgetCycle cycle = service.requireCycle(cycleId, userId);
+
+        return DeficitAdviceResponse.from(
+                deficitAdvice.adviceFor(cycle, currency), currency);
+    }
+
+    @GetMapping("/trends")
+    @Operation(
+            summary = "Comparar los ultimos ciclos",
+            description = """
+                    Del MAS ANTIGUO al mas reciente, al contrario del historial:
+                    una comparacion se lee como linea de tiempo, no como lista.
+
+                    Cada ciclo trae sus totales presupuestados y reales ya
+                    calculados. El cliente presenta; no deriva ninguna cifra.
+                    """)
+    public List<CycleTrendResponse> trends(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestParam(defaultValue = "6") int cycles) {
+
+        Long userId = currentUser.requireId(jwt.getSubject());
+        String currency = service.currencyOf(userId);
+
+        int cuantos = Math.min(Math.max(cycles, 1), MAX_TREND_CYCLES);
+
+        return service.trends(userId, cuantos, currency).stream()
+                .map(CycleTrendResponse::from)
+                .toList();
+    }
+
     @GetMapping("/{cycleId}/items")
     @Operation(
             summary = "Los renglones de un ciclo",
@@ -185,7 +252,14 @@ public class BudgetCycleController {
     }
 
     @PostMapping("/{cycleId}/items/{itemId}/settle")
-    @Operation(summary = "Confirmar que un renglon ocurrio")
+    @Operation(
+            summary = "Confirmar que un renglon ocurrio",
+            description = """
+                    En un renglon de ahorro, el monto se registra ademas como
+                    aporte a la meta y sube su progreso. Manda
+                    `registerInGoal: false` si apartaste el dinero pero no
+                    quieres que cuente en la meta.
+                    """)
     public CycleItemResponse settleItem(
             @AuthenticationPrincipal Jwt jwt,
             @PathVariable String cycleId,
@@ -199,7 +273,13 @@ public class BudgetCycleController {
         Money actual = Money.of(new BigDecimal(request.actualAmount()), currency);
 
         return CycleItemResponse.from(
-                service.settleItem(cycle, itemId, actual, request.settledOn()), currency);
+                service.settleItem(
+                        cycle,
+                        itemId,
+                        actual,
+                        request.settledOn(),
+                        request.shouldRegisterInGoal()),
+                currency);
     }
 
     @DeleteMapping("/{cycleId}/items/{itemId}")

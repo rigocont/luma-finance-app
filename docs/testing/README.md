@@ -32,11 +32,17 @@ pantalla que todavía no está construida.
 | [04-api-autenticacion.md](04-api-autenticacion.md) | Contrato HTTP: códigos, formato de error, seguridad | ✅ Automatizable |
 | [05-recuperacion-contrasena.md](05-recuperacion-contrasena.md) | Recuperación y cambio de contraseña, con verificación por correo | ✅ Automatizable |
 | [06-ciclos-presupuestales.md](06-ciclos-presupuestales.md) | Ciclos, materialización, balance, renglones, cierre e inmutabilidad | ⚠️ Automatizable por API; parte necesita semilla |
-| [07-ingresos.md](07-ingresos.md) | Captura de ingresos y su relación con el ciclo abierto | ⚠️ API automatizable; la pantalla llega en la 5b |
+| [07-ingresos.md](07-ingresos.md) | Captura de ingresos, pantalla y relación con el ciclo abierto | ✅ Automatizable |
+| [08-gastos.md](08-gastos.md) | Gastos fijos y variables, categorias y relacion con el ciclo | ✅ Automatizable |
+| [09-ahorros.md](09-ahorros.md) | Metas de ahorro, movimientos, prioridad y confirmacion del aporte del ciclo | ✅ Automatizable |
+| [10-revision-del-ciclo.md](10-revision-del-ciclo.md) | Revision de gastos variables, sugerencia entre ciclos, historial y confirmacion en lote | ✅ Automatizable |
+| [11-alta-guiada.md](11-alta-guiada.md) | Asistente de configuracion inicial y limpieza de altas abandonadas | ✅ Automatizable |
+| [12-resumen-financiero.md](12-resumen-financiero.md) | Balance del ciclo, consejo de deficit, comparacion entre ciclos y cierre | ✅ Automatizable |
 | [99-escenarios-por-fase.md](99-escenarios-por-fase.md) | Todo lo que llega en fases posteriores | ⏳ Pendiente |
 
-Ciclos e ingresos todavía no tienen interfaz: se ejercitan por HTTP. Los `@ui`
-de ingresos llegan en la Fase 5b y los de ciclos en la Fase 10.
+Todas las funcionalidades del MVP tienen interfaz. Los escenarios `@ui` del
+módulo de ciclos, que estuvieron pendientes desde la Fase 4, viven ahora en
+[12-resumen-financiero.md](12-resumen-financiero.md).
 
 ---
 

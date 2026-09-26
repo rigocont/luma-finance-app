@@ -17,16 +17,21 @@ import com.luma.common.error.ResourceNotFoundException;
 import com.luma.common.model.Money;
 import com.luma.expenses.infrastructure.ExpenseRepository;
 import com.luma.income.infrastructure.IncomeRepository;
+import com.luma.savings.application.SavingsGoalService;
 import com.luma.savings.infrastructure.SavingsGoalRepository;
 import com.luma.users.application.UserPreferencesService;
 import com.luma.users.domain.UserPreferences;
 import java.time.Clock;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +49,7 @@ public class BudgetCycleService {
     private final SavingsGoalRepository goals;
     private final UserPreferencesService preferences;
     private final CycleMaterializer materializer;
+    private final SavingsGoalService savings;
     private final Clock clock;
 
     public BudgetCycleService(
@@ -54,6 +60,7 @@ public class BudgetCycleService {
             SavingsGoalRepository goals,
             UserPreferencesService preferences,
             CycleMaterializer materializer,
+            SavingsGoalService savings,
             Clock clock) {
         this.cycles = cycles;
         this.items = items;
@@ -62,6 +69,7 @@ public class BudgetCycleService {
         this.goals = goals;
         this.preferences = preferences;
         this.materializer = materializer;
+        this.savings = savings;
         this.clock = clock;
     }
 
@@ -161,6 +169,93 @@ public class BudgetCycleService {
         return items.findByBudgetCycleIdOrderByDueDateAscDisplayOrderAscIdAsc(cycle.getId());
     }
 
+    /**
+     * Un ciclo con su resultado y como cambio respecto al anterior.
+     *
+     * <p>La diferencia se calcula AQUI y no en el cliente. Es una cifra de
+     * dinero, y en LUMA ninguna se deriva en la interfaz: si la restara el
+     * navegador habria dos formas de redondear el mismo numero.
+     *
+     * @param outflowChange como cambio lo que sale respecto al ciclo anterior.
+     *     Nulo en el mas antiguo de la lista, que no tiene con que compararse.
+     */
+    public record CycleTrend(BudgetCycle cycle, BudgetResult result, Change outflowChange) {}
+
+    /**
+     * Un cambio entre dos ciclos.
+     *
+     * @param direction UP, DOWN o SAME. La interfaz elige la frase; no compara.
+     * @param amount la MAGNITUD, siempre positiva. El signo ya lo dice la
+     *     direccion, y mandar un negativo obligaria al cliente a sacarle el
+     *     valor absoluto, que es aritmetica de dinero en el lugar equivocado.
+     */
+    public record Change(String direction, Money amount) {
+
+        static Change between(Money current, Money previous) {
+            Money diferencia = current.subtract(previous);
+
+            if (diferencia.isZero()) {
+                return new Change("SAME", Money.zero(current.currency()));
+            }
+            return diferencia.isPositive()
+                    ? new Change("UP", diferencia)
+                    : new Change("DOWN", diferencia.negate());
+        }
+    }
+
+    /**
+     * Los ultimos ciclos con su balance, del MAS ANTIGUO al mas reciente.
+     *
+     * <p>El orden es al contrario del historial a proposito. El historial se lee
+     * como una lista —lo ultimo primero—, pero una comparacion se lee como una
+     * linea de tiempo, de izquierda a derecha. Invertirlo en el cliente seria
+     * pedirle que sepa para que va a usar el dato.
+     *
+     * <p>Los renglones de todos los ciclos se traen en UNA consulta y se agrupan
+     * en memoria. Un balance por ciclo dentro de un bucle serian seis consultas
+     * para responder una sola pregunta.
+     */
+    @Transactional(readOnly = true)
+    public List<CycleTrend> trends(Long userId, int howMany, String currency) {
+        List<BudgetCycle> ultimos = cycles
+                .findByUserIdOrderByStartDateDesc(userId, PageRequest.of(0, Math.max(howMany, 1)))
+                .getContent();
+
+        if (ultimos.isEmpty()) {
+            return List.of();
+        }
+
+        Map<Long, List<CycleItem>> porCiclo =
+                items.findByBudgetCycleIdIn(ultimos.stream().map(BudgetCycle::getId).toList())
+                        .stream()
+                        .collect(Collectors.groupingBy(CycleItem::getBudgetCycleId));
+
+        List<CycleTrend> tendencia = new ArrayList<>(ultimos.size());
+        BudgetResult anterior = null;
+
+        for (BudgetCycle cycle : ultimos.reversed()) {
+            List<PlannedItem> planeados =
+                    porCiclo.getOrDefault(cycle.getId(), List.of()).stream()
+                            .map(item -> item.toPlannedItem(currency))
+                            .toList();
+
+            BudgetResult resultado = BudgetCalculator.calculate(planeados, currency);
+
+            tendencia.add(new CycleTrend(
+                    cycle,
+                    resultado,
+                    anterior == null
+                            ? null
+                            : Change.between(
+                                    resultado.planned().totalOutflow(),
+                                    anterior.planned().totalOutflow())));
+
+            anterior = resultado;
+        }
+
+        return tendencia;
+    }
+
     /** El resultado del motor presupuestal para un ciclo. */
     @Transactional(readOnly = true)
     public BudgetResult balanceOf(BudgetCycle cycle, String currency) {
@@ -190,15 +285,38 @@ public class BudgetCycleService {
         return preferences.currencyOf(userId);
     }
 
+    /**
+     * Confirma un renglon.
+     *
+     * @param registerInGoal solo aplica a los renglones de ahorro. Cuando es
+     *     cierto, el monto confirmado se registra tambien como aporte a la meta
+     *     y sube su progreso. La interfaz lo propone marcado y deja desmarcarlo,
+     *     porque apartar el dinero y registrarlo en la meta son la misma accion
+     *     casi siempre, pero no siempre.
+     */
     @Transactional
     public CycleItem settleItem(
-            BudgetCycle cycle, String itemPublicId, Money actualAmount, LocalDate settledOn) {
+            BudgetCycle cycle,
+            String itemPublicId,
+            Money actualAmount,
+            LocalDate settledOn,
+            boolean registerInGoal) {
+
         CycleItem item = requireMutableItem(cycle, itemPublicId);
         // Sin fecha explicita, ocurrio hoy: es el caso normal — se registra el
         // pago al hacerlo.
         LocalDate occurredOn = settledOn != null ? settledOn : LocalDate.now(clock);
         item.settle(actualAmount, occurredOn, clock.instant());
-        return items.save(item);
+        CycleItem saved = items.save(item);
+
+        if (registerInGoal
+                && item.getItemType() == CycleItemType.SAVING
+                && item.getSourceId() != null) {
+            savings.registerFromCycle(
+                    cycle.getUserId(), item.getSourceId(), saved.getId(), actualAmount, occurredOn);
+        }
+
+        return saved;
     }
 
     @Transactional

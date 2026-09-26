@@ -4,6 +4,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useMemo, type ReactNode } from 'react';
 
+import { ToastHost } from '@/components/ui/ToastHost';
 import { ApiError } from '@/lib/api/types';
 import { resolveThemeMode, useUiStore } from '@/store/uiStore';
 import { createLumaTheme } from '@/theme';
@@ -41,6 +42,9 @@ export function Providers({ children }: { children: ReactNode }) {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         {children}
+        {/* Uno solo para toda la aplicacion: cualquier pantalla pide un aviso
+            con showToast() sin recibir nada por props. */}
+        <ToastHost />
       </ThemeProvider>
     </QueryClientProvider>
   );

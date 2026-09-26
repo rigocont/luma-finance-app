@@ -41,25 +41,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
-          # Sin `cache: npm` a proposito. Esa opcion exige un archivo de
-          # bloqueo y falla si no lo encuentra, y el proyecto todavia no tiene
-          # package-lock.json. En cuanto exista, agregar aqui:
-          #   cache: npm
-          #   cache-dependency-path: frontend/package-lock.json
+          # Ya existe package-lock.json, asi que el cache de npm funciona: en
+          # una corrida limpia se baja el arbol entero cada vez.
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Instalar dependencias
-        # Sin package-lock.json, `npm ci` falla y `npm install` puede traer
-        # versiones distintas en cada corrida: lo que pasa en CI deja de ser lo
-        # que pasa en tu maquina. Se avisa en la interfaz de Actions en lugar de
-        # fallar, para no bloquear el pipeline por algo que se arregla en un
-        # minuto: `npm install` en local y versionar el archivo que genera.
-        run: |
-          if [ -f package-lock.json ]; then
-            npm ci --no-audit --no-fund
-          else
-            echo "::warning file=frontend/package.json::No hay package-lock.json: la compilacion no es reproducible. Genera uno con 'npm install' y versionalo."
-            npm install --no-audit --no-fund
-          fi
+        # `npm ci`, no `npm install`. La diferencia importa: `ci` instala
+        # exactamente lo que dice el archivo de bloqueo y falla si no cuadra con
+        # package.json, mientras que `install` puede resolver otras versiones y
+        # ademas reescribe el bloqueo. Con `install`, lo que pasa en CI deja de
+        # ser lo que pasa en tu maquina, y esa diferencia aparece el dia menos
+        # oportuno.
+        run: npm ci --no-audit --no-fund
 
       - name: Formato
         run: npm run format:check

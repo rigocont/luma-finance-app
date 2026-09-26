@@ -59,6 +59,7 @@ services:
       LUMA_CORS_ALLOWED_ORIGINS: ${LUMA_CORS_ALLOWED_ORIGINS:-http://localhost:5173,http://localhost:8081}
       LUMA_JWT_SECRET: ${LUMA_JWT_SECRET:-desarrollo-local-luma-clave-de-al-menos-32-caracteres}
       LUMA_COOKIE_SECURE: ${LUMA_COOKIE_SECURE:-false}
+      LUMA_ONBOARDING_ABANDON_AFTER: ${LUMA_ONBOARDING_ABANDON_AFTER:-7d}
     ports:
       - "${BACKEND_PORT:-8080}:8080"
 

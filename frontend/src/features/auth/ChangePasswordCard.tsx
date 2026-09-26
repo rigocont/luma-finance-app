@@ -81,8 +81,8 @@ export function ChangePasswordCard() {
           <Stack spacing={1.5}>
             <Typography variant="h3">Contrasena</Typography>
             <Typography variant="body2" color="text.secondary" sx={{ maxWidth: '54ch' }}>
-              Al cambiarla se cerraran todas tus sesiones, incluida esta, y
-              tendras que entrar de nuevo.
+              Al cambiarla se cerraran todas tus sesiones, incluida esta, y tendras que entrar de
+              nuevo.
             </Typography>
           </Stack>
 
